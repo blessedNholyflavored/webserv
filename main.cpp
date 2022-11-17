@@ -9,7 +9,9 @@
 #include "server.hpp"
 #include "inc.hpp"
 
-bool	ft_in_charset(char const c, const std::string &charset)
+static std::string res[4096];
+
+bool	ft_in_charset(char c, std::string &charset)
 {
 	int	i_charset;
 
@@ -22,12 +24,12 @@ bool	ft_in_charset(char const c, const std::string &charset)
 	return false;
 }
 
-std::vector<std::string> ft_split1(const std::string &str, const std::string &charset)
+void ft_split1(std::string str, std::string charset)
 {
-	std::vector<std::string> res;
-	std::string 	tmp;
+	std::string res[4096];
+	std::string tmp("");
 	size_t			i;
-
+	size_t j = 0;
 	i = 0;
 	while (i < str.length())
 	{
@@ -35,16 +37,15 @@ std::vector<std::string> ft_split1(const std::string &str, const std::string &ch
 			i++;
 		if (i < str.length())
 		{
-			tmp = "";
 			while (i < str.length() && !ft_in_charset(str[i], charset))
 				tmp += str[i++];
-			res.push_back(tmp);
+			res[j] = tmp;
+			j++;
 		}
 	}
-	return res;
 }
 
-std::string get_file(const std::string &file)
+std::string get_file( std::string file)
 {
 	std::ifstream fichier(file.c_str());
 	std::string contenu((std::istreambuf_iterator<char>(fichier)), std::istreambuf_iterator<char>());
@@ -52,23 +53,25 @@ std::string get_file(const std::string &file)
 	return contenu;
 }
 
-int parser(char *str)
+int parser(std::string str)
 {
-	const std::vector<std::string> configfile = ft_split1(get_file(str), "\n");
-	if (!configfile.size())
+	int	j = 0;
+	get_file(str);
+	if (!str.size())
 	{
 		std::cerr << "Config file is empty " << std::endl;
 		exit(1);
 	}
 	size_t nbline = 0;
-	while(nbline < configfile.size())
+	while(nbline < str.size())
 	{
-		std::vector<std::string> line = ft_split1(configfile[nbline], WHITESPACES);
-		if (line[0] == "server")
+		ft_split1(str, ": \t");
+		if (res[0] == "server")
 		{
-			/*Server *server = */parser_le_server(configfile, &nbline);
+		/*Server *server = */parser_le_server(res, &nbline, j);
 		}
-		
+		j++;
+		nbline++;
 	}
 	return (0);
 }
