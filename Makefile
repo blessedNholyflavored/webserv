@@ -1,11 +1,11 @@
-NAME		=	whatsTheType
+NAME		=	webserv
 
 SRCS		=	main.cpp \
 				server.cpp \
 				parsing_server.cpp 
 
 OBJS		=	$(SRCS:.cpp=.o)
-CC			=	c++
+CC			=	g++
 FLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98
 INC_PATH	=	-I./incs
 COMPILE		=	$(CC) $(FLAGS) $(INC_PATH)

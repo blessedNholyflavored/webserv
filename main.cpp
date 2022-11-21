@@ -9,7 +9,7 @@
 #include "server.hpp"
 #include "inc.hpp"
 
-static std::string res[4096];
+std::string res[4096];
 
 bool	ft_in_charset(char c, std::string &charset)
 {
@@ -26,11 +26,9 @@ bool	ft_in_charset(char c, std::string &charset)
 
 void ft_split1(std::string str, std::string charset)
 {
-	std::string res[4096];
 	std::string tmp("");
-	size_t			i;
-	size_t j = 0;
-	i = 0;
+	size_t i = 0;
+	static size_t j;
 	while (i < str.length())
 	{
 		while (i < str.length() && ft_in_charset(str[i], charset))
@@ -39,9 +37,11 @@ void ft_split1(std::string str, std::string charset)
 		{
 			while (i < str.length() && !ft_in_charset(str[i], charset))
 				tmp += str[i++];
+			//std::cout << "TMP=" << tmp << std::endl;
 			res[j] = tmp;
-			j++;
+			tmp = "";
 		}
+	j++;
 	}
 }
 
@@ -53,28 +53,6 @@ std::string get_file( std::string file)
 	return contenu;
 }
 
-int parser(std::string str)
-{
-	int	j = 0;
-	get_file(str);
-	if (!str.size())
-	{
-		std::cerr << "Config file is empty " << std::endl;
-		exit(1);
-	}
-	size_t nbline = 0;
-	while(nbline < str.size())
-	{
-		ft_split1(str, ": \t");
-		if (res[0] == "server")
-		{
-		/*Server *server = */parser_le_server(res, &nbline, j);
-		}
-		j++;
-		nbline++;
-	}
-	return (0);
-}
 
 int    parsExt(char *str)
 {
@@ -87,6 +65,7 @@ int    parsExt(char *str)
 
 int    main(int ac, char **av)
 {
+	Server server;
     if (ac != 2)
     {
         std::cerr << "Need a .conf file" << std::endl;
@@ -97,11 +76,11 @@ int    main(int ac, char **av)
         std::cerr << "Bad extension file" << std::endl;
         return (0);
     }
-	if (!parser(av[1]))
+	if (!(server.parser(av[1])))
 	{
 		std::cerr << "ya un pb mec" << std::endl;
         return (0);
 	}
-    printf("%s\n", av[1]);
+	
     return (0);
 }
