@@ -4,6 +4,7 @@
 Server::Server() //: max_client_body_size(4096), listen_fd(0)
 {
 	max_client_body_size = 0;
+	port = 0;
 	// root = NULL;
 	// name_server = NULL;
 }
@@ -68,31 +69,52 @@ int	ft_in_charset1(char const c, const std::string &charset)
 }
 
 
-std::vector<std::string> ft_split(const std::string &str, const std::string &charset)
+// std::vector<std::string> ft_split(const std::string &str, const std::string &charset)
+// {
+// 	std::vector<std::string> res;
+// 	std::string 	tmp;
+// 	size_t			i;
+
+// 	i = 0;
+// 	std::cout << str << std::endl;
+// 	while (i < str.length())
+// 	{
+// 		while (i < str.length() && ft_in_charset1(str[i], charset))
+// 			i++;
+// 		if (i < str.length())
+// 		{
+// 			tmp = "";
+// 			while (i < str.length() && !ft_in_charset1(str[i], charset))
+// 				tmp += str[i++];
+// 			std::cout << "tmp" << str[i] << std::endl;
+// 			res.push_back(tmp);
+// 		}
+// 	}
+// 	return res;
+// }
+
+std::vector<std::string> ft_split(std::string str, std::string deli)
 {
 	std::vector<std::string> res;
-	std::string 	tmp;
-	size_t			i;
 
-	i = 0;
-	while (i < str.length())
-	{
-		while (i < str.length() && ft_in_charset1(str[i], charset))
-			i++;
-		if (i < str.length())
-		{
-			tmp = "";
-			while (i < str.length() && !ft_in_charset1(str[i], charset))
-				tmp += str[i++];
-			res.push_back(tmp);
-		}
-	}
-	return res;
+		int start = 0;
+        int end = str.find(deli);
+        int     i = 0;
+        while (end != -1)
+        {
+                //std::cout << "IN SPLIT: " << str.substr(start, end - start) << std::endl;
+                res.push_back(str.substr(start, end - start));
+                start = end + deli.size();
+                end = str.find(deli, start);
+                i++;
+        }
+        res.push_back(str.substr(start, end - start));
+		return (res);
 }
-
 
 int Server::parser_le_server(std::string res[], size_t *nbligne, int j)
 {
+	// static int count = 0;
 	res[j] = c_trop_complik(res[j]);
 		// if (res[j][0] != '}')
 		// 	std::cout <<"\t" << res[j][0] << ":" << std::endl;
@@ -138,28 +160,43 @@ int Server::parser_le_server(std::string res[], size_t *nbligne, int j)
 		// 	if (address == "localhost")
 		// 		address = "127.0.0.1";
 		// 	this->ip = address;
-			
+		// 	if (!check_int(port))
+		// 		std::cerr << "port should be an int" << std::endl;
+		// 	this->port = atoi(port.c_str());
 		// }
-		else if (line[0] == "error_page")
+		else if (!res[j].compare(0, 11, "\terror_page"))
 		{
-				map???
+			std::string tmp;
+			tmp = (static_cast<std::string>(&res[j][11]));
+			
+			std::vector<std::string> error_page_tmp = ft_split(tmp, " ");
+			if (error_page_tmp.size() != 3)
+				std::cerr << "expecting two arguments after error_page"<< std::endl;
+			else 
+			{
+				this->error_name.push_back(error_page_tmp[1]);
+				this->error_page.push_back(error_page_tmp[2]);
+			}
+			// 	std::cout << "name1:" << error_name[0] << std::endl;
+			// 	std::cout << "page1:" << error_page[0] << std::endl;
+			// if (error_page.size() > 1)
+			// {
+			// 	std::cout << "name2:" << error_name[1] << std::endl;
+			// 	std::cout << "page2:" << error_page[1] << std::endl;
+			// }	
 		}
 		else if (!res[j].compare(0, 4, "\tcgi"))
 		{
-			//int linecount = 0;
 			std::string tmp;
 			tmp = (static_cast<std::string>(&res[j][4]));
-			std::vector<std::string> cgi = ft_split(".", tmp);
-			for (std::string i: cgi)
-    			std::cout << i << ' ';
-			// 	if (!(static_cast<std::string>(&res[j][i]).compare(0, 2, " .")))
-			// 	{
-			// 		std::cout << "1" << (static_cast<std::string>(&res[j][1])) << std::endl;
-			// 		std::cout << "2" <<  (static_cast<std::string>(&res[j][2])) << std::endl;
-			// 		std::cout << "3" << (static_cast<std::string>(&res[j][3])) << std::endl;
-			// 		std::cout << "5" << (static_cast<std::string>(&res[j][5])) << std::endl;
-			// 		std::cerr << "expecting at least 2 argument after 'cgi' "<< std::endl;
-			// 	}
+			std::vector<std::string> cgi = ft_split(tmp, " ");
+			if (cgi.size() != 3)
+				std::cerr << "expecting two arguments after cgi"<< std::endl;
+			else 
+			{
+				this->cgi_exec.push_back(cgi[1]);
+				this->cgi_address.push_back(cgi[2]);
+			}
 		}
 		else if (!res[j].compare(0, 6, "\tindex"))
 		{
@@ -167,7 +204,7 @@ int Server::parser_le_server(std::string res[], size_t *nbligne, int j)
 			{
 				std::cerr << "expecting one argument after index"<< std::endl;
 			}
-			// assigner index
+			this->index =  (res[j].c_str() + 6);
 		}
 		else if (!res[j].compare(0, 5, "\troot"))
 		{

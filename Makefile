@@ -6,7 +6,7 @@ SRCS		=	main.cpp \
 
 OBJS		=	$(SRCS:.cpp=.o)
 CC			=	c++
-FLAGS		=	-Wall -Wextra -Werror -g3 -std=c++11
+FLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98
 INC_PATH	=	-I./incs
 COMPILE		=	$(CC) $(FLAGS) $(INC_PATH)
 

@@ -20,6 +20,13 @@ class Server
 	std::string name_server;
 	std::string root;
 	std::string ip;
+	size_t port;
+	std::vector<std::string> cgi_exec;
+	std::vector<std::string> cgi_address;
+	std::string index;
+
+	std::vector<std::string> error_page;
+	std::vector<std::string> error_name;
 
 	int parser_le_server(std::string res[], size_t *nbligne, int j);
 	int parser(std::string str);
