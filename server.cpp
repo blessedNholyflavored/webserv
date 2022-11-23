@@ -90,7 +90,8 @@ int check_int1(std::string str)
 	if (str.empty() || ((!isdigit(str[0])) || str[0] == '-' || str[0] == '+'))
 			return 1;
 	return 0;
-}
+}                                                           
+
 
 std::string ltrim(std::string &s)
 {
@@ -101,54 +102,75 @@ std::string ltrim(std::string &s)
 int Server::parser_le_server(std::string res[], size_t *nbligne, int j)
 {
 	res[j] = remove_charset(res[j]);
-		// if (res[j][0] != '}')
-		// 	std::cout <<"\t" << res[j][0] << ":" << std::endl;
-		// if (res[j][0] == '}')
-		// {
-		// 	// (*nbligne)++;
-		// 	break;
-		// }
-		//if (!res[j].compare(0, 9, "\tlocation"))
-		// if (static_cast<std::string>(&res[j][9]).size() != 3)
-		// {
-		// 	std::cerr << "il faut deux arguments apres location mec "<< std::endl;
-		// }
-		if (!res[j].compare(0, 12, "\tserver_name"))
-		{
-			if (static_cast<std::string>(&res[j][13]).size() < 2)
-				{
-					std::cerr << "expecting at least 1 argument after 'server_name' "<< std::endl;
-					//exit(1);
-				}
-			this->name_server = (res[j].c_str() + 13);
-		}
-		else if (!res[j].compare(0, 7, "\tlisten"))
-		{
-			
-			if (static_cast<std::string>(&res[j][7]).size() == 1) // empty
-				std::cerr << "expecting one argument after listen"<< std::endl;
-			std::string tmp;
-			tmp = (static_cast<std::string>(&res[j][7]));
-			std::vector<std::string> listen = ft_split(tmp, ":");
-			if (listen.size() != 1 && listen.size() != 2)
-				std::cerr << "il faut port ou adress:port apres le listen" << std::endl;
-			std::string address;
-			std::string port;
-			address = tmp;
-			if (listen.size() == 1)
+	//std::cout << res[j] << std::endl;
+	if (!res[j].compare(0, 2, " {"))
+	{
+		std::cerr << "il est ou le { ???" << std::endl;
+	}
+	//std::vector<std::string>::const_iterator it = res[j].begin() + *nbligne;
+	// if (it == res[j].end())
+	// 	return NULL;
+	// it++;
+	// (*nbligne)++;
+	// while (it != res[j].end())
+	// {
+	// 	std::vector<std::string> line = ft_split(*it, " ");
+	// 	if (!line.size() || !line[0].size())
+	// 	{
+	// 		it++;
+	// 		(*nbligne)++;
+	// 		continue;
+	// 	}
+	// 	if (!res[j].compare(0, 1, "#"))
+	// 	{
+	// 		it++;
+	// 		(*nbligne)++;
+	// 		continue;
+	// 	}
+	// 	else if (!res[j].compare(0, 1, "}"))
+	// 		std::cout << "\t" << res[j] << ":";
+	// 	if (res[j].compare(0, 1, "}"))
+	// 	{
+	// 		// (*line_count)++;
+	// 		break;
+	// 	}
+
+	if (!res[j].compare(0, 12, "\tserver_name"))
+	{
+		if (static_cast<std::string>(&res[j][13]).size() < 2)
 			{
-				address = "0.0.0.0";
-				port = listen[0];
+				std::cerr << "expecting at least 1 argument after 'server_name' "<< std::endl;
+				//exit(1);
 			}
-			else
-				port = listen[1];
-			if (address == "localhost")
-				address = "127.0.0.1";
-			this->ip = listen[0]; 
-			std::string test = ltrim(port);
-			if (check_int1(test))
-				std::cerr << "port should be an int" << std::endl;
-			this->port = atoi(port.c_str());			
+		this->name_server = (res[j].c_str() + 13);
+	}
+	else if (!res[j].compare(0, 7, "\tlisten"))
+	{
+		
+		if (static_cast<std::string>(&res[j][7]).size() == 1) // empty
+			std::cerr << "expecting one argument after listen"<< std::endl;
+		std::string tmp;
+		tmp = (static_cast<std::string>(&res[j][7]));
+		std::vector<std::string> listen = ft_split(tmp, ":");
+		if (listen.size() != 1 && listen.size() != 2)
+			std::cerr << "il faut port ou adress:port apres le listen" << std::endl;
+		std::string address;
+		std::string port;
+		address = tmp;
+		if (listen.size() == 1)
+		{
+			address = "0.0.0.0";
+			port = listen[0];
+		}
+		else
+			port = listen[1];
+		if (address == "localhost")
+			address = "127.0.0.1";
+		this->ip = listen[0]; 
+		std::string test = ltrim(port);
+		if (check_int1(test))
+			std::cerr << "port should be an int" << std::endl;
+		this->port = atoi(port.c_str());			
 		}
 		else if (!res[j].compare(0, 11, "\terror_page"))
 		{
@@ -206,6 +228,11 @@ int Server::parser_le_server(std::string res[], size_t *nbligne, int j)
 				std::cerr << "mauvais int de taille " << std::endl;
 			this->max_client_body_size = tmp;
 		}
+		//if (!res[j].compare(0, 9, "\tlocation"))
+		// if (static_cast<std::string>(&res[j][9]).size() != 3)
+		// {
+		// 	std::cerr << "il faut deux arguments apres location mec "<< std::endl;
+		// }
 		(void)nbligne;
 		
 		return (0);
