@@ -16,7 +16,7 @@ class Server
 	public:
 	Server();
 	~Server();
-	size_t max_client_body_size;
+	std::string max_client_body_size;
 	std::string name_server;
 	std::string root;
 	std::string ip;

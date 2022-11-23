@@ -3,7 +3,6 @@
 
 Server::Server() //: max_client_body_size(4096), listen_fd(0)
 {
-	max_client_body_size = 0;
 	port = 0;
 	// root = NULL;
 	// name_server = NULL;
@@ -41,7 +40,7 @@ int Server::parser(std::string str)
 	return 0;
 }
 
-std::string c_trop_complik(std::string res)
+std::string remove_charset(std::string res)
 {
 		int i = 0;
 		while(res[i])
@@ -68,31 +67,6 @@ int	ft_in_charset1(char const c, const std::string &charset)
 	return 1;
 }
 
-
-// std::vector<std::string> ft_split(const std::string &str, const std::string &charset)
-// {
-// 	std::vector<std::string> res;
-// 	std::string 	tmp;
-// 	size_t			i;
-
-// 	i = 0;
-// 	std::cout << str << std::endl;
-// 	while (i < str.length())
-// 	{
-// 		while (i < str.length() && ft_in_charset1(str[i], charset))
-// 			i++;
-// 		if (i < str.length())
-// 		{
-// 			tmp = "";
-// 			while (i < str.length() && !ft_in_charset1(str[i], charset))
-// 				tmp += str[i++];
-// 			std::cout << "tmp" << str[i] << std::endl;
-// 			res.push_back(tmp);
-// 		}
-// 	}
-// 	return res;
-// }
-
 std::vector<std::string> ft_split(std::string str, std::string deli)
 {
 	std::vector<std::string> res;
@@ -102,7 +76,6 @@ std::vector<std::string> ft_split(std::string str, std::string deli)
         int     i = 0;
         while (end != -1)
         {
-                //std::cout << "IN SPLIT: " << str.substr(start, end - start) << std::endl;
                 res.push_back(str.substr(start, end - start));
                 start = end + deli.size();
                 end = str.find(deli, start);
@@ -112,10 +85,22 @@ std::vector<std::string> ft_split(std::string str, std::string deli)
 		return (res);
 }
 
+int check_int1(std::string str)
+{
+	if (str.empty() || ((!isdigit(str[0])) || str[0] == '-' || str[0] == '+'))
+			return 1;
+	return 0;
+}
+
+std::string ltrim(std::string &s)
+{
+    size_t start = s.find_first_not_of(" ");
+    return (start == std::string::npos) ? "" : s.substr(start);
+}
+
 int Server::parser_le_server(std::string res[], size_t *nbligne, int j)
 {
-	// static int count = 0;
-	res[j] = c_trop_complik(res[j]);
+	res[j] = remove_charset(res[j]);
 		// if (res[j][0] != '}')
 		// 	std::cout <<"\t" << res[j][0] << ":" << std::endl;
 		// if (res[j][0] == '}')
@@ -137,53 +122,46 @@ int Server::parser_le_server(std::string res[], size_t *nbligne, int j)
 				}
 			this->name_server = (res[j].c_str() + 13);
 		}
-		// else if (!res[j].compare(0, 7, "\tlisten"))
-		// {
+		else if (!res[j].compare(0, 7, "\tlisten"))
+		{
 			
-		// 	if (static_cast<std::string>(&res[j][7]).size() == 1) // empty
-		// 		std::cerr << "expecting one argument after listen"<< std::endl;
-		// 	std::string tmp;
-		// 	tmp = (static_cast<std::string>(&res[j][7]));
-		// 	std::vector<std::string> listen = ft_split(tmp, ":");
-		// 	if (listen.size() != 1 && listen.size() != 2)
-		// 		std::cerr << "il faut port ou adress:port apres le listen" << std::endl;
-		// 	std::string address;
-		// 	std::string port;
-		// 	address = tmp[0];
-		// 	if (listen.size() == 1)
-		// 	{
-		// 		address = "0.0.0.0";
-		// 		port = listen[0];
-		// 	}
-		// 	else
-		// 		port = listen[1];
-		// 	if (address == "localhost")
-		// 		address = "127.0.0.1";
-		// 	this->ip = address;
-		// 	if (!check_int(port))
-		// 		std::cerr << "port should be an int" << std::endl;
-		// 	this->port = atoi(port.c_str());
-		// }
+			if (static_cast<std::string>(&res[j][7]).size() == 1) // empty
+				std::cerr << "expecting one argument after listen"<< std::endl;
+			std::string tmp;
+			tmp = (static_cast<std::string>(&res[j][7]));
+			std::vector<std::string> listen = ft_split(tmp, ":");
+			if (listen.size() != 1 && listen.size() != 2)
+				std::cerr << "il faut port ou adress:port apres le listen" << std::endl;
+			std::string address;
+			std::string port;
+			address = tmp;
+			if (listen.size() == 1)
+			{
+				address = "0.0.0.0";
+				port = listen[0];
+			}
+			else
+				port = listen[1];
+			if (address == "localhost")
+				address = "127.0.0.1";
+			this->ip = listen[0]; 
+			std::string test = ltrim(port);
+			if (check_int1(test))
+				std::cerr << "port should be an int" << std::endl;
+			this->port = atoi(port.c_str());			
+		}
 		else if (!res[j].compare(0, 11, "\terror_page"))
 		{
 			std::string tmp;
 			tmp = (static_cast<std::string>(&res[j][11]));
-			
 			std::vector<std::string> error_page_tmp = ft_split(tmp, " ");
 			if (error_page_tmp.size() != 3)
 				std::cerr << "expecting two arguments after error_page"<< std::endl;
-			else 
+			else
 			{
 				this->error_name.push_back(error_page_tmp[1]);
 				this->error_page.push_back(error_page_tmp[2]);
-			}
-			// 	std::cout << "name1:" << error_name[0] << std::endl;
-			// 	std::cout << "page1:" << error_page[0] << std::endl;
-			// if (error_page.size() > 1)
-			// {
-			// 	std::cout << "name2:" << error_name[1] << std::endl;
-			// 	std::cout << "page2:" << error_page[1] << std::endl;
-			// }	
+			}	
 		}
 		else if (!res[j].compare(0, 4, "\tcgi"))
 		{
@@ -219,12 +197,14 @@ int Server::parser_le_server(std::string res[], size_t *nbligne, int j)
 		}
 		else if (!res[j].compare(0, 21, "\tmax_client_body_size"))
 		{
-			if (static_cast<std::string>(&res[j][22]).size() == 1)		
+			std::string tmp;
+			tmp = (static_cast<std::string>(&res[j][22]));
+			std::vector<std::string> max_body_size = ft_split(tmp, " ");
+			if(max_body_size.size() != 1)
 				std::cerr << "expecting one argument after max_client_body_size" << std::endl;
-			else if (!check_int(&res[j][22]))
+			else if (check_int1(max_body_size[0]))
 				std::cerr << "mauvais int de taille " << std::endl;
-			this->max_client_body_size = std::atof((res[j].c_str() + 22));
-
+			this->max_client_body_size = tmp;
 		}
 		(void)nbligne;
 		
