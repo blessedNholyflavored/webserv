@@ -1,20 +1,22 @@
 #include "server.hpp"
 #include "inc.hpp"
+#include "location.hpp"
 
 Server::Server() //: max_client_body_size(4096), listen_fd(0)
 {
 	port = 0;
-	// root = NULL;
-	// name_server = NULL;
+	autoindex = false;
 }
 
 Server::~Server()
 {
-	// std::cout << "KILLING SERVER" << std::cout;
-	// //close(listen_fd);
-	// std::cout << "bye" << std::cout;
+	
 }
 
+// void	Server::transfer_location(Location location)
+// {
+// 	this->location.push_back(location);
+// }
 
 int Server::parser(std::string str)
 {
@@ -32,7 +34,7 @@ int Server::parser(std::string str)
 		ft_split1(content, "\n");
 		if (res[0] == "server {")
 		{
-			this->parser_le_server(res, &nbline, j);
+			this->parser_le_server(res, nbline, j);
 		}
 		j++;
 		nbline++;
@@ -99,50 +101,48 @@ std::string ltrim(std::string &s)
     return (start == std::string::npos) ? "" : s.substr(start);
 }
 
-int Server::parser_le_server(std::string res[], size_t *nbligne, int j)
+
+int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 {
 	res[j] = remove_charset(res[j]);
-	//std::cout << res[j] << std::endl;
-	if (!res[j].compare(0, 2, " {"))
-	{
-		std::cerr << "il est ou le { ???" << std::endl;
-	}
-	//std::vector<std::string>::const_iterator it = res[j].begin() + *nbligne;
-	// if (it == res[j].end())
-	// 	return NULL;
-	// it++;
-	// (*nbligne)++;
-	// while (it != res[j].end())
+	// std::cout << res[j] << std::endl;
+	// std::cout << (res[j].compare(0, 1, "}")) << std::endl;
+	// if (!res[0].compare(0, 1, "{"))
 	// {
-	// 	std::vector<std::string> line = ft_split(*it, " ");
-	// 	if (!line.size() || !line[0].size())
-	// 	{
-	// 		it++;
-	// 		(*nbligne)++;
-	// 		continue;
-	// 	}
-	// 	if (!res[j].compare(0, 1, "#"))
-	// 	{
-	// 		it++;
-	// 		(*nbligne)++;
-	// 		continue;
-	// 	}
-	// 	else if (!res[j].compare(0, 1, "}"))
-	// 		std::cout << "\t" << res[j] << ":";
-	// 	if (res[j].compare(0, 1, "}"))
-	// 	{
-	// 		// (*line_count)++;
-	// 		break;
-	// 	}
-
-	if (!res[j].compare(0, 12, "\tserver_name"))
+	// 	std::cerr << "il est ou le { ???" << std::endl;
+	// }
+	////////////////ICI A REGLER 
+	// std::vector<std::string> tmp = (static_cast<std::string>(res[j]));
+	// std::vector<std::string>::const_iterator it = tmp.begin() + nbligne;
+	if (!res[j].compare(0, 9, "\tlocation"))
+	{
+		std::string tmp;
+		tmp = (static_cast<std::string>(&res[j][9]));
+		std::vector<std::string> location = ft_split(tmp, " ");
+		if (location.size() != 3)
+			std::cerr << "expecting two arguments after error_page"<< std::endl;
+		Location test;
+		test.parser_la_location(tmp, nbligne, j);
+		this->location.push_back(test);
+	}
+	else if (!res[j].compare(0, 12, "\tserver_name"))
 	{
 		if (static_cast<std::string>(&res[j][13]).size() < 2)
 			{
 				std::cerr << "expecting at least 1 argument after 'server_name' "<< std::endl;
-				//exit(1);
 			}
 		this->name_server = (res[j].c_str() + 13);
+	}
+	else if (!res[j].compare(0, 10, "\tautoindex"))
+	{
+		if (static_cast<std::string>(&res[j][10]).size() < 2)
+			{
+				std::cerr << "expecting at least 1 argument after 'server_name' "<< std::endl;
+			}
+		if (static_cast<std::string>(&res[j][10]).compare(0, 2, "on"))
+			this->autoindex = true;
+		else
+			this->autoindex = false;
 	}
 	else if (!res[j].compare(0, 7, "\tlisten"))
 	{
@@ -228,11 +228,6 @@ int Server::parser_le_server(std::string res[], size_t *nbligne, int j)
 				std::cerr << "mauvais int de taille " << std::endl;
 			this->max_client_body_size = tmp;
 		}
-		//if (!res[j].compare(0, 9, "\tlocation"))
-		// if (static_cast<std::string>(&res[j][9]).size() != 3)
-		// {
-		// 	std::cerr << "il faut deux arguments apres location mec "<< std::endl;
-		// }
 		(void)nbligne;
 		
 		return (0);
