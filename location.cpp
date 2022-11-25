@@ -33,8 +33,12 @@ std::vector<std::string> ft_split2(std::string str, std::string deli)
 void Location::parser_la_location(std::string loc, size_t nbligne, int j)
 {
     //Location new_instance;
+    //std::cout << "cc" << loc << std::endl;
     std::vector<std::string> ligne = ft_split2(loc, " ");
-    //std::cout << "bjr" << std::endl;
+    //  typedef std::vector<std::string>::iterator iterator;
+    //         for (iterator it = ligne.begin(); it != ligne.end(); it++ )
+    //             std::cout << *it << std::endl;
+    //         std::cout << "ligne" << ligne[1] << std::endl; 
     (void) nbligne;
     (void) j;
     //return new_instance;
