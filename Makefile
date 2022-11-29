@@ -3,7 +3,8 @@ NAME		=	webserv
 SRCS		=	main.cpp \
 				server.cpp \
 				parsing_utils.cpp \
-				location.cpp
+				location.cpp \
+				web.cpp
 
 OBJS		=	$(SRCS:.cpp=.o)
 CC			=	c++

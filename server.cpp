@@ -68,7 +68,7 @@ int Server::parser(std::string str)
 		j++;
 		nbline++;
 	}
-	return 0;
+	return 1;
 }
 
 int	ft_in_charset1(char const c, const std::string &charset)
