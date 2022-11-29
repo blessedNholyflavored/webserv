@@ -50,7 +50,7 @@ void Location::parseMethod(std::string str){
 		i++;
 	}
 	std::string tmp;
-	for (std::vector<std::string>::iterator it;; i++){
+	for (std::vector<std::string>::iterator it = _methods.begin();; i++){
 		if (str[i] == ' ' || str[i] == '\t' || str[i] == '\0')
 		{
 			*it = tmp;
@@ -135,6 +135,9 @@ void Location::parseAutoindex(std::string str){
 
 void Location::parser_la_location(int j)
 {
+	_methods.push_back("");
+	_methods.push_back("");
+	_methods.push_back("");
 	std::string str;
 	for (int i = 10; res[j][i] != ' '; i++){
 		str += res[j][i];
@@ -164,8 +167,8 @@ void Location::parser_la_location(int j)
 	std::cout << "location : " << _location << std::endl; 
 	std::cout << "root : " << this->_root << std::endl; 
 	std::cout << "index : " << _index << std::endl; 
-	for (std::vector<std::string>::iterator it; it != _methods.end(); it++){
-		std::cout << "qwjdqggggggggggggggggggggggggggggggggggwd" << std::endl;
+	for (std::vector<std::string>::iterator it = _methods.begin(); it != _methods.end(); it++){
+		//std::cout << "qwjdqggggggggggggggggggggggggggggggggggwd" << std::endl;
 		std::cout << *it << std::endl;
 	} 
 	std::cout << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" << std::endl;
