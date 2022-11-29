@@ -247,7 +247,10 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 			std::cerr << "mauvais int de taille " << std::endl;
 		this->max_client_body_size = tmp;
 	}
+<<<<<<< HEAD
 	(void)nbligne;
 	
+=======
+>>>>>>> d8a3e1d4621c00cf5a2d5bd62ba12a4e7728ab69
 	return (0);
 }
