@@ -181,14 +181,18 @@ std::string FirstPage(std::string filePath)
 	path += "/";
 	path += filePath;
 	dirp = opendir(path.c_str());*/
-	index += "<!DOCTYPE html>\n<html>\n\n<title>INDEX</title>\n\n<h1>INDEX</h1>";
+	std::string recup;
+	std::ifstream findex("lucie_est_la_plus_belle.html");
+	while (getline(findex, recup))
+		index += recup;
+	/*index += "<!DOCTYPE html>\n<html>\n\n<title>INDEX</title>\n\n<h1>INDEX</h1>";
 	index += "<body id=\"all\">";
 	index += "<form id=\"form\">";
 	index += "<input type=\"file\" name=\"background\" />";
 	index += "<button type=\"submit\">SEND</button>\n\n";
 	index += "</form>";
 	index += "<p id=\"message\"></p>";
-	index += "<button id=\"btn\">test</button>\n\n";
+	index += "<button id=\"btn\">test</button>\n\n";*/
 	for (int i = 0; i < 3 + nbfiles; i++)
 	{
 		index += "<h4>";
