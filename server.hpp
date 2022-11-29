@@ -37,4 +37,5 @@ class Server
 
 };
 
+size_t countEndl(std::string content);
 #endif

@@ -37,7 +37,6 @@ void ft_split1(std::string str, std::string charset)
 		{
 			while (i < str.length() && !ft_in_charset(str[i], charset))
 				tmp += str[i++];
-			//std::cout << "TMP=" << tmp << std::endl;
 			res[j] = tmp;
 			tmp = "";
 		}
