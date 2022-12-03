@@ -18,7 +18,7 @@
 			std::string					_root;
 			std::string					_index;
 			std::string					_return;
-			std::vector<std::string>	_methods = {"", "", ""};
+			std::vector<std::string>	_methods;
 			bool						_autoindex;
 		//lister tous les elements qui composent location 
 		public:

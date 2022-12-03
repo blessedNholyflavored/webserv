@@ -40,6 +40,7 @@ int	checkEndOfLocation(std::string str){
 
 void Location::parseMethod(std::string str){
 	int i = 0;
+	this->_methods.reserve(10);
 	while ( str[i] == ' ' || str[i] == '\t'){
 		i++;
 	}
@@ -49,23 +50,31 @@ void Location::parseMethod(std::string str){
 	while ( str[i] == ' ' || str[i] == '\t'){
 		i++;
 	}
-	std::string tmp;
-	for (std::vector<std::string>::iterator it;; i++){
-		if (str[i] == ' ' || str[i] == '\t' || str[i] == '\0')
-		{
-			*it = tmp;
-			it++;
-			tmp.clear();
-			while(str[i] == ' ' || str[i] == '\t')
-				i++;
-			if (str[i])
-				i--;
-		}
-		else
-			tmp += str[i];
-		if (!str[i])
-			break ;
-	}
+	for (std::vector<std::string>::iterator it; it != _methods.end(); it++){
+		std::cout << "qwjdqggggggggggggggggggggggggggggggggggwd" << std::endl;
+		std::cout << &it << std::endl;
+	} 
+	// std::string *tmp;
+
+	// tmp = new std::string;
+	// for (std::vector<std::string>::iterator it;; i++){
+	// 	if (str[i] == ' ' || str[i] == '\t' || str[i] == '\0')
+	// 	{
+	// 		std::cout << &it << std::endl;
+	// 		*it = *tmp;
+	// 		sleep(8);
+	// 		it++;
+	// 		tmp->clear();
+	// 		while(str[i] == ' ' || str[i] == '\t')
+	// 			i++;
+	// 		if (str[i])
+	// 			i--;
+	// 	}
+	// 	else
+	// 		*tmp += str[i];
+	// 	if (!str[i])
+	// 		break ;
+	// }
 	//
 	// SI TARRIVE A CREER UN VECTOR DE 3 STRING DANS TON HPP CA VA FONCTIONNER 
 	// JUSTE CPLUSPLUS.COM NE FONCTIONNE PAS LA MAIS SINON TON LOCATION DEVRAIT ETRE BON
