@@ -8,6 +8,7 @@
 # define WHITESPACES "; \t"
 #include "server.hpp"
 #include "inc.hpp"
+#include "functions.h"
 
 std::string res[4096];
 
@@ -75,11 +76,12 @@ int    main(int ac, char **av)
         std::cerr << "Bad extension file" << std::endl;
         return (0);
     }
-	if (!(server.parser(av[1])))
+    	if (!(server.parser(av[1])))
 	{
 		std::cerr << "ya un pb mec" << std::endl;
         return (0);
 	}
+	StartServer(server);
 	
     return (0);
 }

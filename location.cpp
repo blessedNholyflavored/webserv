@@ -50,31 +50,23 @@ void Location::parseMethod(std::string str){
 	while ( str[i] == ' ' || str[i] == '\t'){
 		i++;
 	}
-	for (std::vector<std::string>::iterator it; it != _methods.end(); it++){
-		std::cout << "qwjdqggggggggggggggggggggggggggggggggggwd" << std::endl;
-		std::cout << &it << std::endl;
-	} 
-	// std::string *tmp;
-
-	// tmp = new std::string;
-	// for (std::vector<std::string>::iterator it;; i++){
-	// 	if (str[i] == ' ' || str[i] == '\t' || str[i] == '\0')
-	// 	{
-	// 		std::cout << &it << std::endl;
-	// 		*it = *tmp;
-	// 		sleep(8);
-	// 		it++;
-	// 		tmp->clear();
-	// 		while(str[i] == ' ' || str[i] == '\t')
-	// 			i++;
-	// 		if (str[i])
-	// 			i--;
-	// 	}
-	// 	else
-	// 		*tmp += str[i];
-	// 	if (!str[i])
-	// 		break ;
-	// }
+	std::string tmp;
+	for (std::vector<std::string>::iterator it = _methods.begin();; i++){
+		if (str[i] == ' ' || str[i] == '\t' || str[i] == '\0')
+		{
+			*it = tmp;
+			it++;
+			tmp.clear();
+			while(str[i] == ' ' || str[i] == '\t')
+				i++;
+			if (str[i])
+				i--;
+		}
+		else
+			tmp += str[i];
+		if (!str[i])
+			break ;
+	}
 	//
 	// SI TARRIVE A CREER UN VECTOR DE 3 STRING DANS TON HPP CA VA FONCTIONNER 
 	// JUSTE CPLUSPLUS.COM NE FONCTIONNE PAS LA MAIS SINON TON LOCATION DEVRAIT ETRE BON
@@ -144,6 +136,9 @@ void Location::parseAutoindex(std::string str){
 
 void Location::parser_la_location(int j)
 {
+	_methods.push_back("");
+	_methods.push_back("");
+	_methods.push_back("");
 	std::string str;
 	for (int i = 10; res[j][i] != ' '; i++){
 		str += res[j][i];
@@ -173,8 +168,8 @@ void Location::parser_la_location(int j)
 	std::cout << "location : " << _location << std::endl; 
 	std::cout << "root : " << this->_root << std::endl; 
 	std::cout << "index : " << _index << std::endl; 
-	for (std::vector<std::string>::iterator it; it != _methods.end(); it++){
-		std::cout << "qwjdqggggggggggggggggggggggggggggggggggwd" << std::endl;
+	for (std::vector<std::string>::iterator it = _methods.begin(); it != _methods.end(); it++){
+		//std::cout << "qwjdqggggggggggggggggggggggggggggggggggwd" << std::endl;
 		std::cout << *it << std::endl;
 	} 
 	std::cout << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" << std::endl;
