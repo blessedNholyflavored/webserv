@@ -30,7 +30,15 @@ class Server
 	bool autoindex;
 	std::vector<Location> location;
 
+	int	epoll_fd;
+	int	server_fd;
 
+
+	int	sendConnection(int fd);
+	int	recvConnection(int fd);
+	int	newConnection(struct epoll_event event, int fd);
+	int	init_serv();
+	int	event_receptor(struct epoll_event events[5], int event_count);
 	int parser_le_server(std::string res[], size_t nbligne, int j);
 	int parser(std::string str);
 	void transfer_location(Location location);

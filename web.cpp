@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 14:25:46 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/11/29 16:48:34 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/12/09 17:18:55 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -321,25 +321,120 @@ void	ParseBuffer(std::string buffer)
 	return ;
 }
 
+int	Server::init_serv(void)
+{
+	struct	sockaddr_in address;
+	struct	epoll_event event;
+	int	on = 0;
+
+	if ((this->server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
+	{
+		std::cerr << "Error in socket" << std::endl;
+		return (1);
+	}
+	if (setsockopt(this->server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &on, sizeof(int)) == -1)
+		return (close(this->server_fd), perror("Setsockopt failed"), -1);
+	if (fcntl(server_fd, F_SETFL, O_NONBLOCK) == -1)
+		return (close(this->server_fd), perror("Fcntl failed"), -1);
+	address.sin_family= AF_INET;
+	address.sin_addr.s_addr = INADDR_ANY;
+	address.sin_port = htons(this->port);
+	memset(address.sin_zero, '\0', sizeof address.sin_zero);
+	if (bind(this->server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
+	{
+		std::cerr << "Error in bind" << std::endl;
+		return (1);
+	}
+	if (listen(this->server_fd, 10) < 0)
+	{
+		std::cerr << "Error in listen" << std::endl;
+		return (1);
+	}
+	event.events = EPOLLIN;
+	event.data.fd = this->server_fd;;
+	epoll_ctl(this->epoll_fd, EPOLL_CTL_ADD, this->server_fd, &event);
+	return (0);
+}
+
+int	Server::newConnection(struct epoll_event event, int fd)
+{
+	fd = accept(this->server_fd, NULL, NULL);
+	if (fd < 0)
+		std::cerr << "Error in accept new connec" << std::endl;
+	if (fcntl(fd, F_SETFL, O_NONBLOCK) == -1)
+		return (close(fd), perror("Fcntl failed"), -1);
+	event.events = EPOLLIN;
+	event.data.fd = fd;
+	epoll_ctl(this->epoll_fd, EPOLL_CTL_ADD, fd, &event);
+	return (0);
+}
+
+int	Server::recvConnection(int fd)
+{
+	ssize_t	len;
+	char	buff[3000];
+
+	len = recv(fd, buff, 3000, 0);
+	if (len > 0)
+		printf("BUFF in recv:\n%s\n", buff);
+	//CheckRequest(buff);
+	return (0);
+}	
+
+int	Server::sendConnection(int fd)
+{
+	std::string str1 = FirstPage(newIndex);
+	std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
+	send(fd, header.c_str(), header.length(), 0);
+	(void)fd;
+	return (0);
+}	
+
+int	Server::event_receptor(struct epoll_event events[5], int event_count)
+{
+	for (int i = 0; i < event_count; i++)
+	{
+		if (events[i].data.fd == this->server_fd)
+			newConnection(events[i], events[i].data.fd);
+		else if (events[i].events == EPOLLIN)
+			recvConnection(events[i].data.fd);
+		else if (events[i].events == EPOLLOUT)
+			sendConnection(events[i].data.fd);
+	}
+	return (0);
+}
+
 
 void	StartServer(Server server)
+{
+	int	event_count;
+	struct	epoll_event events[5];
+
+	server.epoll_fd = epoll_create1(0);
+
+	if (server.init_serv())
+		return ;
+	while (1)
+	{
+		event_count = epoll_wait(server.epoll_fd, events, 5, 1000);
+		if (event_count < 0)
+			fprintf(stderr, "error in epoll_wait\n");
+		if (event_count > 0)
+			server.event_receptor(events, event_count);
+	}
+}
+
+/*void	StartServer(Server server)
 {
 	(void)server;
 	struct	epoll_event event, events[MAX_EVENTS];
 	int	event_count;
-	//int	epoll_fd = epoll_create1(1);
+	int	epoll_fd = epoll_create1(0);
 	int	server_fd, new_socket = 0;
 	long	retread;
 	struct	sockaddr_in address;
 	int	addrlen = sizeof(address);
 
-	event.events = EPOLLIN;
-	event.data.fd = 0;
-	/*if (epoll_ctl(epoll_fd, EPOLL_CTL_ADD, 0, &event))
-	{
-		std::cerr << "Error in epoll" << std::endl;
-		return ;
-	}*/
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
 	{
 		std::cerr << "Error in socket" << std::endl;
@@ -362,8 +457,9 @@ void	StartServer(Server server)
 		std::cerr << "Error in listen" << std::endl;
 		return ;
 	}
-	int	tab[10];
-	int	k = 1;
+	event.events = EPOLLIN;
+	event.data.fd = server_fd;;
+	epoll_ctl(epoll_fd, EPOLL_CTL_ADD, server_fd, &event);
 	while (1)
 	{
 		if ((tab[k] = accept(server_fd, (struct sockaddr *)&address, (socklen_t*)&addrlen)) < 0)
@@ -372,7 +468,7 @@ void	StartServer(Server server)
 			return ;
 		}
 		char	buffer[30000] = {0};
-		event_count = epoll_wait(events[k].data.fd, events, MAX_EVENTS, 10);
+		event_count = epoll_wait(events, events, MAX_EVENTS, 1000);
 		printf("%d, ready events\n", event_count);
 		//for (i = 0; i <= event_count; i++)
 		//{
@@ -381,9 +477,10 @@ void	StartServer(Server server)
 			buffer[retread] = '\0';
 			CheckRequest(buffer);
 			//std::string str1 = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 33\n\n<p style=\"color:red\">Coucou</p>\n";
+			CheckRequest(buffer);
 			std::string str1 = FirstPage(newIndex);
-			//std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + std::to_string(str1.length()) + "\n\n" + str1 + "\n";
 			std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
+			//std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + std::to_string(str1.length()) + "\n\n" + str1 + "\n";
 			//char str[] = "GET /hello.html HTTP/1.1\r\n";
 			if (error == 404)
 			{
@@ -419,7 +516,7 @@ void	StartServer(Server server)
 		k++;
 		error = 0;
 	}
-}
+}*/
 
 std::string	fileToString(std::string loc)
 {
