@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 14:25:46 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/12/09 17:18:55 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/12/09 18:46:34 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -377,16 +377,32 @@ int	Server::recvConnection(int fd)
 	len = recv(fd, buff, 3000, 0);
 	if (len > 0)
 		printf("BUFF in recv:\n%s\n", buff);
-	//CheckRequest(buff);
+	CheckRequest(buff);
+	if (error == 404)
+	{
+		printf("%d\n", error);
+		char str3[] = "HTTP/1.1 404 Not Found\nContent-Type: text/plain\nContent-Length: 19\n\n404 page not found\n";
+		write(fd, str3, strlen(str3));
+	}
+	else
+	{
+		std::string str1 = FirstPage(newIndex);
+		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
+		send(fd, header.c_str(), header.length(), 0);
+	}
 	return (0);
 }	
 
 int	Server::sendConnection(int fd)
 {
-	std::string str1 = FirstPage(newIndex);
-	std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
-	send(fd, header.c_str(), header.length(), 0);
-	(void)fd;
+	static int a;
+	if (a == 0)
+	{
+		std::string str1 = FirstPage(newIndex);
+		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
+		send(fd, header.c_str(), header.length(), 0);
+	}
+	a = 1;
 	return (0);
 }	
 
@@ -421,6 +437,7 @@ void	StartServer(Server server)
 			fprintf(stderr, "error in epoll_wait\n");
 		if (event_count > 0)
 			server.event_receptor(events, event_count);
+		error = 0;
 	}
 }
 
@@ -489,8 +506,8 @@ void	StartServer(Server server)
 			}
 			if (newIndex.length() > 0)
 			{
-				std::string str2 = fileToString(newIndex);
 				//std::string header1 = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + std::to_string(str2.length()) + "\n\n" + str2 + "\n";
+				std::string str2 = fileToString(newIndex);
 				std::string header1 = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str2.length()) + "\n\n" + str2 + "\n";
 				write(tab[k], header1.c_str(), strlen(header1.c_str()));
 				newIndex="";
