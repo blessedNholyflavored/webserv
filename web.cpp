@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 14:25:46 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/12/09 18:46:34 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/12/12 15:01:34 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -144,15 +144,9 @@ static void	createLink(std::string & index, int i)
 std::string	intToString(int i)
 {
 	std::string res;
-	int	neg = 0;
-	if (i < 0)
-		neg = 1;
-	i *= -1;
-	while (i > 0)
-	{
-		res += i % 10;
-		i = i / 10;
-	}
+	std::stringstream recup;
+	recup << i;
+	recup >> res;
 	return res;
 }
 
@@ -221,7 +215,7 @@ std::string FirstPage(std::string filePath)
 		}
 		closedir( dirp );
 	}*/
-	index += "<script src=\"upload.js\"></script>\n\n";
+	//index += "<script src=\"upload.js\"></script>\n\n";
 	index += "</body>";
 	index += "</html>";
 	return index;
@@ -387,6 +381,7 @@ int	Server::recvConnection(int fd)
 	else
 	{
 		std::string str1 = FirstPage(newIndex);
+		std::cout << "LEN =" << str1.length() << std::endl;
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 	}
