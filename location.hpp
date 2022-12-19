@@ -23,15 +23,23 @@
 			bool						_GET;
 			bool						_DELETE;
 			bool						_POST;
+			bool						_scale;
 		//lister tous les elements qui composent location 
 		public:
 			Location();
 			~Location();
-			void	parser_la_location(int j);
-			void	parseMethod(std::string str);
-			void	parseRoot(std::string str);
-			void	parseIndex(std::string str);
-			void	parseReturn(std::string str);
-			void	parseAutoindex(std::string str);
+			void		parser_la_location(int j);
+			void		parseMethod(std::string str);
+			void		parseRoot(std::string str);
+			void		parseIndex(std::string str);
+			void		parseReturn(std::string str);
+			void		parseAutoindex(std::string str);
+			std::string	getLocation();
+			std::string	getRoot();
+			bool		getScale();
+			bool		getGet();
+			bool		getDel();
+			bool		getPost();
+
 	};
 #endif

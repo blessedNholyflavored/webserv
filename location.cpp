@@ -94,7 +94,6 @@ void Location::parseRoot(std::string str){
 	std::cout << &str[i] << std::endl;
 	std::string tmp;
 	for (; str[i]; i++){
-		std::cout << "wwdwdwdwd " << std::endl;
 		tmp += str[i];
 	}
 	this->_root = tmp;
@@ -150,6 +149,7 @@ void Location::parser_la_location(int j)
 	_methods.push_back("");
 	_methods.push_back("");
 	std::string str;
+	this->_scale = false;
 	for (int i = 10; res[j][i] != ' '; i++){
 		str += res[j][i];
 	}
@@ -177,14 +177,27 @@ void Location::parser_la_location(int j)
 		}
 		j++;
 	}
+	if (_root + _location == "/scale/")
+		_scale = true;
 	std::cout << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" << std::endl;
 	std::cout << "location : " << _location << std::endl; 
 	std::cout << "root : " << this->_root << std::endl; 
 	std::cout << "index : " << _index << std::endl; 
 	for (std::vector<std::string>::iterator it = _methods.begin(); it != _methods.end(); it++){
-		//std::cout << "qwjdqggggggggggggggggggggggggggggggggggwd" << std::endl;
 		std::cout << *it << std::endl;
 	} 
 	std::cout << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" << std::endl;
 
 }
+
+std::string Location::getLocation() { return (this->_location); }
+
+std::string Location::getRoot() { return (this->_root); }
+
+bool		Location::getScale() { return (this->_scale); }
+
+bool		Location::getGet() { return (this->_GET); }
+
+bool		Location::getDel() { return (this->_DELETE); }
+
+bool		Location::getPost() { return (this->_POST); }
