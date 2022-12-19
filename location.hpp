@@ -20,6 +20,9 @@
 			std::string					_return;
 			std::vector<std::string>	_methods;
 			bool						_autoindex;
+			bool						_GET;
+			bool						_DELETE;
+			bool						_POST;
 		//lister tous les elements qui composent location 
 		public:
 			Location();
