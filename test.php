@@ -1,16 +1,12 @@
 <!DOCTYPE html>
-<head>
-    <title >webserv's super html page</title>
-    <link rel="shortcut icon" href="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRJu--39Uk2oST8Vk4XEaEJrNJUdhi4Us1oh5rc8KLVE4RCz_vYy0wvXKrqsYMZQtpsWa4&usqp=CAU"/>
-</head>
+<title >webserv's super html page</title>
 
-<body id =\"all\" style="font-family:'Roboto',sans-serif;margin: 0; padding: 0;">
+<body id =\"all\" style="font-family:'Roboto',sans-serif;margin: 0em; padding: 0em;">
 <div class="header" style="display:block; background-color: orange; text-align: center; padding: 15px; "><h1 style="
 font-weight: bold;
 font-size: 30px;
 margin-top: 0px;
-margin-bottom: 10px;
-color: white;">webserv index</h1>
+margin-bottom: 10px;font-family:'Roboto',sans-serif; color: white;">webserv index</h1>
 </div>
 
 <div class="menu" >
@@ -18,12 +14,13 @@ color: white;">webserv index</h1>
     <li style="float:left;"><a href="#" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">accueil</a></li>
     <li style="float:left;"><a href="#" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">galerie</a></li>
     <li style="float:left;"><a href="#" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">upload img</a></li>
+    <li style="float:left;"><a href="test.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">upload text</a></li>
     <li style="float:left;"><a href="#" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">delete img</a></li>
 </ul>
 </div>
 
-<h2 > Bienvenue sur notre page exemple de webserv</h2>
-<p > utilise le menu pour tester des trucs, ca marche super bien</p>
+<h2 style="font-family:'Roboto',sans-serif;"> Bienvenue sur notre page exemple de webserv</h2>
+<p style="font-family:'Roboto',sans-serif;"> utilise le menu pour tester des trucs, ca marche super bien</p>
 
 <hr>
 <div class="img_and_text" style="background-color: grey;">
@@ -47,7 +44,7 @@ color: white;">webserv index</h1>
             box-sizing: border-box;
             text-decoration:none;
             text-transform:uppercase;
-            
+            font-family:'Roboto',sans-serif;
             font-weight:400;
             color:#696969;
             text-align:center;
@@ -62,7 +59,7 @@ color: white;">webserv index</h1>
             box-sizing: border-box;
             text-decoration:none;
             text-transform:uppercase;
-            
+            font-family:'Roboto',sans-serif;
             font-weight:400;
             color:#696969;
             text-align:center;
@@ -77,7 +74,7 @@ color: white;">webserv index</h1>
             box-sizing: border-box;
             text-decoration:none;
             text-transform:uppercase;
-            
+            font-family:'Roboto',sans-serif;
             font-weight:400;
             color:#696969;
             text-align:center;
@@ -98,7 +95,7 @@ margin:0 0.3em 0.3em 0;
 box-sizing: border-box;
 text-decoration:none;
 text-transform:uppercase;
-
+font-family:'Roboto',sans-serif;
 font-weight:400;
 color:#696969;
 text-align:center;
@@ -107,53 +104,11 @@ transition: all 0.15s;"><a>send</a></button>
 
 <hr>
 
-
 <h1> Galerie d'images </h1>
-<div class="column" style="text-align: center ;">
-    <img style="width:10%; display: block; margin: auto;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/2048px-42_Logo.svg.png">
-    <button style="width:10%; display: block; margin: auto; display: inline-block; 
-    border:0.16em solid #696969;
-    text-decoration:none;
-    font-weight:400;
-    color:#696969;
-    text-align:center;"> upload </button>
-    <button style="width:10%; display: block; margin: auto; display: inline-block; 
-    border:0.16em solid #696969;
-    text-decoration:none;
-    font-weight:400;
-    color:#696969;
-    text-align:center;"> delete </button>
-    <img style="width:10%; display: block; margin: auto;"src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/2048px-42_Logo.svg.png">
-    <button style="width:10%; display: block; margin: auto; display: inline-block; 
-    border:0.16em solid #696969;
-    text-decoration:none;
-    font-weight:400;
-    color:#696969;
-    text-align:center;"> upload </button>
-    <button style="width:10%; display: block; margin: auto; display: inline-block; 
-    border:0.16em solid #696969;
-    text-decoration:none;
-    font-weight:400;
-    color:#696969;
-    text-align:center;"> delete </button>
-    <img style="width:10%; display: block; margin: auto;"src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/2048px-42_Logo.svg.png">
-    <button style="width:10%; display: block; margin: auto; display: inline-block; 
-    border:0.16em solid #696969;
-    text-decoration:none;
-    font-weight:400;
-    color:#696969;
-    text-align:center;"> upload </button>
-    <button style="width:10%; display: block; margin: auto; display: inline-block; 
-    border:0.16em solid #696969;
-    text-decoration:none;
-    font-weight:400;
-    color:#696969;
-    text-align:center;"> delete </button>
-</div>
 
 
 <hr>
-<h2 style="font-family: 'Roboto', sans-serif;"> TEST DE NOM ET PRENOM</h2>
+<h2> TEST DE NOM ET PRENOM</h2>
 <p> dis nous t ki stp</p>
 
 <form id="nom_form" action="/action_page.php" method="POST">
@@ -166,16 +121,28 @@ transition: all 0.15s;"><a>send</a></button>
   
 <hr>
 
+<?php
+$file = './tmp_text.txt';
+if(isset($_POST["submit"])) {
+  $txt= htmlspecialchars($_POST['fileToUpload']);
+  file_put_contents($file, $txt);
+  }
+  $file = file_get_contents($file, true);
+    echo "faut voir";
+?>
+
 <h2> Test de ecrire des bails pour le send</h2>
 <p> ecris des trucs</p>
 <form id="form" action="/uploads/test.php" method="POST">
-<input id="texte" type="text" name="text_to_upload" style="width: 60%; height:8em;">
+<input id="texte" type="text" name="textToUpload" style="width: 60%; height:8em;">
 <input type="submit" value="Send text" name="submit" style="
 padding:0.5em 3em;
 border:0.16em solid #696969;
 margin:0 0.3em 0.3em 0;
+
 text-decoration:none;
 text-transform:uppercase;
+font-family:'Roboto',sans-serif;
 font-weight:400;
 color:#696969;
 text-align:center;
@@ -183,12 +150,10 @@ transition: all 0.15s;">
 </form>
 
 
+
 <hr>
-<footer style="display:block; background-color: orange; text-align: center; padding: 15px; "><h1 style="
-    font-size: 30px;
-    margin-top: 0px;
-    margin-bottom: 10px;
-    color: white;">
+<footer style="display: block; position: fixed; bottom: 0; width: 100%;
+justify-content: center; padding: 5px; background-color: orange; color: #fff;">
     <h2>The team</h2>
     <p>
         <strong>Lucie Khamlach:</strong>
