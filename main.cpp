@@ -10,6 +10,8 @@
 #include "inc.hpp"
 #include "functions.h"
 
+
+
 std::string res[4096];
 
 bool	ft_in_charset(char c, std::string &charset)

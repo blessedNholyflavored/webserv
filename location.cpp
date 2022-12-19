@@ -40,6 +40,7 @@ int	checkEndOfLocation(std::string str){
 
 void Location::parseMethod(std::string str){
 	int i = 0;
+	this->_methods.reserve(10);
 	while ( str[i] == ' ' || str[i] == '\t'){
 		i++;
 	}
@@ -54,6 +55,16 @@ void Location::parseMethod(std::string str){
 		if (str[i] == ' ' || str[i] == '\t' || str[i] == '\0')
 		{
 			*it = tmp;
+			if (*it == "GET")
+				_GET = true;
+			else if (*it == "DELETE")
+				_DELETE = true;
+			else if (*it == "POST")
+				_POST = true;
+			else {
+				std::cout << "error location parsing" << std::endl;
+				exit (1);
+			}
 			it++;
 			tmp.clear();
 			while(str[i] == ' ' || str[i] == '\t')
@@ -145,6 +156,9 @@ void Location::parser_la_location(int j)
 	this->_location = str;
 	j++;
 	_autoindex = false;
+	_GET = false;
+	_DELETE = false;
+	_POST = false;
 	while (checkEndOfLocation(res[j])){
 		if(res[j].find("root") != std::string::npos)
 			parseRoot(res[j]);
