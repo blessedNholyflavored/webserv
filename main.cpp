@@ -65,7 +65,7 @@ int    parsExt(char *str)
     return (0);
 }
 
-int    main(int ac, char **av)
+int    main(int ac, char **av, char **env)
 {
 	Server server;
     if (ac != 2)
@@ -83,6 +83,7 @@ int    main(int ac, char **av)
 		std::cerr << "ya un pb mec" << std::endl;
         return (0);
 	}
+	server.env = env;
 	StartServer(server);
 	
     return (0);
