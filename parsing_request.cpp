@@ -6,7 +6,7 @@
 /*   By: mmhaya <mmhaya@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/17 17:30:29 by mmhaya            #+#    #+#             */
-/*   Updated: 2022/12/19 17:16:28 by mmhaya           ###   ########.fr       */
+/*   Updated: 2022/12/22 18:36:32 by mmhaya           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,28 +26,31 @@
 #include <string>
 #include <fstream>
 #include <vector>
-#include "parsing_request.hpp"
+#include "server.hpp"
 
 void	Request::parsRequest(std::string str, std::vector<Location> location){
+		std::cout << "1-------------------------" << std::endl << str  << std::endl << "2----------------------" << std::endl;
 	std::string method;
 	size_t i = 0;
 	for (; str[i] != ' '; i++){
 		method.push_back(str[i]);
 	}
+	_method = method;
 	i++;
 	
 	std::string path;
 	for (; str[i] != ' '; i++){
 		path.push_back(str[i]);
 	}
+	_path = path;
 	i++;
 
 	std::string version;
 	for (; str[i] != '\n'; i++){
 		version.push_back(str[i]);
 	}
-
-	if (version != "HTTP/1.0"){
+ 
+	if (version != "HTTP/1.1"){
 		// pour linstant je mets ca comme ca //
 		std::cerr << "bad version" << std::endl;
 		_retCode = 400;
@@ -64,7 +67,7 @@ void	Request::parsRequest(std::string str, std::vector<Location> location){
 	path = "." + path;
 	if (method == "GET"){
 		std::ifstream file;
-		file.open(path, std::ifstream::in);
+		file.open(path.c_str(), std::ifstream::in);
 		if (!checkLocation(path, 1, location)){
 			_retCode = 777;
 			std::cout << "pas les droits" << std::endl;
@@ -79,7 +82,7 @@ void	Request::parsRequest(std::string str, std::vector<Location> location){
 	}
 	else if (method == "DELETE"){
 		std::ifstream file;
-		file.open(path, std::ifstream::in);
+		file.open(path.c_str(), std::ifstream::in);
 		if (!checkLocation(path, 2, location)){
 			_retCode = 777;
 			std::cout << "pas les droits" << std::endl;
@@ -114,11 +117,11 @@ std::vector<Location>::iterator Request::findGoodLocation(std::string str, std::
 
 	str = "/scale" + str;
 	if (str[str.length() - 1] == '/')
-		str.pop_back();
+		str.erase(str.length(), 1);
 	for(std::vector<Location>::iterator it = location.begin(); it != location.end(); it++){
 		std::string tmpLoc = it->getRoot() + it->getLocation();
 		if (tmpLoc[tmpLoc.length() - 1] == '/')
-			str.pop_back();
+			str.erase(str.length(), 1);
 		countTmp = -1;
 		int len = str.length() - 1;
 		while(str != "/scale"){
@@ -131,10 +134,10 @@ std::vector<Location>::iterator Request::findGoodLocation(std::string str, std::
 			else
 				isFind  = false;
 			while (str[len] != '/'){
-				str.pop_back();
+				str.erase(str.length(), 1);
 				len--;
 			}
-			str.pop_back();
+			str.erase(str.length(), 1);
 			len--;
 			if (countTmp == -1)
 				countTmp = 0;
@@ -161,14 +164,23 @@ std::vector<Location>::iterator Request::findGoodLocation(std::string str, std::
 
 int	Request::checkLocation(std::string str, int method, std::vector<Location> location){
 	std::vector<Location>::iterator it = findGoodLocation(str, location);
-	if (method == 1)
+	if (method == 1){
 		if (it->getGet() == false)
 			return (0);
-	else if (method == 2)
+	}
+	else if (method == 2){
 		if (it->getDel() == false)
 			return (0);
-	else
+	}
+	else{
 		if (it->getPost() == false)
 			return (0);
+	}
 	return (1);
 }
+
+std::string Request::getMethod() const{ return (_method); }
+
+std::string Request::getPath() const{ return (_path); }
+
+int	Request::getRetCode() const{ return (_retCode); }
