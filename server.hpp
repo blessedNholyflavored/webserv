@@ -1,14 +1,15 @@
+# ifndef SERVER_HPP
+# define SERVER_HPP
 # include <iostream>
 # include <fstream>
 # include <sstream>
 # include <string>
 # include <cstdlib>
 # include <unistd.h>
-#include "location.hpp"
-#include <vector>
+# include "location.hpp"
+# include "parsing_request.hpp"
+# include <vector>
 # define WHITESPACES "; \t"
-# ifndef SERVER_HPP
-# define SERVER_HPP
 
 
 class Server
