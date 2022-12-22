@@ -93,10 +93,10 @@ void Location::parseRoot(std::string str){
 		i++;
 	std::cout << &str[i] << std::endl;
 	std::string tmp;
-	for (; str[i]; i++){
-		std::cout << "wwdwdwdwd " << std::endl;
-		tmp += str[i];
-	}
+	// for (; str[i]; i++){
+	// 	std::cout << "wwdwdwdwd " << std::endl;
+	// 	tmp += str[i];
+	// }
 	this->_root = tmp;
 }
 

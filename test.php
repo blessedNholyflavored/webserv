@@ -105,35 +105,100 @@ transition: all 0.15s;"><a>send</a></button>
 <hr>
 
 <h1> Galerie d'images </h1>
-
+<div class="column" style="text-align: center ;">
+    <img style="width:10%; display: block; margin: auto;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/2048px-42_Logo.svg.png">
+    <button style="width:10%; display: block; margin: auto; display: inline-block; 
+    border:0.16em solid #696969;
+    text-decoration:none;
+    font-weight:400;
+    color:#696969;
+    text-align:center;"> upload </button>
+    <button style="width:10%; display: block; margin: auto; display: inline-block; 
+    border:0.16em solid #696969;
+    text-decoration:none;
+    font-weight:400;
+    color:#696969;
+    text-align:center;"> delete </button>
+    <img style="width:10%; display: block; margin: auto;"src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/2048px-42_Logo.svg.png">
+    <button style="width:10%; display: block; margin: auto; display: inline-block; 
+    border:0.16em solid #696969;
+    text-decoration:none;
+    font-weight:400;
+    color:#696969;
+    text-align:center;"> upload </button>
+    <button style="width:10%; display: block; margin: auto; display: inline-block; 
+    border:0.16em solid #696969;
+    text-decoration:none;
+    font-weight:400;
+    color:#696969;
+    text-align:center;"> delete </button>
+    <img style="width:10%; display: block; margin: auto;"src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/2048px-42_Logo.svg.png">
+    <button style="width:10%; display: block; margin: auto; display: inline-block; 
+    border:0.16em solid #696969;
+    text-decoration:none;
+    font-weight:400;
+    color:#696969;
+    text-align:center;"> upload </button>
+    <button style="width:10%; display: block; margin: auto; display: inline-block; 
+    border:0.16em solid #696969;
+    text-decoration:none;
+    font-weight:400;
+    color:#696969;
+    text-align:center;"> delete </button>
+</div>
 
 <hr>
 <h2> TEST DE NOM ET PRENOM</h2>
 <p> dis nous t ki stp</p>
 
-<form id="nom_form" action="/action_page.php" method="POST">
+<?php
+    if(isset($_GET["name"]) || isset($_GET["age"]))
+    {
+        echo "Hi ". $_GET['name']. "<br />";
+        echo "Age: ". $_GET['age']. " years old.";
+        exit();
+    }
+?>
+
+
+<form action = "<?php $_PHP_SELF ?>" method = "GET">
+Name: <input type = "text" name = "name" />
+Age: <input type = "text" name = "age" />
+<input type = "submit" />
+</form>     
+
+
+<!-- <form id="nom_form" action="/action_page.php" method="POST">
     <label for="fname">donnes ton prenom</label><br>
     <input type="text" id="fname" name="fname" value="mon prenom"><br>
     <label for="lname">donnes ton nom</label><br>
     <input type="text" id="lname" name="lname" value="mon nom"><br><br>
     <input type="submit" value="Submit">
-  </form> 
+  </form>  -->
   
 <hr>
 
 <?php
-$file = './tmp_text.txt';
-if(isset($_POST["submit"])) {
-  $txt= htmlspecialchars($_POST['fileToUpload']);
-  file_put_contents($file, $txt);
+//$file = './tmp_text.txt';
+if(isset($_GET["texte"])) {
+  echo "Hi ".$_GET['text']."<br />";  
+  // $txt= htmlspecialchars($_POST['fileToUpload']);
+  //file_put_contents($file, $txt);
   }
-  $file = file_get_contents($file, true);
-    echo "faut voir";
+  //$file = file_get_contents($file, true);
+    exit();  
+  //echo "faut voir";
 ?>
 
 <h2> Test de ecrire des bails pour le send</h2>
 <p> ecris des trucs</p>
-<form id="form" action="/uploads/test.php" method="POST">
+<form action = "<?php $_PHP_SELF ?>" method = "GET">
+    Name: <input type = "texte" name = "text" />
+    <input type = "submit" />
+</form>     
+
+
+<!-- <form id="form" action="/uploads/test.php" method="POST">
 <input id="texte" type="text" name="textToUpload" style="width: 60%; height:8em;">
 <input type="submit" value="Send text" name="submit" style="
 padding:0.5em 3em;
@@ -147,13 +212,16 @@ font-weight:400;
 color:#696969;
 text-align:center;
 transition: all 0.15s;">
-</form>
+</form> -->
 
 
 
 <hr>
-<footer style="display: block; position: fixed; bottom: 0; width: 100%;
-justify-content: center; padding: 5px; background-color: orange; color: #fff;">
+<footer style="display:block; background-color: orange; text-align: center; padding: 15px; "><h1 style="
+    font-size: 30px;
+    margin-top: 0px;
+    margin-bottom: 10px;
+    color: white;">
     <h2>The team</h2>
     <p>
         <strong>Lucie Khamlach:</strong>

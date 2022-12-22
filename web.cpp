@@ -106,40 +106,40 @@ void	CheckRequest(char *buffer)
 	a++;
 }
 
-static void	createLink(std::string & index, int i)
-{
-	if (i == 0)
-	{
-		std::string test;
-		std::ifstream f("coke.html");
-		getline(f, test);
-		index += test;
-		index += "jtaravel: ";
-		index += "<a href=\"";
-		index += "https://profile.intra.42.fr/users/jtaravel";
-		index += "\">";
-		index += "jtaravel";
-		index += "</a>";
-	}
-	if (i == 1)
-	{
-		index += "lkhamlac: ";
-		index += "<a href=\"";
-		index += "https://profile.intra.42.fr/users/lkhamlac";
-		index += "\">";
-		index += "lkhamlac";
-		index += "</a>";
-	}
-	if (i == 2)
-	{
-		index += "mmhaya: ";
-		index += "<a href=\"";
-		index += "https://profile.intra.42.fr/users/mmhaya";
-		index += "\">";
-		index += "mmhaya";
-		index += "</a>";
-	}
-}
+// static void	createLink(std::string & index, int i)
+// {
+// 	if (i == 0)
+// 	{
+// 		std::string test;
+// 		std::ifstream f("coke.html");
+// 		getline(f, test);
+// 		index += test;
+// 		index += "jtaravel: ";
+// 		index += "<a href=\"";
+// 		index += "https://profile.intra.42.fr/users/jtaravel";
+// 		index += "\">";
+// 		index += "jtaravel";
+// 		index += "</a>";
+// 	}
+// 	if (i == 1)
+// 	{
+// 		index += "lkhamlac: ";
+// 		index += "<a href=\"";
+// 		index += "https://profile.intra.42.fr/users/lkhamlac";
+// 		index += "\">";
+// 		index += "lkhamlac";
+// 		index += "</a>";
+// 	}
+// 	if (i == 2)
+// 	{
+// 		index += "mmhaya: ";
+// 		index += "<a href=\"";
+// 		index += "https://profile.intra.42.fr/users/mmhaya";
+// 		index += "\">";
+// 		index += "mmhaya";
+// 		index += "</a>";
+// 	}
+// }
 
 std::string	intToString(int i)
 {
@@ -176,7 +176,7 @@ std::string FirstPage(std::string filePath)
 	path += filePath;
 	dirp = opendir(path.c_str());*/
 	std::string recup;
-	std::ifstream findex("lucie_est_la_plus_belle.html");
+	std::ifstream findex("test.php");
 	while (getline(findex, recup))
 		index += recup;
 	/*index += "<!DOCTYPE html>\n<html>\n\n<title>INDEX</title>\n\n<h1>INDEX</h1>";
@@ -187,12 +187,12 @@ std::string FirstPage(std::string filePath)
 	index += "</form>";
 	index += "<p id=\"message\"></p>";
 	index += "<button id=\"btn\">test</button>\n\n";*/
-	for (int i = 0; i < 3 + nbfiles; i++)
-	{
-		index += "<h4>";
-		createLink(index, i);
-		index += "</h4>\n";
-	}
+	// for (int i = 0; i < 3 + nbfiles; i++)
+	// {
+	// 	index += "<h4>";
+	// 	createLink(index, i);
+	// 	index += "</h4>\n";
+	// }
 	for (int i = 1; i <= nbfiles; i++)
 		createlinfkFile(index, i);
 	/*if( dirp != NULL )
