@@ -30,7 +30,7 @@ class Server
 	std::vector<std::string>	error_name;
 	bool						autoindex;
 	std::vector<Location>		location;
-	//Request						*request;
+	Request						*request;
 
 	int							epoll_fd;
 	int							server_fd;

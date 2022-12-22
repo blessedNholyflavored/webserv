@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   web.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mmhaya <mmhaya@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 14:25:46 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/12/12 15:01:34 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/12/22 18:06:55 by mmhaya           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -371,8 +371,10 @@ int	Server::recvConnection(int fd)
 	len = recv(fd, buff, 3000, 0);
 	if (len > 0)
 		printf("BUFF in recv:\n%s\n", buff);
-	CheckRequest(buff);
-	if (error == 404)
+	request = new Request;
+	request->parsRequest(buff, location);
+	// CheckRequest(buff);
+	if (request->getRetCode() == 404)
 	{
 		printf("%d\n", error);
 		char str3[] = "HTTP/1.1 404 Not Found\nContent-Type: text/plain\nContent-Length: 19\n\n404 page not found\n";

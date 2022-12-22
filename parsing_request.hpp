@@ -6,7 +6,7 @@
 /*   By: mmhaya <mmhaya@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/15 22:36:55 by Mmhaya            #+#    #+#             */
-/*   Updated: 2022/12/19 17:08:44 by mmhaya           ###   ########.fr       */
+/*   Updated: 2022/12/22 18:10:07 by mmhaya           ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,9 @@ class Request {
 		void							parsRequest(std::string str, std::vector<Location> location);
 		int								checkLocation(std::string str, int method, std::vector<Location> location);
 		std::vector<Location>::iterator	findGoodLocation(std::string str, std::vector<Location> location);
+		int								getRetCode() const;
+		std::string						getMethod() const;
+		std::string						getPath() const;
 
 	private:
 		std::string _method;
