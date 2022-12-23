@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   web.cpp                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: mmhaya <mmhaya@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 14:25:46 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/12/12 15:01:34 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/12/22 18:57:02 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,9 @@ void	splitString(const char *buf, std::string deli)
 		{
 			std::cout << arr[1] << std::endl;
 			std::cerr << "NO FILE" << std::endl;
-			error = 404;
+			newIndex = arr[1];
+			std::cout << "SALOOOOOOOOOOOP: " << newIndex << std::endl;
+			//error = 404;
 		}
 		else
 		{
@@ -69,7 +71,11 @@ void	splitString(const char *buf, std::string deli)
 		}
 	}
 	else if (arr[0].compare("POST") == 0)
-		printf("TEST REQUEST=%s\n", arr[1].c_str());
+	{
+		newIndex = arr[1].substr(1, arr[1].length());
+		std::cout << "NEW INDEX: " << newIndex << std::endl;
+		error = 999;
+	}
 }
 
 std::string	fileToString(std::string loc);
@@ -176,7 +182,7 @@ std::string FirstPage(std::string filePath)
 	path += filePath;
 	dirp = opendir(path.c_str());*/
 	std::string recup;
-	std::ifstream findex("test.php");
+	std::ifstream findex("test.html");
 	while (getline(findex, recup))
 		index += recup;
 	/*index += "<!DOCTYPE html>\n<html>\n\n<title>INDEX</title>\n\n<h1>INDEX</h1>";
@@ -193,8 +199,8 @@ std::string FirstPage(std::string filePath)
 	// 	createLink(index, i);
 	// 	index += "</h4>\n";
 	// }
-	for (int i = 1; i <= nbfiles; i++)
-		createlinfkFile(index, i);
+	//for (int i = 1; i <= nbfiles; i++)
+	//	createlinfkFile(index, i);
 	/*if( dirp != NULL )
 	{
 		int	i = 0;
@@ -371,17 +377,49 @@ int	Server::recvConnection(int fd)
 	len = recv(fd, buff, 3000, 0);
 	if (len > 0)
 		printf("BUFF in recv:\n%s\n", buff);
-	CheckRequest(buff);
-	if (error == 404)
+	request = new Request;
+	request->parsRequest(buff, location);
+	// CheckRequest(buff);
+	if (request->getRetCode() == 404)
 	{
 		printf("%d\n", error);
 		char str3[] = "HTTP/1.1 404 Not Found\nContent-Type: text/plain\nContent-Length: 19\n\n404 page not found\n";
 		write(fd, str3, strlen(str3));
 	}
+	else if (error == 999)
+	{
+		int fd1;
+		int fd2;
+
+		std::string str1 = fileToString(newIndex);
+		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
+		//std::string header = "test";
+		char	**cmd = (char **)malloc(3);;
+		cmd[0] = strdup("php-cgi8.1");
+		cmd[1] = 0;
+		int i = 0 ;
+		while (cmd[i])
+		{
+			printf("ggggggg = %s\n", cmd[i]);
+			i++;
+		}
+		fd1 = open("lucieCGI", O_CREAT | O_RDONLY | O_WRONLY, 0644);
+		fd2 = open("reponse.php", O_RDONLY);
+		int frk = fork();
+		if (frk == 0)
+		{
+			dup2(0, fd2);
+			dup2(1, fd1);
+			execve("/bin/php-cgi8.1", cmd, this->env);
+			std::cerr << "loooooooooooooooooooooooooooooooool: " << header << std::endl;
+			exit(0);
+		}
+		send(fd, header.c_str(), header.length(), 0);
+	}
 	else
 	{
 		std::string str1 = FirstPage(newIndex);
-		std::cout << "LEN =" << str1.length() << std::endl;
+		//std::cout << "LEN =" << str1.length() << std::endl;
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 	}

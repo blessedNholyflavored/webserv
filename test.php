@@ -151,11 +151,15 @@ transition: all 0.15s;"><a>send</a></button>
 <h2> TEST DE NOM ET PRENOM</h2>
 <p> dis nous t ki stp</p>
 
-<form action="action.php" method="GET">
- <p>Votre nom : <input type="text" name="nom" /></p>
- <p>Votre âge : <input type="text" name="age" /></p>
- <p><input type="submit" value="OK"></p>
-</form>
+<!-- <form id="nom_form" action="/action_page.php" method="POST">
+    <label for="fname">donnes ton prenom</label><br>
+    <input type="text" id="fname" name="fname" value="mon prenom"><br>
+    <label for="lname">donnes ton nom</label><br>
+    <input type="text" id="lname" name="lname" value="mon nom"><br><br>
+    <input type="submit" value="Submit">
+  </form>  -->
+  
+<hr>
 
 <hr>
 <footer style="display:block; background-color: orange; text-align: center; padding: 15px; "><h1 style="

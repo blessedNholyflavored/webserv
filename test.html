@@ -156,14 +156,12 @@ transition: all 0.15s;"><a>send</a></button>
 <h2 style="font-family: 'Roboto', sans-serif;"> TEST DE NOM ET PRENOM</h2>
 <p> dis nous t ki stp</p>
 
-<form id="nom_form" action="/action_page.php" method="POST">
-    <label for="fname">donnes ton prenom</label><br>
-    <input type="text" id="fname" name="fname" value="mon prenom"><br>
-    <label for="lname">donnes ton nom</label><br>
-    <input type="text" id="lname" name="lname" value="mon nom"><br><br>
-    <input type="submit" value="Submit">
-  </form> 
-  
+<form action="reponse.php" method="POST">
+Name: <input type="text" name="name"><br>
+E-mail: <input type="text" name="email"><br>
+<input type="submit">
+</form>
+
 <hr>
 
 <h2> Test de ecrire des bails pour le send</h2>
