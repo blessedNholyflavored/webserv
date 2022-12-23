@@ -151,70 +151,11 @@ transition: all 0.15s;"><a>send</a></button>
 <h2> TEST DE NOM ET PRENOM</h2>
 <p> dis nous t ki stp</p>
 
-<?php
-    if(isset($_GET["name"]) || isset($_GET["age"]))
-    {
-        echo "Hi ". $_GET['name']. "<br />";
-        echo "Age: ". $_GET['age']. " years old.";
-        exit();
-    }
-?>
-
-
-<form action = "<?php $_PHP_SELF ?>" method = "GET">
-Name: <input type = "text" name = "name" />
-Age: <input type = "text" name = "age" />
-<input type = "submit" />
-</form>     
-
-
-<!-- <form id="nom_form" action="/action_page.php" method="POST">
-    <label for="fname">donnes ton prenom</label><br>
-    <input type="text" id="fname" name="fname" value="mon prenom"><br>
-    <label for="lname">donnes ton nom</label><br>
-    <input type="text" id="lname" name="lname" value="mon nom"><br><br>
-    <input type="submit" value="Submit">
-  </form>  -->
-  
-<hr>
-
-<?php
-//$file = './tmp_text.txt';
-if(isset($_GET["texte"])) {
-  echo "Hi ".$_GET['text']."<br />";  
-  // $txt= htmlspecialchars($_POST['fileToUpload']);
-  //file_put_contents($file, $txt);
-  }
-  //$file = file_get_contents($file, true);
-    exit();  
-  //echo "faut voir";
-?>
-
-<h2> Test de ecrire des bails pour le send</h2>
-<p> ecris des trucs</p>
-<form action = "<?php $_PHP_SELF ?>" method = "GET">
-    Name: <input type = "texte" name = "text" />
-    <input type = "submit" />
-</form>     
-
-
-<!-- <form id="form" action="/uploads/test.php" method="POST">
-<input id="texte" type="text" name="textToUpload" style="width: 60%; height:8em;">
-<input type="submit" value="Send text" name="submit" style="
-padding:0.5em 3em;
-border:0.16em solid #696969;
-margin:0 0.3em 0.3em 0;
-
-text-decoration:none;
-text-transform:uppercase;
-font-family:'Roboto',sans-serif;
-font-weight:400;
-color:#696969;
-text-align:center;
-transition: all 0.15s;">
-</form> -->
-
-
+<form action="action.php" method="GET">
+ <p>Votre nom : <input type="text" name="nom" /></p>
+ <p>Votre âge : <input type="text" name="age" /></p>
+ <p><input type="submit" value="OK"></p>
+</form>
 
 <hr>
 <footer style="display:block; background-color: orange; text-align: center; padding: 15px; "><h1 style="
