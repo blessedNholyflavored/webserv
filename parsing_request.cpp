@@ -1,17 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   parsing_request.cpp                                :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmhaya <mmhaya@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/17 17:30:29 by mmhaya            #+#    #+#             */
-/*   Updated: 2022/12/22 18:36:32 by mmhaya           ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
-
-
-
 #include <iostream>
 #include <string>
 #include <fstream>
@@ -19,7 +5,6 @@
 #include "server.hpp"
 
 void	Request::parsRequest(std::string str, std::vector<Location> location){
-		std::cout << "1-------------------------" << std::endl << str  << std::endl << "2----------------------" << std::endl;
 	std::string method;
 	size_t i = 0;
 	for (; str[i] != ' '; i++){
@@ -36,25 +21,22 @@ void	Request::parsRequest(std::string str, std::vector<Location> location){
 	i++;
 
 	std::string version;
-	for (; str[i] != '\n'; i++){
+	for (; str[i] != '\r'; i++){
 		version.push_back(str[i]);
 	}
- 
 	if (version != "HTTP/1.1"){
-		// pour linstant je mets ca comme ca //
 		std::cerr << "bad version" << std::endl;
 		_retCode = 400;
 		return ;
 	}
 
-	if (method != "GET" || method != "POST" || method != "DELETE")
+	if (method != "GET" && method != "POST" && method != "DELETE")
 	{
 		std::cerr << "method didnt exist" << std::endl;
-		_retCode = 400;
+		_retCode = 401;
 		return ;
 	}
 	
-	path = "." + path;
 	if (method == "GET"){
 		std::ifstream file;
 		file.open(path.c_str(), std::ifstream::in);
@@ -70,7 +52,7 @@ void	Request::parsRequest(std::string str, std::vector<Location> location){
 		}
 		file.close();
 	}
-	else if (method == "DELETE"){
+	else if(method == "DELETE"){
 		std::ifstream file;
 		file.open(path.c_str(), std::ifstream::in);
 		if (!checkLocation(path, 2, location)){
@@ -79,16 +61,23 @@ void	Request::parsRequest(std::string str, std::vector<Location> location){
 			return ;
 		}
 		if (!file.is_open()){
-			//revoir code de retour
 			std::cerr << "cannot delete cause file not existing" << std::endl;
 			_retCode = 404;
 			return ;
 		}
 		file.close();
 	}
+	else {
+		std::cout << "ediediedjiejd" << std::endl;
+		if (!checkLocation(path, 3, location)){
+			_retCode = 404;
+			return ;
+		}
+	}
 	_retCode = 200;
 	return ;
 }
+
 std::string getLastSlash(std::string str){
 	size_t len = str.length();
 	while (str[len] != '/')
@@ -97,7 +86,7 @@ std::string getLastSlash(std::string str){
 	
 }
 
-std::vector<Location>::iterator Request::findGoodLocation(std::string str, std::vector<Location> location){
+std::vector<Location>::iterator	&Request::findGoodLocation(std::string str, std::vector<Location> location, std::vector<Location>::iterator &it){
 
 	int		pos = 0;
 	int 	bestPos = -1;
@@ -108,13 +97,13 @@ std::vector<Location>::iterator Request::findGoodLocation(std::string str, std::
 	str = "/scale" + str;
 	if (str[str.length() - 1] == '/')
 		str.erase(str.length(), 1);
-	for(std::vector<Location>::iterator it = location.begin(); it != location.end(); it++){
-		std::string tmpLoc = it->getRoot() + it->getLocation();
+	for(std::vector<Location>::iterator it2 = location.begin(); it2 != location.end(); it2++){
+		std::string tmpLoc = it2->getRoot() + it2->getLocation();
 		if (tmpLoc[tmpLoc.length() - 1] == '/')
 			str.erase(str.length(), 1);
 		countTmp = -1;
 		int len = str.length() - 1;
-		while(str != "/scale"){
+		while(str != "/scale" && len > 6){
 			if (countTmp >= 0)
 				countTmp++;
 			if (str == tmpLoc){
@@ -124,7 +113,8 @@ std::vector<Location>::iterator Request::findGoodLocation(std::string str, std::
 			else
 				isFind  = false;
 			while (str[len] != '/'){
-				str.erase(str.length(), 1);
+				std::cout << "str = " << str << "len = " << len << "str[len] = " << str[len] << std::endl;
+				str.erase(str.length(), 2);
 				len--;
 			}
 			str.erase(str.length(), 1);
@@ -139,21 +129,24 @@ std::vector<Location>::iterator Request::findGoodLocation(std::string str, std::
 		pos++;
 	}
 	if (bestPos == -1){
-		std::vector<Location>::iterator it = location.begin();
-		for (; it->getScale() == false; it++) {}
-		return (it);
+		it = location.begin();
+		for (; it->getScale() == false; it++) {
+			std::cout << "dekdkoed" << std::endl;
+		}
+		return it;
 	}
 	else {
-		std::vector<Location>::iterator it = location.begin();
+		it = location.begin();
 		for (int i = 0; i < bestPos; i++){
 			it++;
 		}
-		return (it);
+		return it;
 	}
 }
 
 int	Request::checkLocation(std::string str, int method, std::vector<Location> location){
-	std::vector<Location>::iterator it = findGoodLocation(str, location);
+	std::vector<Location>::iterator it;
+	it = findGoodLocation(str, location, it);
 	if (method == 1){
 		if (it->getGet() == false)
 			return (0);
