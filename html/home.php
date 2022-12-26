@@ -23,6 +23,9 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif; color: white;">webserv inde
 <p style="font-family:'Roboto',sans-serif;"> utilise le menu pour tester des trucs, ca marche super bien</p>
 
 <hr>
+<button onclick="alert('Bouton cliqué')">Cliquez moi !</button>
+<hr>
+
 <div class="img_and_text" style="background-color: grey;">
     <div class="row" style="box-sizing: border-box;">
      <div class="colonne" style="float: left; width: 33.3%; box-sizing: border-box; padding: 5px;">
@@ -113,6 +116,7 @@ transition: all 0.15s;"><a>send</a></button>
     font-weight:400;
     color:#696969;
     text-align:center;"> upload </button>
+    
     <button style="width:10%; display: block; margin: auto; display: inline-block; 
     border:0.16em solid #696969;
     text-decoration:none;

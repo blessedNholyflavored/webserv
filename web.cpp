@@ -182,7 +182,7 @@ std::string FirstPage(std::string filePath)
 	path += filePath;
 	dirp = opendir(path.c_str());*/
 	std::string recup;
-	std::ifstream findex("test.html");
+	std::ifstream findex("./html/home.html");
 	while (getline(findex, recup))
 		index += recup;
 	/*index += "<!DOCTYPE html>\n<html>\n\n<title>INDEX</title>\n\n<h1>INDEX</h1>";
@@ -374,6 +374,7 @@ int	Server::recvConnection(int fd)
 	ssize_t	len;
 	char	buff[3000];
 
+
 	len = recv(fd, buff, 3000, 0);
 	if (len > 0)
 		printf("BUFF in recv:\n%s\n", buff);
@@ -410,7 +411,7 @@ int	Server::recvConnection(int fd)
 		{
 			dup2(0, fd2);
 			dup2(1, fd1);
-			execve("/bin/php-cgi8.1", cmd, this->env);
+			execve("/cgi/php-cgi8.1", cmd, this->env);
 			std::cerr << "loooooooooooooooooooooooooooooooool: " << header << std::endl;
 			exit(0);
 		}

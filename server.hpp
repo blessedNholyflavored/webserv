@@ -31,7 +31,7 @@ class Server
 	bool						autoindex;
 	std::vector<Location>		location;
 	char **env;
-	//Request						*request;
+	Request						*request;
 
 	int							epoll_fd;
 	int							server_fd;
