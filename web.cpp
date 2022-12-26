@@ -171,7 +171,7 @@ std::string FirstPage(std::string filePath)
 	path += filePath;
 	dirp = opendir(path.c_str());*/
 	std::string recup;
-	std::ifstream findex("home.html");
+	std::ifstream findex("./html/home.html");
 	while (getline(findex, recup))
 		index += recup;
 	/*index += "<!DOCTYPE html>\n<html>\n\n<title>INDEX</title>\n\n<h1>INDEX</h1>";
