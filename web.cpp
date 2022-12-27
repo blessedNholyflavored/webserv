@@ -441,6 +441,8 @@ int	Server::recvConnection(int fd)
 		std::string skip = "Content-type: text/html; charset=UTF-8 ";
 		str1 = str1.substr(skip.length(), str1.length());
 		header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
+		unlink(".tmp");
+		unlink("lucieCGI");
 		send(fd, header.c_str(), header.length(), 0);
 	}
 	else
