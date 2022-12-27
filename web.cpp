@@ -44,6 +44,7 @@ void	splitString(const char *buf, std::string deli)
 //	std::cout << "IN SPLIT: " << str.substr(start, end - start) << std::endl;
 	if (arr[1].compare("/") != 0 && arr[0].compare("GET") == 0)
 	{
+		//arr[1] = "./html" + arr[1];
 		std::ifstream file(arr[1].c_str() + 1, std::ios::in);
 		if (!file)
 		{
@@ -56,6 +57,7 @@ void	splitString(const char *buf, std::string deli)
 		else
 		{
 			newIndex = arr[1].substr(1, arr[1].length());
+			std::cerr << "HEREEEEEEE newIndex: " << newIndex << std::endl; 
 			error = 200;
 		}
 	}
@@ -66,6 +68,8 @@ void	splitString(const char *buf, std::string deli)
 		std::cout << "NEW INDEX: " << newIndex << std::endl;
 		error = 999;
 	}
+	else
+		newIndex = "./html/home.html";
 }
 
 std::string	fileToString(std::string loc);
@@ -171,8 +175,9 @@ std::string FirstPage(std::string filePath)
 	path += "/";
 	path += filePath;
 	dirp = opendir(path.c_str());*/
+	std::cerr << "FILEPATHHHHHHHHHHHHHHH: " << filePath << std::endl;
 	std::string recup;
-	std::ifstream findex("./html/home.html");
+	std::ifstream findex(filePath.c_str());
 	while (getline(findex, recup))
 		index += recup;
 	/*index += "<!DOCTYPE html>\n<html>\n\n<title>INDEX</title>\n\n<h1>INDEX</h1>";
@@ -369,18 +374,18 @@ int	Server::recvConnection(int fd)
 	if (len > 0)
 		printf("BUFF in recv:\n%s\n", buff);
 	request = new Request;
-	request->parsRequest(buff, location);
+	//request->parsRequest(buff, location);
 	CheckRequest(buff);
 	if (request->getRetCode() == 400){
 		char str3[] = "bad version http";
 		write(fd, str3, strlen(str3));
 	}
-	else if (request->getRetCode() == 404)
-	{
-		printf("%d\n", error);
-		char str3[] = "HTTP/1.1 404 Not Found\nContent-Type: text/plain\nContent-Length: 19\n\n404 page not found\n";
-		write(fd, str3, strlen(str3));
-	}
+	// else if (request->getRetCode() == 404)
+	// {
+	// 	printf("%d\n", error);
+	// 	char str3[] = "HTTP/1.1 404 Not Found\nContent-Type: text/plain\nContent-Length: 19\n\n404 page not found\n";
+	// 	write(fd, str3, strlen(str3));
+	// }
 	else if (error == 999)
 	{
 		int fd1;
@@ -426,7 +431,8 @@ int	Server::recvConnection(int fd)
 	else
 	{
 		std::string str1 = FirstPage(newIndex);
-		//std::cout << "LEN =" << str1.length() << std::endl;
+
+		std::cout << "LEN =" << str1 << std::endl;
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 	}
@@ -468,6 +474,7 @@ void	StartServer(Server server)
 
 	server.epoll_fd = epoll_create1(0);
 
+	newIndex = "./html/home.html";
 	if (server.init_serv())
 		return ;
 	while (1)
