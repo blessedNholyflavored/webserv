@@ -71,8 +71,7 @@ void	addCGI(Server server)
 	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_NAME=localhost"));
 	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"GATEWAY_INTERFACE=CGI/1.1"));
 	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_PROTOCOL=HTPP/1.1"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"QUERY_STRING=test=querystring"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_PORT=9001"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_PORT=9000"));
 	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"REQUEST_METHOD=POST"));
 	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"CONTENT_TYPE=application/x-www-form-urlencoded;charset=utf-8"));
 	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"PATH_INFO=./reponse.php"));

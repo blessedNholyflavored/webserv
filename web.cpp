@@ -7,6 +7,7 @@
 #include <stdlib.h>
 #include <netinet/in.h>
 #include <sys/epoll.h>
+#include <sys/wait.h>
 #include <fstream>
 #include <fcntl.h>
 #include <dirent.h>
@@ -40,7 +41,7 @@ void	splitString(const char *buf, std::string deli)
 		i++;
 	}
 	arr[i] = str.substr(start, end - start);
-	//std::cout << "SPLIT = " << arr[1] << std::endl;
+//	std::cout << "SPLIT = " << arr[1] << std::endl;
 //	std::cout << "IN SPLIT: " << str.substr(start, end - start) << std::endl;
 	if (arr[1].compare("/") != 0 && arr[0].compare("GET") == 0)
 	{
@@ -52,6 +53,9 @@ void	splitString(const char *buf, std::string deli)
 			std::cerr << "NO FILE" << std::endl;
 			newIndex = arr[1];
 			std::cout << "SALOOOOOOOOOOOP: " << newIndex << std::endl;
+			if (arr[1].compare(0, 12, "/reponse.php") == 0
+			|| arr[1].compare(0, 17, "/html/reponse.php") == 0)
+				error = 999;
 			//error = 404;
 		}
 		else
@@ -389,50 +393,59 @@ int	Server::recvConnection(int fd)
 	else if (error == 999)
 	{
 		int fd1;
-		int fd2;
 
 		//std::cerr << "BRYCEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE: " << newIndex << std::endl;
-		std::string str1 = fileToString(newIndex);
-		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
+		std::string str1;// = fileToString(newIndex);
+		std::string header;// = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		//std::string header = "test";
 		char	**cmd = (char **)malloc(3);;
-		cmd[0] = strdup("/bin/sh");
-		cmd[1] = strdup("./trou.sh");
+		cmd[0] = strdup("/usr/bin/php-cgi");
+		cmd[1] = strdup("./reponse.php");
 		cmd[2] = 0;
 		int i = 0 ;
-		char **recup = ft_split(buff, '\n');
+		std::cerr << "IIIIIIIIIIIIIIIIIIIIIIIIIIIIII: " << newIndex << std::endl;
+		char **recup = ft_split(newIndex.c_str(), '?');
 		i = 0;
 		while (recup[i])
 		{
-			if (strncmp(recup[i], "nom", 3) == 0)
+			if (strncmp(recup[i], "fname", 5) == 0)
 				break ;
 			i++;
 		}
-		int tmp = open(".tmp", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		int tmp = open(".tmp", O_CREAT | O_WRONLY | O_TRUNC, 0666);
 		std::cerr << "RECUPPPP: " << recup[i] << std::endl;
 		write(tmp, recup[i], strlen(recup[i]));
-		fd1 = open("lucieCGI", O_CREAT | O_RDONLY | O_WRONLY, 0644);
-		fd2 = open("reponse.php", O_RDONLY);
-		this->env =  ft_regroup_env(this->lst);
+		lseek(tmp, 0, SEEK_SET);
+		fd1 = open("lucieCGI", O_CREAT | O_RDONLY | O_WRONLY | O_TRUNC, 0666);
 		std::string len = "CONTENT_LENGTH=" + intToString(strlen(recup[i]));
-		std::cerr << "kkkkk: " << len << std::endl;
+		std::string res = recup[i];
+		std::string query = "QUERY_STRING=" + res;
+		ft_lstadd_back(&this->lst, ft_lstnew(NULL, NULL, (char *)query.c_str()));
 		ft_lstadd_back(&this->lst, ft_lstnew(NULL, NULL, (char *)len.c_str()));
-		char	**cmd1 = (char **)malloc(3);;
-		cmd1[0] = strdup("/bin/echo");
-		cmd1[1] = strdup(recup[i]);
-		cmd1[2] = 0;
+		std::cerr << "LEEEEEEEEEEN: " << len << std::endl;
+		//ft_lstadd_back(&this->lst, ft_lstnew(NULL, NULL, (char *)"REMOTE_HOST=localhost"));
+		this->env =  ft_regroup_env(this->lst);
 		int frk = fork();
 		if (frk == 0)
 		{
-			execve("/bin/sh", cmd, this->env);
+			//write(0, recup[i], strlen(recup[i]));
+			dup2(tmp, 0);
+			close(tmp);
+			dup2(fd1, 1);
+			close(fd1);
+			execve("/usr/bin/php-cgi", cmd, this->env);
 		}
+		else
+			wait(NULL);
+		str1 = fileToString("lucieCGI");
+		std::string skip = "Content-type: text/html; charset=UTF-8 ";
+		str1 = str1.substr(skip.length(), str1.length());
+		header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 	}
 	else
 	{
 		std::string str1 = FirstPage(newIndex);
-
-		std::cout << "LEN =" << str1 << std::endl;
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 	}

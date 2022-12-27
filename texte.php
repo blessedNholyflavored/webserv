@@ -25,7 +25,7 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="home.html" styl
 <h2 style ="text-align: center;" > TEST DE NOM ET PRENOM</h2>
 <p style ="text-align: center;" > dis nous t ki stp</p>
 
-<form style ="text-align: center;" id="nom_form" action="/action_page.php" method="POST">
+<form style ="text-align: center;" id="nom_form" action="./reponse.php" method="GET">
     <label for="fname">donnes ton prenom</label><br>
     <input style ="text-align: center;" type="text" id="fname" name="fname" value="mon prenom"><br>
     <label for="lname">donnes ton nom</label><br>
