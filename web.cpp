@@ -1,14 +1,3 @@
-/* ************************************************************************** */
-/*                                                                            */
-/*                                                        :::      ::::::::   */
-/*   web.cpp                                            :+:      :+:    :+:   */
-/*                                                    +:+ +:+         +:+     */
-/*   By: mmhaya <mmhaya@student.42.fr>              +#+  +:+       +#+        */
-/*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/11/29 14:25:46 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/12/26 19:32:06 by jtaravel         ###   ########.fr       */
-/*                                                                            */
-/* ************************************************************************** */
 
 #include <iostream>
 #include <unistd.h>
@@ -183,7 +172,7 @@ std::string FirstPage(std::string filePath)
 	path += filePath;
 	dirp = opendir(path.c_str());*/
 	std::string recup;
-	std::ifstream findex("test.php");
+	std::ifstream findex("./html/home.html");
 	while (getline(findex, recup))
 		index += recup;
 	/*index += "<!DOCTYPE html>\n<html>\n\n<title>INDEX</title>\n\n<h1>INDEX</h1>";
@@ -375,13 +364,18 @@ int	Server::recvConnection(int fd)
 	ssize_t	len;
 	char	buff[3000];
 
+
 	len = recv(fd, buff, 3000, 0);
 	if (len > 0)
 		printf("BUFF in recv:\n%s\n", buff);
 	request = new Request;
 	request->parsRequest(buff, location);
 	CheckRequest(buff);
-	if (request->getRetCode() == 404)
+	if (request->getRetCode() == 400){
+		char str3[] = "bad version http";
+		write(fd, str3, strlen(str3));
+	}
+	else if (request->getRetCode() == 404)
 	{
 		printf("%d\n", error);
 		char str3[] = "HTTP/1.1 404 Not Found\nContent-Type: text/plain\nContent-Length: 19\n\n404 page not found\n";
@@ -437,7 +431,7 @@ int	Server::recvConnection(int fd)
 		send(fd, header.c_str(), header.length(), 0);
 	}
 	return (0);
-}	
+}
 
 int	Server::sendConnection(int fd)
 {
@@ -497,7 +491,6 @@ void	StartServer(Server server)
 	long	retread;
 	struct	sockaddr_in address;
 	int	addrlen = sizeof(address);
-
 	if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0)
 	{
 		std::cerr << "Error in socket" << std::endl;
