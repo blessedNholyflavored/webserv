@@ -98,7 +98,7 @@ int    main(int ac, char **av, char **env)
         std::cerr << "Bad extension file" << std::endl;
         return (0);
     }
-    	if (!(server.parser(av[1])))
+    if (!(server.parser(av[1])))
 	{
 		std::cerr << "ya un pb mec" << std::endl;
         return (0);

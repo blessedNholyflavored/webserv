@@ -143,6 +143,16 @@ void Location::parseAutoindex(std::string str){
 	
 }
 
+bool isspace_string(const std::string& s)
+{
+	for (std::string::const_iterator it = s.begin(); it != s.end(); it++)
+	{
+		if (!std::isspace(*it))
+			return false;
+	}
+	return true;
+}
+
 void Location::parser_la_location(int j)
 {
 	_methods.push_back("");
@@ -170,6 +180,11 @@ void Location::parser_la_location(int j)
 			parseIndex(res[j]);
 		else if(res[j].find("return") != std::string::npos)
 			parseReturn(res[j]);
+		else if (isspace_string(res[j]))
+		{
+			j++;
+			continue;
+		}
 		else
 		{
 			std::cout << "error parsing location" << std::endl;

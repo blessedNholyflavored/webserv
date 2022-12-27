@@ -5,6 +5,7 @@
 # include <sstream>
 # include <string>
 # include <cstdlib>
+# include <cstring>
 # include <unistd.h>
 # include "location.hpp"
 # include "parsing_request.hpp"

@@ -42,4 +42,6 @@
 			bool		getPost();
 
 	};
+
+
 #endif
