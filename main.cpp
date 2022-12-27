@@ -65,6 +65,27 @@ int    parsExt(char *str)
     return (0);
 }
 
+void	addCGI(Server server)
+{
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_SOFTWARE=Webserv/1.0"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_NAME=localhost"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"GATEWAY_INTERFACE=CGI/1.1"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_PROTOCOL=HTPP/1.1"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"QUERY_STRING=test=querystring"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_PORT=9001"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"REQUEST_METHOD=POST"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"CONTENT_TYPE=application/x-www-form-urlencoded;charset=utf-8"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"PATH_INFO=./reponse.php"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"PATH_TRANSLATED=./reponse.php"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"PATH_NAME=./reponse.php"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SCRIPT_NAME=./reponse.php"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SCRIPT_FILENAME=./reponse.php"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"REDIRECT_STATUS=200"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"HTTP_ACCEPT=*/*"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"HTTP_ACCEPT_LANGUAGE=en-US,en"));
+	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"HTTP_REFERER="));
+}
+
 int    main(int ac, char **av, char **env)
 {
 	Server server;
@@ -83,7 +104,8 @@ int    main(int ac, char **av, char **env)
 		std::cerr << "ya un pb mec" << std::endl;
         return (0);
 	}
-	server.env = env;
+	server.lst = init_lst(env, server.lst);
+	addCGI(server);
 	StartServer(server);
 	
     return (0);

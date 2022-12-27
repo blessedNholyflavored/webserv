@@ -5,7 +5,9 @@ SRCS		=	main.cpp \
 				parsing_utils.cpp \
 				location.cpp \
 				web.cpp \
-				parsing_request.cpp
+				parsing_request.cpp \
+				env.cpp \
+				ft_split.cpp \
 
 OBJS		=	$(SRCS:.cpp=.o)
 CC			=	c++

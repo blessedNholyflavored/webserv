@@ -1,3 +1,4 @@
+nom=val_1&age=val_2;
 <!DOCTYPE html>
 <html>
 	

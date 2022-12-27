@@ -6,7 +6,7 @@
 /*   By: mmhaya <mmhaya@student.42.fr>              +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 14:25:46 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/12/22 18:57:02 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/12/26 19:32:06 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,8 @@ void	splitString(const char *buf, std::string deli)
 	}
 	else if (arr[0].compare("POST") == 0)
 	{
-		newIndex = arr[1].substr(1, arr[1].length());
+		//ne1wIndex = arr[1].substr(1, arr[1].length());
+		newIndex = arr[1];
 		std::cout << "NEW INDEX: " << newIndex << std::endl;
 		error = 999;
 	}
@@ -182,7 +183,7 @@ std::string FirstPage(std::string filePath)
 	path += filePath;
 	dirp = opendir(path.c_str());*/
 	std::string recup;
-	std::ifstream findex("test.html");
+	std::ifstream findex("test.php");
 	while (getline(findex, recup))
 		index += recup;
 	/*index += "<!DOCTYPE html>\n<html>\n\n<title>INDEX</title>\n\n<h1>INDEX</h1>";
@@ -379,7 +380,7 @@ int	Server::recvConnection(int fd)
 		printf("BUFF in recv:\n%s\n", buff);
 	request = new Request;
 	request->parsRequest(buff, location);
-	// CheckRequest(buff);
+	CheckRequest(buff);
 	if (request->getRetCode() == 404)
 	{
 		printf("%d\n", error);
@@ -391,28 +392,40 @@ int	Server::recvConnection(int fd)
 		int fd1;
 		int fd2;
 
+		//std::cerr << "BRYCEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE: " << newIndex << std::endl;
 		std::string str1 = fileToString(newIndex);
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		//std::string header = "test";
 		char	**cmd = (char **)malloc(3);;
-		cmd[0] = strdup("php-cgi8.1");
-		cmd[1] = 0;
+		cmd[0] = strdup("/bin/sh");
+		cmd[1] = strdup("./trou.sh");
+		cmd[2] = 0;
 		int i = 0 ;
-		while (cmd[i])
+		char **recup = ft_split(buff, '\n');
+		i = 0;
+		while (recup[i])
 		{
-			printf("ggggggg = %s\n", cmd[i]);
+			if (strncmp(recup[i], "nom", 3) == 0)
+				break ;
 			i++;
 		}
+		int tmp = open(".tmp", O_CREAT | O_WRONLY | O_TRUNC, 0644);
+		std::cerr << "RECUPPPP: " << recup[i] << std::endl;
+		write(tmp, recup[i], strlen(recup[i]));
 		fd1 = open("lucieCGI", O_CREAT | O_RDONLY | O_WRONLY, 0644);
 		fd2 = open("reponse.php", O_RDONLY);
+		this->env =  ft_regroup_env(this->lst);
+		std::string len = "CONTENT_LENGTH=" + intToString(strlen(recup[i]));
+		std::cerr << "kkkkk: " << len << std::endl;
+		ft_lstadd_back(&this->lst, ft_lstnew(NULL, NULL, (char *)len.c_str()));
+		char	**cmd1 = (char **)malloc(3);;
+		cmd1[0] = strdup("/bin/echo");
+		cmd1[1] = strdup(recup[i]);
+		cmd1[2] = 0;
 		int frk = fork();
 		if (frk == 0)
 		{
-			dup2(0, fd2);
-			dup2(1, fd1);
-			execve("/bin/php-cgi8.1", cmd, this->env);
-			std::cerr << "loooooooooooooooooooooooooooooooool: " << header << std::endl;
-			exit(0);
+			execve("/bin/sh", cmd, this->env);
 		}
 		send(fd, header.c_str(), header.length(), 0);
 	}

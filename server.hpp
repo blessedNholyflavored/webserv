@@ -9,8 +9,9 @@
 # include "location.hpp"
 # include "parsing_request.hpp"
 # include <vector>
+# include "functions.h"
 # define WHITESPACES "; \t"
-
+struct s_list;
 
 class Server
 {
@@ -18,6 +19,7 @@ class Server
 	public:
 	Server();
 	~Server();
+	s_list *lst;
 	std::string					max_client_body_size;
 	std::string					name_server;
 	std::string					root;
@@ -31,7 +33,7 @@ class Server
 	bool						autoindex;
 	std::vector<Location>		location;
 	char **env;
-	//Request						*request;
+	Request						*request;
 
 	int							epoll_fd;
 	int							server_fd;
