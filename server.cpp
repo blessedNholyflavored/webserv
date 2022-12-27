@@ -24,7 +24,6 @@ size_t countEndl(std::string content){
 	{
 		if (content[i] == '\n')
 			nbEndl++;
-
 	}
 	return nbEndl;
 }
@@ -41,6 +40,21 @@ std::string remove_charset(std::string res)
 		}
 	return res;
 }
+
+// int	checkEndofserver(std::string str)
+// {
+// 	int j = 0;
+// 	for (int i = 0; str[i]; i++)
+// 	{
+// 		if (str[i] == '}')
+// 		{
+// 			j++;
+// 			return 0;
+// 		}
+// 	}
+// 	return (1);
+// }
+
 
 int Server::parser(std::string str)
 {
@@ -59,14 +73,31 @@ int Server::parser(std::string str)
 		j++;
 	}
 	j = 0;
-	while(nbline < countEndl(content))
+	int y = 0;
+	while(nbline <= countEndl(content))
 	{
+		std::string tmp(res[j]);
 		if (res[0] == "server {")
 		{
 			this->parser_le_server(res, nbline, j);
 		}
-		j++;
-		nbline++;
+		
+		else if (!(res[0] == "server {"))
+		{
+			std::cerr << "opening brace missing dude" <<std::endl;
+			return(0);
+		}
+		if(tmp.find("}") != std::string::npos)
+		{
+			y++;
+		}
+	j++;
+	nbline++;
+	}
+	if (y != 2 )
+	{
+		std::cerr << "check tes }}}}} cest le bordel" << std::endl;
+		exit(1);
 	}
 	return 1;
 }
@@ -116,27 +147,11 @@ std::string ltrim(std::string &s)
     return (start == std::string::npos) ? "" : s.substr(start);
 }
 
-// int	checkEndOfLocation(std::string str){
-// 	for (int i = 0; str[i]; i++){
-// 		if (str[i] == '}')
-// 			return 0;
-// 	}
-// 	return (1);
-// }
 
 int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 {
-	// sleep(1);
-		std::cout << res[j] << std::endl;
-	// std::cout << (res[j].compare(0, 1, "}")) << std::endl;
-	// if (!res[0].compare(0, 1, "{"))
-	// {
-	// 	std::cerr << "il est ou le { ???" << std::endl;
-	// }
-	////////////////ICI A REGLER 
-	// std::vector<std::string> tmp = (static_cast<std::string>(res[j]));
-	// std::vector<std::string>::const_iterator it = tmp.begin() + nbligne;
-	if (!res[j].compare(0, 9, "\tlocation"))
+	std::cout << res[j] << std::endl;
+	if (res[j].find("location") != std::string::npos)
 	{
 		Location *tmp;
 
@@ -144,7 +159,7 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 		tmp->parser_la_location(j);
 		this->location.push_back(*tmp);
 	}
-	else if (!res[j].compare(0, 12, "\tserver_name"))
+	else if (res[j].find("server_name") != std::string::npos)
 	{
 		if (static_cast<std::string>(&res[j][13]).size() < 2)
 			{
@@ -152,7 +167,7 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 			}
 		this->name_server = (res[j].c_str() + 13);
 	}
-	else if (!res[j].compare(0, 10, "\tautoindex"))
+	else if (res[j].find("autoindex") != std::string::npos)
 	{
 		if (static_cast<std::string>(&res[j][10]).size() < 2)
 			{
@@ -163,10 +178,9 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 		else
 			this->autoindex = false;
 	}
-	else if (!res[j].compare(0, 7, "\tlisten"))
+	else if (res[j].find("listen") != std::string::npos)
 	{
-		
-		if (static_cast<std::string>(&res[j][7]).size() == 1) // empty
+		if (static_cast<std::string>(&res[j][7]).size() == 1) 
 			std::cerr << "expecting one argument after listen"<< std::endl;
 		std::string tmp;
 		tmp = (static_cast<std::string>(&res[j][7]));
@@ -191,7 +205,7 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 			std::cerr << "port should be an int" << std::endl;
 		this->port = atoi(port.c_str());			
 	}
-	else if (!res[j].compare(0, 11, "\terror_page"))
+	else if (res[j].find("error_page") != std::string::npos)
 	{
 		std::string tmp;
 		tmp = (static_cast<std::string>(&res[j][11]));
@@ -204,7 +218,7 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 			this->error_page.push_back(error_page_tmp[2]);
 		}	
 	}
-	else if (!res[j].compare(0, 4, "\tcgi"))
+	else if (res[j].find("cgi") != std::string::npos)
 	{
 		std::string tmp;
 		tmp = (static_cast<std::string>(&res[j][4]));
@@ -217,17 +231,17 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 			this->cgi_address.push_back(cgi[2]);
 		}
 	}
-	else if (!res[j].compare(0, 6, "\tindex"))
+	else if (res[j].find("index") != std::string::npos)
 	{
-		if (static_cast<std::string>(&res[j][6]).size() < 3) // empty
+		if (static_cast<std::string>(&res[j][6]).size() < 3)
 		{
 			std::cerr << "expecting one argument after index"<< std::endl;
 		}
 		this->index =  (res[j].c_str() + 6);
 	}
-	else if (!res[j].compare(0, 5, "\troot"))
+	else if (res[j].find("root") != std::string::npos)
 	{
-		if (static_cast<std::string>(&res[j][6]).size() == 1) // empty
+		if (static_cast<std::string>(&res[j][6]).size() == 1)
 			std::cerr << "expecting one argument after root"<< std::endl;
 		std::string tmp = (static_cast<std::string>(&res[j][6]));
 		if (tmp.size() > 0 && tmp[0] == '/')
@@ -236,7 +250,7 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 			tmp.resize(tmp.size() - 1);
 		this->root = (tmp.c_str());
 	}
-	else if (!res[j].compare(0, 21, "\tmax_client_body_size"))
+		else if (res[j].find("max_client_body_size") != std::string::npos) 
 	{
 		std::string tmp;
 		tmp = (static_cast<std::string>(&res[j][22]));
