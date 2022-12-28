@@ -48,6 +48,7 @@ class Server
 	int parser_le_server(std::string res[], size_t nbligne, int j);
 	int parser(std::string str);
 	void transfer_location(Location location);
+	bool autoindexed() const;
 
 };
 

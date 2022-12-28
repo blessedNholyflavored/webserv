@@ -180,6 +180,7 @@ std::string FirstPage(std::string filePath)
 	path += filePath;
 	dirp = opendir(path.c_str());*/
 	std::cerr << "FILEPATHHHHHHHHHHHHHHH: " << filePath << std::endl;
+	
 	std::string recup;
 	std::ifstream findex(filePath.c_str());
 	while (getline(findex, recup))
@@ -373,13 +374,24 @@ int	Server::recvConnection(int fd)
 	ssize_t	len;
 	char	buff[3000];
 
-
+	if (nbfiles == 76)
+	{
+		newIndex = FirstPage("./html/404.html"); // page a creer
+		std::string header = "HTTP/1.1 404 NOT FOUND\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(newIndex.length()) + "\n\n" + newIndex + "\n";
+		send(fd, header.c_str(), header.length(), 0);
+		nbfiles = 0;
+	}
+	if (nbfiles == 666)
+	{
+		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(newIndex.length()) + "\n\n" + newIndex + "\n";
+		send(fd, header.c_str(), header.length(), 0);
+	}
 	len = recv(fd, buff, 3000, 0);
 	if (len > 0)
 		printf("BUFF in recv:\n%s\n", buff);
 	request = new Request;
 	//request->parsRequest(buff, location);
-	CheckRequest(buff);
+	//CheckRequest(buff);
 	if (request->getRetCode() == 400){
 		char str3[] = "bad version http";
 		write(fd, str3, strlen(str3));
@@ -448,6 +460,7 @@ int	Server::recvConnection(int fd)
 	else
 	{
 		std::string str1 = FirstPage(newIndex);
+		std::cerr << str1 << std::endl;
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 	}
@@ -482,16 +495,95 @@ int	Server::event_receptor(struct epoll_event events[5], int event_count)
 }
 
 
+std::string	basicsummary(std::string dir)
+{
+	std::string path;
+	std::string	index;
+	char buffer[PATH_MAX];
+
+	path = getcwd(buffer, PATH_MAX);
+	path += "/";
+	//path += filePath;
+	DIR *dp = opendir(dir.c_str());
+
+	index += "<!DOCTYPE html>\n<html>\n\n<title>INDEX</title>\n\n<h1>INDEX</h1>";
+	index += "<body id=\"all\">";
+	index += "<form id=\"form\">";
+	index += "<input type=\"file\" name=\"background\" />";
+	index += "<button type=\"submit\">SEND</button>\n\n";
+	index += "</form>";
+	index += "<p id=\"message\"></p>";
+	index += "<button id=\"btn\">test</button>\n\n";
+	if( dp == NULL )
+			return ("<title>Directory Not Found</title><H1>Directory " + dir + " Not Found</H1>");
+	{
+		struct dirent *dirp;
+		//int	i = 0;
+        for(;;)
+		{
+            dirp = readdir(dp);
+            if ( dirp == NULL )
+		break;
+			index += "<h4>";
+			if ( dirp->d_type == DT_DIR)
+				index += path + "__Directory__| ";
+			else if ( dirp->d_type == DT_REG)
+				index += path + "_Regular file_| ";
+			else
+				index += "                ";
+			//createLink(index, dirp);
+			index += "</h4>\n";
+		}
+		closedir( dp );
+	}
+	return index;
+}
+
 void	StartServer(Server server)
 {
 	int	event_count;
 	struct	epoll_event events[5];
 
 	server.epoll_fd = epoll_create1(0);
-
-	newIndex = "./html/home.html";
 	if (server.init_serv())
 		return ;
+	if (server.autoindexed()) // true
+	{
+		std::cout << "lautoindex est on :" << server.autoindexed() << std::endl;
+		std::cout << "index est : " <<  server.index << std::endl;
+		if (server.index.empty())
+		{
+			//std::cout << &index << std::endl;
+			std::cout << "index est empty donc renvoyer vers une page de sommaire" << std::endl;
+			newIndex = basicsummary("/mnt/nfs/homes/lkhamlac/Desktop/webserv"); //page a creeer
+			nbfiles = 666;
+		
+		}
+		else
+		{
+			newIndex = server.index; //"./html/home.html";
+			std::cout << " pas empty " << std::endl;
+		}
+	}
+	else
+	{
+		std::cout << "lautoindex est off :" << server.autoindexed() << std::endl;
+		if (server.index.empty())
+		{
+			//std::cout << &index << std::endl;
+			std::cout << "foutre une page 404" << std::endl;
+			nbfiles = 76;
+			
+		}
+		else
+		{
+			newIndex = server.index.substr(1, server.index.length()); //"./html/home.html";
+			std::cout << " pas empty " << std::endl;
+		}
+	}
+
+	// newIndex = "./html/home.html";
+
 	while (1)
 	{
 		event_count = epoll_wait(server.epoll_fd, events, 5, 1000);
