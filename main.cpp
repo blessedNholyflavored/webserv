@@ -65,24 +65,56 @@ int    parsExt(char *str)
     return (0);
 }
 
-void	addCGI(Server server)
+std::vector<char *>	addCGI(Server server)
 {
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_SOFTWARE=Webserv/1.0"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_NAME=localhost"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"GATEWAY_INTERFACE=CGI/1.1"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_PROTOCOL=HTPP/1.1"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_PORT=9000"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"REQUEST_METHOD=POST"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"CONTENT_TYPE=application/x-www-form-urlencoded;charset=utf-8"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"PATH_INFO=./reponse.php"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"PATH_TRANSLATED=./reponse.php"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"PATH_NAME=./reponse.php"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SCRIPT_NAME=./reponse.php"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SCRIPT_FILENAME=./reponse.php"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"REDIRECT_STATUS=200"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"HTTP_ACCEPT=*/*"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"HTTP_ACCEPT_LANGUAGE=en-US,en"));
-	ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"HTTP_REFERER="));
+	server.vectorenv.push_back((char *)("SERVER_SOFTWARE=Webserv/1.0"));
+	server.vectorenv.push_back((char *)("SERVER_NAME=localhost"));
+	server.vectorenv.push_back((char *)("GATEWAY_INTERFACE=CGI/1.1"));
+	server.vectorenv.push_back((char *)("SERVER_PROTOCOL=HTPP/1.1"));
+	server.vectorenv.push_back((char *)("SERVER_PORT=9000"));
+	server.vectorenv.push_back((char *)("CONTENT_TYPE=application/x-www-form-urlencoded;charset=utf-8"));
+	server.vectorenv.push_back((char *)("REDIRECT_STATUS=200"));
+	server.vectorenv.push_back((char *)("HTTP_ACCEPT=*/*"));
+	server.vectorenv.push_back((char *)("HTTP_ACCEPT_LANGUAGE=en-US,en"));
+	server.vectorenv.push_back((char *)("HTTP_REFERER="));
+	return server.vectorenv;
+	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_NAME=localhost"));
+	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"GATEWAY_INTERFACE=CGI/1.1"));
+	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_PROTOCOL=HTPP/1.1"));
+	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_PORT=9000"));
+	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"REQUEST_METHOD=POST"));
+	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"CONTENT_TYPE=application/x-www-form-urlencoded;charset=utf-8"));
+	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"REDIRECT_STATUS=200"));
+	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"HTTP_ACCEPT=*/*"));
+	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"HTTP_ACCEPT_LANGUAGE=en-US,en"));
+	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"HTTP_REFERER="));
+}
+
+std::vector<char *>	addCGIcpy(Server server)
+{
+	server.vectorenvcpy.push_back((char *)("SERVER_SOFTWARE=Webserv/1.0"));
+	server.vectorenvcpy.push_back((char *)("SERVER_NAME=localhost"));
+	server.vectorenvcpy.push_back((char *)("GATEWAY_INTERFACE=CGI/1.1"));
+	server.vectorenvcpy.push_back((char *)("SERVER_PROTOCOL=HTPP/1.1"));
+	server.vectorenvcpy.push_back((char *)("SERVER_PORT=9000"));
+	server.vectorenvcpy.push_back((char *)("CONTENT_TYPE=application/x-www-form-urlencoded;charset=utf-8"));
+	server.vectorenvcpy.push_back((char *)("REDIRECT_STATUS=200"));
+	server.vectorenvcpy.push_back((char *)("HTTP_ACCEPT=*/*"));
+	server.vectorenvcpy.push_back((char *)("HTTP_ACCEPT_LANGUAGE=en-US,en"));
+	server.vectorenvcpy.push_back((char *)("HTTP_REFERER="));
+	return (server.vectorenvcpy);
+}
+
+std::vector<char *>	init_vectorenv(char **env, std::vector<char *> vec)
+{
+	int i = 0;
+	while (env[i])
+	{       
+//		vec.push_back(env[i]);
+		i++;
+	}
+	return vec;
+
 }
 
 int    main(int ac, char **av, char **env)
@@ -103,8 +135,15 @@ int    main(int ac, char **av, char **env)
 		std::cerr << "ya un pb mec" << std::endl;
         return (0);
 	}
-	server.lst = init_lst(env, server.lst);
-	addCGI(server);
+    	std::vector<char *> tmp;
+    	server.vectorenv = init_vectorenv(env, tmp);
+    	server.vectorenvcpy = init_vectorenv(env, server.vectorenvcpy);
+	//server.lst = init_lst(env, server.lst);
+	server.vectorenv = addCGI(server);
+	server.vectorenvcpy = addCGIcpy(server);
+	/*std::vector<char *>::iterator it = server.vectorenv.begin();
+	for (; it != server.vectorenv.end(); it++)
+		std::cerr << "vec: " << *it << std::endl;*/
 	StartServer(server);
 	
     return (0);
