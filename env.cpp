@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/26 15:12:51 by jtaravel          #+#    #+#             */
-/*   Updated: 2022/12/26 15:39:48 by jtaravel         ###   ########.fr       */
+/*   Updated: 2022/12/28 17:39:25 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,42 @@ void	ft_lstadd_back(t_list **alst, t_list *newm);
 t_list	*ft_lstnew(char	*name, char *content, char *line);
 
 //////////////////////////////////////////////
+
+
+void	del(void *data)
+{
+	free(data);
+}
+
+void	ft_lstdelone(t_list *lst, void (*del)(void *))
+{
+	if (!lst || !del)
+		return ;
+	if (lst->content)
+		(*del)(lst->content);
+	if (lst->name)
+		(*del)(lst->name);
+	if (lst->line)
+		(*del)(lst->line);
+	free(lst);
+}
+
+void	ft_lstclear(t_list **lst, void (*del)(void *))
+{
+	t_list	*list;
+	t_list	*tmp;
+
+	if (!lst || !del)
+		return ;
+	list = *lst;
+	while (list)
+	{
+		tmp = list->next;
+		ft_lstdelone(list, del);
+		list = tmp;
+	}
+	*lst = NULL;
+}
 
 t_list	*ft_lstlast(t_list *lst)
 {
