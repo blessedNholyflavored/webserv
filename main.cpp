@@ -110,7 +110,7 @@ std::vector<char *>	init_vectorenv(char **env, std::vector<char *> vec)
 	int i = 0;
 	while (env[i])
 	{       
-		vec.push_back(env[i]);
+//		vec.push_back(env[i]);
 		i++;
 	}
 	return vec;

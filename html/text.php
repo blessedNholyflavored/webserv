@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html>
 <title >webserv's super html page</title>
 
 <body id =\"all\" style="font-family:'Roboto',sans-serif;margin: 0em; padding: 0em;">
@@ -25,7 +26,7 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
 <h2 style ="text-align: center;" > TEST DE NOM ET PRENOM</h2>
 <p style ="text-align: center;" > dis nous t ki stp</p>
 
-<form style ="text-align: center;" id="nom_form" action="/action_page.php" method="POST">
+<form style ="text-align: center;" id="nom_form" action="./reponse.php" method="GET">
     <label for="fname">donnes ton prenom</label><br>
     <input style ="text-align: center;" type="text" id="fname" name="fname" value="mon prenom"><br>
     <label for="lname">donnes ton nom</label><br>
@@ -34,8 +35,8 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
   </form> 
   
 <hr>
-
-
+	<div>
+		<div>
                         <h2>Upload a text to the server</h2>
 
                         <form action="/html/text.php" method="POST">
@@ -43,20 +44,22 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
                                 <input type="text" name="textToUpload"><br><br>
                                 <input type="submit" value="Send text" name="submit">
                         </form>
-
-
+		</div>	
+		
+		<div>
                         <h2>Read the text uploaded to the server</h2>
 
                         <?php
                         $file = 'salut.txt';
-                                $txt = htmlspecialchars($_POST['textToUpload']);
+				//$_POST['textToUpload'] = "lol";
+                                $txt = htmlspecialchars($_POST["textToUpload"]);
                                 file_put_contents($file, $txt);
                         $file = file_get_contents($file, true);
                         echo "<input id=\"read_box\" type=\"text\" value=\"$file\" readonly>";
                         ?>
-
-
-
+		</div>
+	</div>	
+	
 
 
 <hr>
@@ -82,3 +85,4 @@ overflow: hidden;">
     </p>
   </footer>
 </body>
+</html>

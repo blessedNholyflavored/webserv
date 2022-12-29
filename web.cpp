@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <unistd.h>
 #include <string.h>
@@ -481,35 +480,49 @@ int	Server::recvConnection(int fd)
 		int fd1;
 
 		this->vectorenv.push_back((char *)("REQUEST_METHOD=POST"));
-		this->vectorenv.push_back((char *)"PATH_INFO=./html/text.php");
-		this->vectorenv.push_back((char *)"PATH_TRANSLATED=./html/text.php");
-		this->vectorenv.push_back((char *)"PATH_NAME=./html/text.php");
-		this->vectorenv.push_back((char *)"SCRIPT_NAME=./html/text.php");
-		this->vectorenv.push_back((char *)"SCRIPT_FILENAME=./html/text.php");
+		this->vectorenv.push_back((char *)("REMOTE_HOST=localhost"));
+		this->vectorenv.push_back((char *)"PATH_INFO=html/text.php");
+		this->vectorenv.push_back((char *)"PATH_TRANSLATED=html/text.php");
+		//this->vectorenv.push_back((char *)"PATH_NAME=html/text.php");
+		this->vectorenv.push_back((char *)"SCRIPT_NAME=html/text.php");
+		this->vectorenv.push_back((char *)"SCRIPT_FILENAME=html/text.php");
 		char	**cmd = (char **)malloc(3);;
-		cmd[0] = strdup("/usr/bin/php-cgi");
-		cmd[1] = strdup("./html/text.php");
+		cmd[0] = strdup("/usr/bin/php-cgi8.1");
+		cmd[1] = strdup("html/text.php");
 		cmd[2] = 0;
 		int i = 0 ;
+		int agent = 0;
 		char **recup = ft_split(buff, '\n');
 		i = 0;
 		while (recup[i])
 		{
+
+			if (strncmp(recup[i], "User-Agent", 10) == 0)
+				agent = i;
 			if (strncmp(recup[i], "textToUpload", 12) == 0)
 				break ;
 			i++;
 		}
+		std::string res = recup[agent];
+		std::string strAgent = "USER_AGENT=" + res;
+		this->vectorenv.push_back((char *)strAgent.c_str());
 		int tmp = open(".tmp", O_CREAT | O_WRONLY | O_TRUNC, 0666);
 		write(tmp, recup[i], strlen(recup[i]));
 		lseek(tmp, 0, SEEK_SET);
 		fd1 = open("lucieCGI", O_CREAT | O_RDONLY | O_WRONLY | O_TRUNC, 0666);
 		std::string len = "CONTENT_LENGTH=" + intToString(strlen(recup[i]));
-		std::string res = recup[i];
+		res = recup[i];
 		std::string query = "QUERY_STRING=" + res;
+		query = "QUERY_STRING=";
 		this->vectorenv.push_back((char *)query.c_str());
 		this->vectorenv.push_back((char *)len.c_str());
 		this->env =  ft_regroup_envVector(this->vectorenv);
-		int value = 0;
+		i = 0;
+		while (this->env[i])
+		{
+			printf("ENV: %s\n", this->env[i]);
+			i++;
+		}
 		int frk = fork();
 		if (frk == 0)
 		{
@@ -517,19 +530,15 @@ int	Server::recvConnection(int fd)
 			close(tmp);
 			dup2(fd1, 1);
 			close(fd1);
-			execve("/usr/bin/php-cgi", cmd, this->env);
+			execve("/usr/bin/php-cgi8.1", cmd, this->env);
 		}
 		else
-		{
-			waitpid(frk, &value, 0);
-			printf("STATUS = %d\n", WEXITSTATUS(value));
-		}
-
+			wait(NULL);
 		std::string str1 = FirstPage("lucieCGI");
 		std::string skip = "Content-type: text/html; charset=UTF-8 ";
 		str1 = str1.substr(skip.length(), str1.length());
-		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; application/x-www-form-urlencoded\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
-		unlink("lucieCGI");
+		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
+		//unlink("lucieCGI");
 		//unlink(".tmp");
 		this->vectorenv.clear();
 		this->vectorenv = this->vectorenvcpy;
