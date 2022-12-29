@@ -194,14 +194,14 @@ void Location::parser_la_location(int j)
 	}
 	if (_root + _location == "/scale/")
 		_scale = true;
-	std::cout << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" << std::endl;
-	std::cout << "location : " << _location << std::endl; 
-	std::cout << "root : " << this->_root << std::endl; 
-	std::cout << "index : " << _index << std::endl; 
-	for (std::vector<std::string>::iterator it = _methods.begin(); it != _methods.end(); it++){
-		std::cout << *it << std::endl;
-	} 
-	std::cout << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" << std::endl;
+	// std::cout << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" << std::endl;
+	// std::cout << "location : " << _location << std::endl; 
+	// std::cout << "root : " << this->_root << std::endl; 
+	// std::cout << "index : " << _index << std::endl; 
+	// for (std::vector<std::string>::iterator it = _methods.begin(); it != _methods.end(); it++){
+	// 	std::cout << *it << std::endl;
+	// } 
+	// std::cout << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" << std::endl;
 
 }
 

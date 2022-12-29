@@ -1,0 +1,3 @@
+#probleme de parsing si ya index dans location 
+#basicsummary fonctionne pas si on veut se deplacer ds les dossiers
+#le multiport
