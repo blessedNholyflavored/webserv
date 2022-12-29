@@ -55,6 +55,7 @@ void	freeTab(char **tab)
 
 std::string	fileToString(std::string loc);
 std::string     intToString(int i);
+std::string	basicsummary(std::string filePath);
 
 void	Server::splitString(const char *buf, std::string deli, int fd)
 {
@@ -74,13 +75,13 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 		i++;
 	}
 	arr[i] = str.substr(start, end - start);
-//	std::cout << "SPLIT = " << arr[1] << std::endl;
+	std::cout << "SPLIT = " << arr[1] << std::endl;
 //	std::cout << "IN SPLIT: " << str.substr(start, end - start) << std::endl;
 	if (arr[1].compare("/") != 0 && arr[0].compare("GET") == 0 && arr[1].compare("/html/text.php"))
 	{
 		//arr[1] = "./html" + arr[1];
 		std::ifstream file(arr[1].c_str() + 1, std::ios::in);
-		if (!file)
+		if (!file && open(arr[1].c_str() + 1, O_DIRECTORY) == -1)
 		{
 			std::cout << arr[1] << std::endl;
 			std::cerr << "NO FILE" << std::endl;
@@ -90,6 +91,12 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 			|| arr[1].compare(0, 17, "/html/reponse.php") == 0)
 				error = 999;
 			//error = 404;
+		}
+		if (open(arr[1].c_str() + 1, O_DIRECTORY) > 0)
+		{
+			std::cerr << "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKk: " << arr[1] << std::endl;
+			newIndex = basicsummary(arr[1].substr(1, arr[1].length()));
+			error = -99;
 		}
 		else
 		{
@@ -146,7 +153,9 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 			error = 998;
 	}
 	else
-		newIndex = "./html/home.html";
+		basicsummary(arr[1]);
+	// else
+	// 	newIndex = "./html/home.html";
 }
 
 
@@ -444,6 +453,7 @@ int	Server::recvConnection(int fd)
 	{
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(newIndex.length()) + "\n\n" + newIndex + "\n";
 		send(fd, header.c_str(), header.length(), 0);
+		nbfiles = 0;
 	}
 
 	len = recv(fd, buff, 3000, 0);
@@ -589,6 +599,12 @@ int	Server::recvConnection(int fd)
 		this->vectorenv = this->vectorenvcpy;
 		send(fd, header.c_str(), header.length(), 0);
 	}
+	else if (error == -99)
+	{
+		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(newIndex.length()) + "\n\n" + newIndex + "\n";
+		send(fd, header.c_str(), header.length(), 0);
+		error = 0;
+	}
 	else
 	{
 		std::string str1 = FirstPage(newIndex);
@@ -661,23 +677,44 @@ std::string	basicsummary(std::string filePath)
 	DIR*			dirp;
 	struct dirent*	direntp;
 	std::string		index;
-	char			buffer[PATH_MAX];
+	//char			buffer[PATH_MAX];
 	std::string		path;
-	std::string		path1;
+	static	std::string old;
 
-	path = getcwd(buffer, PATH_MAX);
-	path += "/";
-	path1 += filePath; // ici
+	//path = getcwd(buffer, PATH_MAX);
+	if (open(filePath.c_str(), O_DIRECTORY) >= 0)
+		filePath += "/";
+	while (filePath.find("//") != std::string::npos)
+	{
+		filePath.erase(filePath.find("//"), 1);
+	}
+		//filePath = "/";
+	if (filePath == "/")
+		path = old;
+	else
+		path += filePath; // ici
+	old = path;
+	//path += "/";
 
 	index += "<!DOCTYPE html>\n<html>\n\n<title>INDEX</title>\n\n<h1>INDEX</h1>";
 	index += "<hr>";
-
+	/*if (path.compare("/") == 0)
+	{
+		path = ".";
+*/
+	std::cerr << "LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA: " << path << std::endl;
+	// if (path.compare(".") != 0)
+	// {
+	// 	path = "." + path;
+	// 	path += old;
+	// }
 	dirp = opendir(path.c_str());
 	if( dirp != NULL )
 	{
+		std::string test;
 		while((direntp = readdir(dirp)) != NULL)
 		{
-			std::string test = direntp->d_name;	
+			test = direntp->d_name;	
 			if (is_directory(path + '/' + test))
 			{	
 				index += "<ul>";
@@ -687,7 +724,14 @@ std::string	basicsummary(std::string filePath)
 				index += test;
 				index += "</li></a></p>\n";
 				index += "</ul>";
-			}
+		 	}
+		// index += "<ul>";
+		// index += "<li><p><a <style=\"font-weight:bold'\" href=\"";
+		// index += test;
+		// index += "\" class=\"active\">";
+		// index += test;
+		// index += "</li></a></p>\n";
+		// index += "</ul>";
 		}
 		//index += "<title>ici aussi</title>";
 		//int	i = 0;
@@ -707,7 +751,9 @@ std::string	basicsummary(std::string filePath)
 		// 		index += "_Regular file_| ";
 		// else
 		// 		index += "                ";
-		// 	index += "</h4>\n";
+		// 	index += "</h4>\n"
+		index += "</body>";
+		index += "</html>";;
 		closedir( dirp );
 	}
 	return index;
