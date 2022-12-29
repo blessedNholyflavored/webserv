@@ -50,6 +50,8 @@ class Server
 	int parser_le_server(std::string res[], size_t nbligne, int j);
 	int parser(std::string str);
 	void transfer_location(Location location);
+	void    CheckRequest(char *buffer, int fd);
+	void    splitString(const char *buf, std::string deli, int fd);
 
 };
 

@@ -53,8 +53,12 @@ void	freeTab(char **tab)
 	free(tab);
 }
 
-void	splitString(const char *buf, std::string deli)
+std::string	fileToString(std::string loc);
+std::string     intToString(int i);
+
+void	Server::splitString(const char *buf, std::string deli, int fd)
 {
+	(void)fd;
 	std::string str(buf);
 	std::cout << "STARTSPLIT:" << str << std::endl;
 	int start = 0;
@@ -72,7 +76,7 @@ void	splitString(const char *buf, std::string deli)
 	arr[i] = str.substr(start, end - start);
 //	std::cout << "SPLIT = " << arr[1] << std::endl;
 //	std::cout << "IN SPLIT: " << str.substr(start, end - start) << std::endl;
-	if (arr[1].compare("/") != 0 && arr[0].compare("GET") == 0)
+	if (arr[1].compare("/") != 0 && arr[0].compare("GET") == 0 && arr[1].compare("/html/text.php"))
 	{
 		//arr[1] = "./html" + arr[1];
 		std::ifstream file(arr[1].c_str() + 1, std::ios::in);
@@ -94,20 +98,59 @@ void	splitString(const char *buf, std::string deli)
 			error = 200;
 		}
 	}
-	else if (arr[0].compare("POST") == 0)
+	else if (arr[0].compare("POST") == 0 || arr[1].compare("/html/text.php") == 0)
 	{
 		//ne1wIndex = arr[1].substr(1, arr[1].length());
 		newIndex = arr[1];
 		std::cout << "NEW INDEX: " << newIndex << std::endl;
-		error = 998;
+		if (arr[1].compare("/html/text.php") == 0)
+		{
+			int tmp;
+			std::string recup = "." + arr[1];
+			tmp = open(recup.c_str(), O_RDONLY, 0644);
+			std::cerr << "FILEEEEEEEEEEEEEEEEEEE: " << recup << std::endl;
+			if (tmp == -1)
+				printf("laaaaaaaaaaaaaaaa\n");
+				
+			int lucie = open("lucieCGI", O_CREAT | O_WRONLY | O_RDONLY | O_TRUNC, 0644);
+			char	**cmd = (char **)malloc(3);;
+			cmd[0] = strdup("/usr/bin/php-cgi");
+			cmd[1] = strdup("./html/text.php");
+			cmd[2] = 0;
+			this->vectorenv.push_back((char *)("REQUEST_METHOD=GET"));
+			this->vectorenv.push_back((char *)"PATH_INFO=./html/text.php");
+			this->vectorenv.push_back((char *)"PATH_TRANSLATED=./html/text.php");
+			this->vectorenv.push_back((char *)"PATH_NAME=./html/text.php");
+			this->vectorenv.push_back((char *)"SCRIPT_NAME=./html/text.php");
+			this->vectorenv.push_back((char *)"SCRIPT_FILENAME=./html/text.php");
+			this->env = ft_regroup_envVector(this->vectorenv);
+			int frk = fork();
+			if (frk == 0)
+			{
+				dup2(tmp, 0);
+				close(tmp);
+				dup2(lucie, 1);
+				close(lucie);
+				execve("/usr/bin/php-cgi", cmd, this->env);
+				exit(0);
+			}
+			else
+			{
+				wait(NULL);
+				error = 54;
+			}
+			this->vectorenv.clear();
+			this->vectorenv = this->vectorenvcpy;
+		}
+		if (arr[0].compare("POST") == 0 && arr[1].compare("/html/text.php") == 0)
+			error = 998;
 	}
 	else
 		newIndex = "./html/home.html";
 }
 
-std::string	fileToString(std::string loc);
 
-void	CheckRequest(char *buffer)
+void	Server::CheckRequest(char *buffer, int fd)
 {
 	static	int a = 0;
 	std::string cpy(buffer);
@@ -134,7 +177,7 @@ void	CheckRequest(char *buffer)
 	if (a > 0)
 	{
 		//printf("BEFORESPLIT: %s\n", test.c_str());
-		splitString(test.c_str(), " ");
+		splitString(test.c_str(), " ", fd);
 	}
 	a++;
 }
@@ -402,13 +445,12 @@ int	Server::recvConnection(int fd)
 	ssize_t	len;
 	char	buff[3000];
 
-
 	len = recv(fd, buff, 3000, 0);
 	if (len > 0)
 		printf("BUFF in recv:\n%s\n", buff);
 	request = new Request;
 	//request->parsRequest(buff, location);
-	CheckRequest(buff);
+	CheckRequest(buff, fd);
 	if (request->getRetCode() == 400){
 		char str3[] = "bad version http";
 		write(fd, str3, strlen(str3));
@@ -492,17 +534,18 @@ int	Server::recvConnection(int fd)
 		cmd[2] = 0;
 		int i = 0 ;
 		int agent = 0;
-		char **recup = ft_split(buff, '\n');
+		char **recup = ft_split(buff, '\r');
 		i = 0;
 		while (recup[i])
 		{
-
+			recup[i] = recup[i] + 1;
 			if (strncmp(recup[i], "User-Agent", 10) == 0)
 				agent = i;
 			if (strncmp(recup[i], "textToUpload", 12) == 0)
 				break ;
 			i++;
 		}
+		recup[i] = strdup("textToUpload=123&submit=Send+text");
 		std::string res = recup[agent];
 		std::string strAgent = "USER_AGENT=" + res;
 		this->vectorenv.push_back((char *)strAgent.c_str());
@@ -516,7 +559,7 @@ int	Server::recvConnection(int fd)
 		query = "QUERY_STRING=";
 		this->vectorenv.push_back((char *)query.c_str());
 		this->vectorenv.push_back((char *)len.c_str());
-		this->env =  ft_regroup_envVector(this->vectorenv);
+		this->env = ft_regroup_envVector(this->vectorenv);
 		i = 0;
 		while (this->env[i])
 		{
@@ -530,7 +573,7 @@ int	Server::recvConnection(int fd)
 			close(tmp);
 			dup2(fd1, 1);
 			close(fd1);
-			execve("/usr/bin/php-cgi8.1", cmd, this->env);
+			execve("/usr/bin/php-cgi", cmd, this->env);
 		}
 		else
 			wait(NULL);
@@ -544,10 +587,16 @@ int	Server::recvConnection(int fd)
 		this->vectorenv = this->vectorenvcpy;
 		send(fd, header.c_str(), header.length(), 0);
 	}
-
 	else
 	{
 		std::string str1 = FirstPage(newIndex);
+		if (error == 54)
+		{
+			str1 = fileToString("lucieCGI");
+			std::string skip = "Content-type: text/html; charset=UTF-8 ";
+			str1 = str1.substr(skip.length(), str1.length());
+			error = 0;
+		}
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 	}
@@ -589,7 +638,7 @@ void	StartServer(Server server)
 
 	/*std::vector<char *>::iterator it = server.vectorenvcpy.begin();
 	for (; it != server.vectorenvcpy.end(); it++)
-		std::cerr << "vec: " << *it << std::endl;*/
+		std::cerr << "vec first: " << *it << std::endl;*/
 	server.epoll_fd = epoll_create1(0);
 
 	newIndex = "./html/home.html";
@@ -603,6 +652,8 @@ void	StartServer(Server server)
 		if (event_count > 0)
 			server.event_receptor(events, event_count);
 		//newIndex = "";
+		server.vectorenv.clear();
+		server.vectorenv = server.vectorenvcpy;
 		error = 0;
 	}
 }

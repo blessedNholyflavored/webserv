@@ -1,3 +1,5 @@
+Content-type: text/html; charset=UTF-8
+
 <!DOCTYPE html>
 <html>
 <title >webserv's super html page</title>
@@ -39,7 +41,7 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
 		<div>
                         <h2>Upload a text to the server</h2>
 
-                        <form action="/html/text.php" method="POST">
+                        <form action="./html/text.php" method="POST">
                                 Type text to upload to the server:<br><br>
                                 <input type="text" name="textToUpload"><br><br>
                                 <input type="submit" value="Send text" name="submit">
@@ -49,15 +51,7 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
 		<div>
                         <h2>Read the text uploaded to the server</h2>
 
-                        <?php
-                        $file = 'salut.txt';
-				//$_POST['textToUpload'] = "lol";
-                                $txt = htmlspecialchars($_POST['textToUpload']);
-                                file_put_contents($file, $txt);
-                        $file = file_get_contents($file, true);
-                        echo "<input id=\"read_box\" type=\"text\" value=\"$file\" readonly>";
-                        ?>
-		</div>
+                        <input id="read_box" type="text" value="" readonly>		</div>
 	</div>	
 	
 
