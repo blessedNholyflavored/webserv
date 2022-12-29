@@ -203,7 +203,9 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 		std::string test = ltrim(port);
 		if (check_int1(test))
 			std::cerr << "port should be an int" << std::endl;
-		this->port = atoi(port.c_str());			
+		this->port = atoi(port.c_str());
+		this->nbport.push_back(this->port);
+		
 	}
 	else if (res[j].find("error_page") != std::string::npos)
 	{

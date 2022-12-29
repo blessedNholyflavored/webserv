@@ -33,6 +33,7 @@ class Server
 	std::string					index;
 	std::vector<std::string>	error_page;
 	std::vector<std::string>	error_name;
+	std::vector<int>			nbport;
 	bool						autoindex;
 	std::vector<Location>		location;
 	char **env;
