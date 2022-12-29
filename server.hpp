@@ -6,11 +6,14 @@
 # include <string>
 # include <cstdlib>
 # include <cstring>
+# include <dirent.h> 
 # include <unistd.h>
 # include "location.hpp"
 # include "parsing_request.hpp"
 # include <vector>
 # include "functions.h"
+#include <sys/types.h>
+#include <sys/stat.h>
 # define WHITESPACES "; \t"
 struct s_list;
 
@@ -49,7 +52,6 @@ class Server
 	int parser(std::string str);
 	void transfer_location(Location location);
 	bool autoindexed() const;
-
 };
 
 size_t countEndl(std::string content);

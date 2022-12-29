@@ -155,19 +155,6 @@ std::string	intToString(int i)
 }
 
 
-void	createlinfkFile(std::string &index, int i)
-{
-	//std::cout << "TTETTSTST:" << newfile[i] << std::endl;
-	index += "<h4>";
-	//index += "File " + std::to_string(i) + ":";
-	index += "File " + intToString(i) + ":";
-	index += "<a href=\"";
-	index += newfile[i - 1];
-	index += "\">";
-	index += newfile[i - 1];
-	index += "</a>";
-	index += "</h4>\n";
-}
 
 std::string FirstPage(std::string filePath)
 {
@@ -376,8 +363,8 @@ int	Server::recvConnection(int fd)
 
 	if (nbfiles == 76)
 	{
-		newIndex = FirstPage("./html/404.html"); // page a creer
-		std::string header = "HTTP/1.1 404 NOT FOUND\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(newIndex.length()) + "\n\n" + newIndex + "\n";
+		newIndex = FirstPage("./html/403.html"); // page a creer
+		std::string header = "HTTP/1.1 403 FORBIDDEN\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(newIndex.length()) + "\n\n" + newIndex + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 		nbfiles = 0;
 	}
@@ -494,47 +481,83 @@ int	Server::event_receptor(struct epoll_event events[5], int event_count)
 	return (0);
 }
 
-
-std::string	basicsummary(std::string dir)
+void	createlinfkFile(std::string &index, int i)
 {
-	std::string path;
-	std::string	index;
-	char buffer[PATH_MAX];
+	//std::cout << "TTETTSTST:" << newfile[i] << std::endl;
+	index += "<h4>";
+	//index += "File " + std::to_string(i) + ":";
+	index += "File " + intToString(i) + ":";
+	index += "<a href=\"";
+	index += newfile[i - 1];
+	index += "\">";
+	index += newfile[i - 1];
+	index += "</a>";
+	index += "</h4>\n";
+}
+
+bool is_directory(const std::string &filename)
+{
+	struct stat st_buf;
+	int status = stat(filename.c_str(), &st_buf);
+	if (status != 0) {
+		return false;
+	}
+	return (S_ISDIR(st_buf.st_mode) == 1);
+}
+
+std::string	basicsummary(std::string filePath)
+{
+	DIR*			dirp;
+	struct dirent*	direntp;
+	std::string		index;
+	char			buffer[PATH_MAX];
+	std::string		path;
+	std::string		path1;
 
 	path = getcwd(buffer, PATH_MAX);
 	path += "/";
-	//path += filePath;
-	DIR *dp = opendir(dir.c_str());
+	path1 += filePath; // ici
 
 	index += "<!DOCTYPE html>\n<html>\n\n<title>INDEX</title>\n\n<h1>INDEX</h1>";
-	index += "<body id=\"all\">";
-	index += "<form id=\"form\">";
-	index += "<input type=\"file\" name=\"background\" />";
-	index += "<button type=\"submit\">SEND</button>\n\n";
-	index += "</form>";
-	index += "<p id=\"message\"></p>";
-	index += "<button id=\"btn\">test</button>\n\n";
-	if( dp == NULL )
-			return ("<title>Directory Not Found</title><H1>Directory " + dir + " Not Found</H1>");
+	index += "<hr>";
+
+	dirp = opendir(path.c_str());
+	if( dirp != NULL )
 	{
-		struct dirent *dirp;
-		//int	i = 0;
-        for(;;)
+		while((direntp = readdir(dirp)) != NULL)
 		{
-            dirp = readdir(dp);
-            if ( dirp == NULL )
-		break;
-			index += "<h4>";
-			if ( dirp->d_type == DT_DIR)
-				index += path + "__Directory__| ";
-			else if ( dirp->d_type == DT_REG)
-				index += path + "_Regular file_| ";
-			else
-				index += "                ";
-			//createLink(index, dirp);
-			index += "</h4>\n";
+			std::string test = direntp->d_name;	
+			if (is_directory(path + '/' + test))
+			{	
+				index += "<ul>";
+				index += "<li><p><a <style=\"font-weight:bold'\" href=\"";
+				index += test;
+				index += "\" class=\"active\">";
+				index += test;
+				index += "</li></a></p>\n";
+				index += "</ul>";
+			}
 		}
-		closedir( dp );
+		//index += "<title>ici aussi</title>";
+		//int	i = 0;
+        // for(;;)
+		// {
+        //     direntp = readdir( dirp );
+        //     if ( direntp == NULL )
+		// break;
+		// 	index += "<h4>";
+		// std::string test = direntp->d_name;
+		// std::cout << "dirp  ---> " <<  test << std::endl;
+		//index += "<a href=\"" + test +"\">" + test + "</a>\n";
+
+		// if ( direntp->d_type == DT_DIR)
+		// 		index += "__Directory__| ";
+		// else if ( direntp->d_type == DT_REG)
+		// 		index += "_Regular file_| ";
+		// else
+		// 		index += "                ";
+		// 	index += "</h4>\n";
+		closedir( dirp );
 	}
 	return index;
 }
@@ -553,16 +576,17 @@ void	StartServer(Server server)
 		std::cout << "index est : " <<  server.index << std::endl;
 		if (server.index.empty())
 		{
+			std::string tmp;
 			//std::cout << &index << std::endl;
 			std::cout << "index est empty donc renvoyer vers une page de sommaire" << std::endl;
-			newIndex = basicsummary("/mnt/nfs/homes/lkhamlac/Desktop/webserv"); //page a creeer
+			newIndex = basicsummary("."); //page a creeer
 			nbfiles = 666;
-		
 		}
 		else
 		{
-			newIndex = server.index; //"./html/home.html";
+			newIndex = server.index.substr(1, server.index.length()); 
 			std::cout << " pas empty " << std::endl;
+			// pb car on lance le server en lui donannt ladresse de index - >>> mais si changer de page, il garde tjrs ladresse initiale
 		}
 	}
 	else
@@ -577,7 +601,7 @@ void	StartServer(Server server)
 		}
 		else
 		{
-			newIndex = server.index.substr(1, server.index.length()); //"./html/home.html";
+			newIndex = server.index.substr(1, server.index.length()); 
 			std::cout << " pas empty " << std::endl;
 		}
 	}
