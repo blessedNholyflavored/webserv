@@ -54,8 +54,8 @@ class Server
 	int parser(std::string str);
 	void transfer_location(Location location);
 	bool autoindexed() const;
-	void    CheckRequest(char *buffer, int fd);
-	void    splitString(const char *buf, std::string deli, int fd);
+	void CheckRequest(char *buffer, int fd);
+	void splitString(const char *buf, std::string deli, int fd);
 };
 
 size_t countEndl(std::string content);

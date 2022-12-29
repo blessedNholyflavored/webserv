@@ -41,7 +41,7 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
 		<div>
                         <h2>Upload a text to the server</h2>
 
-                        <form action="./html/text.php" method="POST">
+                        <form action="/html/text.php" method="POST">
                                 Type text to upload to the server:<br><br>
                                 <input type="text" name="textToUpload"><br><br>
                                 <input type="submit" value="Send text" name="submit">

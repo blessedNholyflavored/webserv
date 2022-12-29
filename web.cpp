@@ -13,6 +13,7 @@
 #include <vector>
 #include "server.hpp"
 #include "functions.h"
+#include <cmath>
 
 
 #define MAX_EVENTS 5
@@ -436,12 +437,20 @@ int	Server::recvConnection(int fd)
 	if (nbfiles == 76)
 	{
 		newIndex = FirstPage("./html/403.html"); // page a creer
+		if (intToString(newIndex.length()) > max_client_body_size)
+			{
+				error = 413;
+			}
 		std::string header = "HTTP/1.1 403 FORBIDDEN\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(newIndex.length()) + "\n\n" + newIndex + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 		nbfiles = 0;
 	}
 	if (nbfiles == 666)
 	{
+		if (intToString(newIndex.length()) > max_client_body_size)
+			{
+				error = 413;
+			}
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(newIndex.length()) + "\n\n" + newIndex + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 	}
@@ -450,12 +459,14 @@ int	Server::recvConnection(int fd)
 	if (len > 0)
 		printf("BUFF in recv:\n%s\n", buff);
 	request = new Request;
-	//request->parsRequest(buff, location);
-
-	CheckRequest(buff, fd);
+	request->parsRequest(buff, location);
+	newIndex = request->getPath();
+	if (newIndex == "/")
+		newIndex = FirstPage("./html/home.html");
+	//CheckRequest(buff, fd);
 	if (request->getRetCode() == 400){
 		char str3[] = "bad version http";
-		write(fd, str3, strlen(str3));
+		write(fd, str3, ft_strlen(str3));
 	}
 	// else if (request->getRetCode() == 404)
 	// {
@@ -488,10 +499,14 @@ int	Server::recvConnection(int fd)
 			i++;
 		}
 		int tmp = open(".tmp", O_CREAT | O_WRONLY | O_TRUNC, 0666);
-		write(tmp, recup[i], strlen(recup[i]));
+		write(tmp, recup[i], ft_strlen(recup[i]));
 		lseek(tmp, 0, SEEK_SET);
 		fd1 = open("lucieCGI", O_CREAT | O_RDONLY | O_WRONLY | O_TRUNC, 0666);
-		std::string len = "CONTENT_LENGTH=" + intToString(strlen(recup[i]));
+		if (ft_strlen(recup[i]) > ft_atoi(max_client_body_size.c_str()))
+			{
+				error = 413;
+			}
+		std::string len = "CONTENT_LENGTH=" + intToString(ft_strlen(recup[i]));
 		std::string res = recup[i];
 		std::string query = "QUERY_STRING=" + res;
 		this->vectorenv.push_back((char *)query.c_str());
@@ -511,6 +526,10 @@ int	Server::recvConnection(int fd)
 		str1 = fileToString("lucieCGI");
 		std::string skip = "Content-type: text/html; charset=UTF-8 ";
 		str1 = str1.substr(skip.length(), str1.length());
+		if (intToString(str1.length())  > max_client_body_size)
+		{
+			error = 413;
+		}
 		header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		unlink(".tmp");
 		unlink("lucieCGI");
@@ -555,7 +574,11 @@ int	Server::recvConnection(int fd)
 		write(tmp, recup[i], strlen(recup[i]));
 		lseek(tmp, 0, SEEK_SET);
 		fd1 = open("lucieCGI", O_CREAT | O_RDONLY | O_WRONLY | O_TRUNC, 0666);
-		std::string len = "CONTENT_LENGTH=" + intToString(strlen(recup[i]));
+		if (ft_strlen(recup[i]) > ft_atoi(max_client_body_size.c_str()))
+		{
+			error = 413;
+		}
+		std::string len = "CONTENT_LENGTH=" + intToString(ft_strlen(recup[i]));
 		res = recup[i];
 		std::string query = "QUERY_STRING=" + res;
 		query = "QUERY_STRING=";
@@ -582,6 +605,10 @@ int	Server::recvConnection(int fd)
 		std::string str1 = FirstPage("lucieCGI");
 		std::string skip = "Content-type: text/html; charset=UTF-8 ";
 		str1 = str1.substr(skip.length(), str1.length());
+		if (((int)str1.length())  > ft_atoi(max_client_body_size.c_str()))
+		{
+			error = 413;
+		}
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		//unlink("lucieCGI");
 		//unlink(".tmp");
@@ -599,6 +626,10 @@ int	Server::recvConnection(int fd)
 			str1 = str1.substr(skip.length(), str1.length());
 			error = 0;
 		}
+		if (((int)str1.length())  > ft_atoi(max_client_body_size.c_str()))
+		{
+			error = 413;
+		}
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 	}
@@ -611,6 +642,10 @@ int	Server::sendConnection(int fd)
 	if (a == 0)
 	{
 		std::string str1 = FirstPage(newIndex);
+		if ((int)str1.length() > ft_atoi(max_client_body_size.c_str()))
+		{
+			error = 413;
+		}
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 	}

@@ -33,5 +33,7 @@ char    **ft_regroup_env(t_list *lst);
 char    **ft_split(char const *s, char c);
 void    ft_lstclear(t_list **lst, void (*del)(void *));
 void    del(void *data);
+int		ft_strlen(char *str);
+int	ft_atoi(const char *str);
 
 #endif

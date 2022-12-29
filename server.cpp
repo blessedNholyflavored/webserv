@@ -5,6 +5,7 @@
 Server::Server() //: max_client_body_size(4096), listen_fd(0)
 {
 	port = 0;
+	autoindex = false;
 }
 
 Server::~Server()
@@ -209,9 +210,8 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 		std::string test = ltrim(port);
 		if (check_int1(test))
 			std::cerr << "port should be an int" << std::endl;
-		this->port = atoi(port.c_str());
+		this->port = ft_atoi(port.c_str());
 		this->nbport.push_back(this->port);
-		
 	}
 	else if (res[j].find("error_page") != std::string::npos)
 	{
@@ -255,8 +255,10 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 		if (tmp.size() > 1 && tmp[tmp.size() - 1] == '/')
 			tmp.resize(tmp.size() - 1);
 		this->root = (tmp.c_str());
+		// nginx garde le root qui a le plus long prefixe et lattribue
+		std::cout << "root " <<  root << std::endl;
 	}
-		else if (res[j].find("max_client_body_size") != std::string::npos) 
+	else if (res[j].find("max_client_body_size") != std::string::npos) 
 	{
 		std::string tmp(&res[j][22]);
 		std::vector<std::string> max_body_size = ft_split(tmp, " ");
