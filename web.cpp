@@ -11,6 +11,7 @@
 #include <fstream>
 #include <fcntl.h>
 #include <dirent.h>
+#include <vector>
 #include "server.hpp"
 #include "functions.h"
 
@@ -23,6 +24,35 @@ static std::string	split[4096];
 static std::string	newfile[5];
 static	int	nbfiles = 0;
 static	int	statusfile = 0;
+
+char	**ft_regroup_envVector(std::vector<char *> vec)
+{
+	char **res;
+	int i = 0;
+	
+	res = (char **)malloc(sizeof(char*) * (vec.size() + 1));
+	std::vector<char *>::iterator it = vec.begin();
+	for (; it != vec.end(); it++)
+	{
+		res[i] = (char *)*it;
+		//printf("REGROUP: %s\n", res[i]);
+		i++;
+	}
+	res[i] = 0;
+	return res;
+}
+
+void	freeTab(char **tab)
+{
+	int i = 0;
+	
+	while (tab[i])
+	{
+		free(tab[i]);
+		i++;
+	}
+	free(tab);
+}
 
 void	splitString(const char *buf, std::string deli)
 {
@@ -70,7 +100,7 @@ void	splitString(const char *buf, std::string deli)
 		//ne1wIndex = arr[1].substr(1, arr[1].length());
 		newIndex = arr[1];
 		std::cout << "NEW INDEX: " << newIndex << std::endl;
-		error = 999;
+		error = 998;
 	}
 	else
 		newIndex = "./html/home.html";
@@ -393,17 +423,19 @@ int	Server::recvConnection(int fd)
 	else if (error == 999)
 	{
 		int fd1;
-
-		//std::cerr << "BRYCEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE: " << newIndex << std::endl;
+		this->vectorenv.push_back((char *)("REQUEST_METHOD=GET"));
+		this->vectorenv.push_back((char *)"PATH_INFO=./reponse.php");
+		this->vectorenv.push_back((char *)"PATH_TRANSLATED=./reponse.php");
+		this->vectorenv.push_back((char *)"PATH_NAME=./reponse.php");
+		this->vectorenv.push_back((char *)"SCRIPT_NAME=./reponse.php");
+		this->vectorenv.push_back((char *)"SCRIPT_FILENAME=./reponse.php");
 		std::string str1;// = fileToString(newIndex);
 		std::string header;// = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
-		//std::string header = "test";
 		char	**cmd = (char **)malloc(3);;
 		cmd[0] = strdup("/usr/bin/php-cgi");
 		cmd[1] = strdup("./reponse.php");
 		cmd[2] = 0;
 		int i = 0 ;
-		std::cerr << "IIIIIIIIIIIIIIIIIIIIIIIIIIIIII: " << newIndex << std::endl;
 		char **recup = ft_split(newIndex.c_str(), '?');
 		i = 0;
 		while (recup[i])
@@ -413,22 +445,18 @@ int	Server::recvConnection(int fd)
 			i++;
 		}
 		int tmp = open(".tmp", O_CREAT | O_WRONLY | O_TRUNC, 0666);
-		std::cerr << "RECUPPPP: " << recup[i] << std::endl;
 		write(tmp, recup[i], strlen(recup[i]));
 		lseek(tmp, 0, SEEK_SET);
 		fd1 = open("lucieCGI", O_CREAT | O_RDONLY | O_WRONLY | O_TRUNC, 0666);
 		std::string len = "CONTENT_LENGTH=" + intToString(strlen(recup[i]));
 		std::string res = recup[i];
 		std::string query = "QUERY_STRING=" + res;
-		ft_lstadd_back(&this->lst, ft_lstnew(NULL, NULL, (char *)query.c_str()));
-		ft_lstadd_back(&this->lst, ft_lstnew(NULL, NULL, (char *)len.c_str()));
-		std::cerr << "LEEEEEEEEEEN: " << len << std::endl;
-		//ft_lstadd_back(&this->lst, ft_lstnew(NULL, NULL, (char *)"REMOTE_HOST=localhost"));
-		this->env =  ft_regroup_env(this->lst);
+		this->vectorenv.push_back((char *)query.c_str());
+		this->vectorenv.push_back((char *)len.c_str());
+		this->env =  ft_regroup_envVector(this->vectorenv);
 		int frk = fork();
 		if (frk == 0)
 		{
-			//write(0, recup[i], strlen(recup[i]));
 			dup2(tmp, 0);
 			close(tmp);
 			dup2(fd1, 1);
@@ -443,8 +471,71 @@ int	Server::recvConnection(int fd)
 		header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		unlink(".tmp");
 		unlink("lucieCGI");
+		//freeTab(this->env);
+		this->vectorenv.clear();
+		this->vectorenv = this->vectorenvcpy;
 		send(fd, header.c_str(), header.length(), 0);
 	}
+	else if (error == 998)
+	{
+		int fd1;
+
+		this->vectorenv.push_back((char *)("REQUEST_METHOD=POST"));
+		this->vectorenv.push_back((char *)"PATH_INFO=./html/text.php");
+		this->vectorenv.push_back((char *)"PATH_TRANSLATED=./html/text.php");
+		this->vectorenv.push_back((char *)"PATH_NAME=./html/text.php");
+		this->vectorenv.push_back((char *)"SCRIPT_NAME=./html/text.php");
+		this->vectorenv.push_back((char *)"SCRIPT_FILENAME=./html/text.php");
+		char	**cmd = (char **)malloc(3);;
+		cmd[0] = strdup("/usr/bin/php-cgi");
+		cmd[1] = strdup("./html/text.php");
+		cmd[2] = 0;
+		int i = 0 ;
+		char **recup = ft_split(buff, '\n');
+		i = 0;
+		while (recup[i])
+		{
+			if (strncmp(recup[i], "textToUpload", 12) == 0)
+				break ;
+			i++;
+		}
+		int tmp = open(".tmp", O_CREAT | O_WRONLY | O_TRUNC, 0666);
+		write(tmp, recup[i], strlen(recup[i]));
+		lseek(tmp, 0, SEEK_SET);
+		fd1 = open("lucieCGI", O_CREAT | O_RDONLY | O_WRONLY | O_TRUNC, 0666);
+		std::string len = "CONTENT_LENGTH=" + intToString(strlen(recup[i]));
+		std::string res = recup[i];
+		std::string query = "QUERY_STRING=" + res;
+		this->vectorenv.push_back((char *)query.c_str());
+		this->vectorenv.push_back((char *)len.c_str());
+		this->env =  ft_regroup_envVector(this->vectorenv);
+		int value = 0;
+		int frk = fork();
+		if (frk == 0)
+		{
+			dup2(tmp, 0);
+			close(tmp);
+			dup2(fd1, 1);
+			close(fd1);
+			execve("/usr/bin/php-cgi", cmd, this->env);
+		}
+		else
+		{
+			waitpid(frk, &value, 0);
+			printf("STATUS = %d\n", WEXITSTATUS(value));
+		}
+
+		std::string str1 = FirstPage("lucieCGI");
+		std::string skip = "Content-type: text/html; charset=UTF-8 ";
+		str1 = str1.substr(skip.length(), str1.length());
+		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; application/x-www-form-urlencoded\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
+		unlink("lucieCGI");
+		//unlink(".tmp");
+		this->vectorenv.clear();
+		this->vectorenv = this->vectorenvcpy;
+		send(fd, header.c_str(), header.length(), 0);
+	}
+
 	else
 	{
 		std::string str1 = FirstPage(newIndex);
@@ -487,6 +578,9 @@ void	StartServer(Server server)
 	int	event_count;
 	struct	epoll_event events[5];
 
+	/*std::vector<char *>::iterator it = server.vectorenvcpy.begin();
+	for (; it != server.vectorenvcpy.end(); it++)
+		std::cerr << "vec: " << *it << std::endl;*/
 	server.epoll_fd = epoll_create1(0);
 
 	newIndex = "./html/home.html";
@@ -499,6 +593,7 @@ void	StartServer(Server server)
 			fprintf(stderr, "error in epoll_wait\n");
 		if (event_count > 0)
 			server.event_receptor(events, event_count);
+		//newIndex = "";
 		error = 0;
 	}
 }

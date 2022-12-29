@@ -21,6 +21,8 @@ class Server
 	Server();
 	~Server();
 	s_list *lst;
+	std::vector<char *> vectorenv;
+	std::vector<char *> vectorenvcpy;
 	std::string					max_client_body_size;
 	std::string					name_server;
 	std::string					root;
