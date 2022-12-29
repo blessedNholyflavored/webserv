@@ -17,7 +17,7 @@ void	Request::parsRequest(std::string str, std::vector<Location> location){
 	for (; str[i] != ' '; i++){
 		path.push_back(str[i]);
 	}
-	_path = path;
+	_path = "." + path;
 	i++;
 
 	std::string version;
@@ -39,14 +39,15 @@ void	Request::parsRequest(std::string str, std::vector<Location> location){
 	
 	if (method == "GET"){
 		std::ifstream file;
-		file.open(path.c_str(), std::ifstream::in);
 		if (!checkLocation(path, 1, location)){
 			_retCode = 777;
 			std::cout << "pas les droits" << std::endl;
 			return ;
 		}
+		std::cout << "path = "<< path << "-          qqqqqqqqqqqqqqqqqq" << std::endl;
+		file.open(_path.c_str(), std::ifstream::in);
 		if (!file.is_open()){
-			std::cerr << "Erreur 404, page not found" << std::endl;
+			std::cerr << "ALLLLLLLLLLLLLLLLLLLLLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
 			_retCode = 404;
 			return ;
 		}
@@ -68,7 +69,6 @@ void	Request::parsRequest(std::string str, std::vector<Location> location){
 		file.close();
 	}
 	else {
-		std::cout << "ediediedjiejd" << std::endl;
 		if (!checkLocation(path, 3, location)){
 			_retCode = 404;
 			return ;
@@ -100,10 +100,10 @@ std::vector<Location>::iterator	&Request::findGoodLocation(std::string str, std:
 	for(std::vector<Location>::iterator it2 = location.begin(); it2 != location.end(); it2++){
 		std::string tmpLoc = it2->getRoot() + it2->getLocation();
 		if (tmpLoc[tmpLoc.length() - 1] == '/')
-			str.erase(str.length(), 1);
+			str.erase(str.length() - 1, 1);
 		countTmp = -1;
 		int len = str.length() - 1;
-		while(str != "/scale" && len > 6){
+		while(str != "/scale"){
 			if (countTmp >= 0)
 				countTmp++;
 			if (str == tmpLoc){
@@ -113,11 +113,10 @@ std::vector<Location>::iterator	&Request::findGoodLocation(std::string str, std:
 			else
 				isFind  = false;
 			while (str[len] != '/'){
-				std::cout << "str = " << str << "len = " << len << "str[len] = " << str[len] << std::endl;
-				str.erase(str.length(), 2);
+				str.erase(str.length() - 1, 1);
 				len--;
 			}
-			str.erase(str.length(), 1);
+			str.erase(str.length() - 1, 1);
 			len--;
 			if (countTmp == -1)
 				countTmp = 0;
