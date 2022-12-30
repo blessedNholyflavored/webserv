@@ -19,7 +19,7 @@
 #define MAX_EVENTS 5
 
 static int error = 0;
-static std::string  newIndex = "";
+//static std::string  newIndex = "";
 static std::string	split[4096];
 static std::string	newfile[5];
 static	int	nbfiles = 0;
@@ -86,31 +86,31 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 		{
 			std::cout << arr[1] << std::endl;
 			std::cerr << "NO FILE" << std::endl;
-			newIndex = arr[1];
-			std::cout << "SALOOOOOOOOOOOP: " << newIndex << std::endl;
+			this->newIndex = arr[1];
+			std::cout << "SALOOOOOOOOOOOP: " << this->newIndex << std::endl;
 			if (arr[1].compare(0, 12, "/reponse.php") == 0
 			|| arr[1].compare(0, 17, "/html/reponse.php") == 0)
 				error = 999;
 			//error = 404;
 		}
-		if (open(arr[1].c_str() + 1, O_DIRECTORY) > 0)
+		else if (open(arr[1].c_str() + 1, O_DIRECTORY) > 0)
 		{
 			std::cerr << "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKk: " << arr[1] << std::endl;
-			newIndex = basicsummary(arr[1].substr(1, arr[1].length()));
+			this->newIndex = basicsummary(arr[1].substr(1, arr[1].length()));
 			error = -99;
 		}
 		else
 		{
-			newIndex = arr[1].substr(1, arr[1].length());
-			std::cerr << "HEREEEEEEE newIndex: " << newIndex << std::endl; 
+			this->newIndex = arr[1].substr(1, arr[1].length());
+			std::cerr << "HEREEEEEEE this->newIndex: " << this->newIndex << std::endl; 
 			error = 200;
 		}
 	}
 	else if (arr[0].compare("POST") == 0 || arr[1].compare("/html/text.php") == 0)
 	{
 		//ne1wIndex = arr[1].substr(1, arr[1].length());
-		newIndex = arr[1];
-		std::cout << "NEW INDEX: " << newIndex << std::endl;
+		this->newIndex = arr[1];
+		std::cout << "NEW INDEX: " << this->newIndex << std::endl;
 		if (arr[1].compare("/html/text.php") == 0)
 		{
 			int tmp;
@@ -156,7 +156,9 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 	else
 		basicsummary(arr[1]);
 	// else
-	// 	newIndex = "./html/home.html";
+	// 	this->newIndex = "./html/home.html";
+	
+	std::cerr << "kgdfvbdfvsdffvsfvrfrfdvrfvifffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff: " << error << "\n";
 }
 
 
@@ -445,22 +447,22 @@ int	Server::recvConnection(int fd)
 
 	if (nbfiles == 76)
 	{
-		newIndex = FirstPage("./html/403.html"); // page a creer
-		if (intToString(newIndex.length()) > max_client_body_size)
+		this->newIndex = FirstPage("./html/403.html"); // page a creer
+		if (intToString(this->newIndex.length()) > max_client_body_size)
 			{
 				error = 413;
 			}
-		std::string header = "HTTP/1.1 403 FORBIDDEN\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(newIndex.length()) + "\n\n" + newIndex + "\n";
+		std::string header = "HTTP/1.1 403 FORBIDDEN\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(this->newIndex.length()) + "\n\n" + this->newIndex + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 		nbfiles = 0;
 	}
 	if (nbfiles == 666)
 	{
-		if (intToString(newIndex.length()) > max_client_body_size)
+		if (intToString(this->newIndex.length()) > max_client_body_size)
 			{
 				error = 413;
 			}
-		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(newIndex.length()) + "\n\n" + newIndex + "\n";
+		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(this->newIndex.length()) + "\n\n" + this->newIndex + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 		nbfiles = 0;
 	}
@@ -468,24 +470,25 @@ int	Server::recvConnection(int fd)
 	len = recv(fd, buff, 3000, 0);
 	if (len > 0)
 		printf("BUFF in recv:\n%s\n", buff);
-	request = new Request;
-	request->parsRequest(buff, location);
-	newIndex = request->getPath();
-	if (newIndex == "/")
-		newIndex = FirstPage("./html/home.html");
-	//CheckRequest(buff, fd);
-	if (request->getRetCode() == 400){
-		char str3[] = "bad version http";
-		write(fd, str3, ft_strlen(str3));
-	}
+	//request = new Request;
+	//request->parsRequest(buff, location);
+	//this->newIndex = request->getPath();
+	//if (this->newIndex == "/")
+	//	this->newIndex = FirstPage("./html/home.html");
+	CheckRequest(buff, fd);
+	//if (request->getRetCode() == 400){
+	//	char str3[] = "bad version http";
+	//	write(fd, str3, ft_strlen(str3));
+	//}
 	// else if (request->getRetCode() == 404)
 	// {
 	// 	printf("%d\n", error);
 	// 	char str3[] = "HTTP/1.1 404 Not Found\nContent-Type: text/plain\nContent-Length: 19\n\n404 page not found\n";
 	// 	write(fd, str3, strlen(str3));
 	// }
-	else if (error == 999)
+	if (error == 999)
 	{
+		
 		int fd1;
 		this->vectorenv.push_back((char *)("REQUEST_METHOD=GET"));
 		this->vectorenv.push_back((char *)"PATH_INFO=./reponse.php");
@@ -493,14 +496,14 @@ int	Server::recvConnection(int fd)
 		this->vectorenv.push_back((char *)"PATH_NAME=./reponse.php");
 		this->vectorenv.push_back((char *)"SCRIPT_NAME=./reponse.php");
 		this->vectorenv.push_back((char *)"SCRIPT_FILENAME=./reponse.php");
-		std::string str1;// = fileToString(newIndex);
+		std::string str1;// = fileToString(this->newIndex);
 		std::string header;// = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		char	**cmd = (char **)malloc(3);;
 		cmd[0] = strdup("/usr/bin/php-cgi");
 		cmd[1] = strdup("./reponse.php");
 		cmd[2] = 0;
 		int i = 0 ;
-		char **recup = ft_split(newIndex.c_str(), '?');
+		char **recup = ft_split(this->newIndex.c_str(), '?');
 		i = 0;
 		while (recup[i])
 		{
@@ -541,8 +544,8 @@ int	Server::recvConnection(int fd)
 			error = 413;
 		}
 		header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
-		unlink(".tmp");
-		unlink("lucieCGI");
+		//unlink(".tmp");
+		//unlink("lucieCGI");
 		//freeTab(this->env);
 		this->vectorenv.clear();
 		this->vectorenv = this->vectorenvcpy;
@@ -628,13 +631,13 @@ int	Server::recvConnection(int fd)
 	}
 	else if (error == -99)
 	{
-		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(newIndex.length()) + "\n\n" + newIndex + "\n";
+		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(this->newIndex.length()) + "\n\n" + this->newIndex + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 		error = 0;
 	}
 	else
 	{
-		std::string str1 = FirstPage(newIndex);
+		std::string str1 = FirstPage(this->newIndex);
 		if (error == 54)
 		{
 			str1 = fileToString("lucieCGI");
@@ -657,7 +660,7 @@ int	Server::sendConnection(int fd)
 	static int a;
 	if (a == 0)
 	{
-		std::string str1 = FirstPage(newIndex);
+		std::string str1 = FirstPage(this->newIndex);
 		if ((int)str1.length() > ft_atoi(max_client_body_size.c_str()))
 		{
 			error = 413;
@@ -802,31 +805,44 @@ void	StartServer(Server server)
 	/*std::vector<char *>::iterator it = server.vectorenvcpy.begin();
 	for (; it != server.vectorenvcpy.end(); it++)
 		std::cerr << "vec first: " << *it << std::endl;*/
-	server.epoll_fd = epoll_create1(0);
-	if (server.init_serv())
-		return ;
+	Server array[server.nbport.size()];
+	int i = 0;
+	int len = server.nbport.size();
+	std::vector<int>::iterator portIT = server.nbport.begin();
+	std::vector<std::string>::iterator indexIT = server.index.begin();
+	for(; portIT != server.nbport.end(); portIT++)
+	{
+		array[i].port = *portIT;
+		array[i].epoll_fd = epoll_create1(0);
+		array[i].vectorenv = server.vectorenv;
+		array[i].vectorenvcpy = server.vectorenvcpy;
+		if (array[i].init_serv())
+			return ;
+		printf("IIIIIIIIIIIIIIIIIIIIIIIII = %d\n", i);
+		array[i].newIndex = "";
 	if (server.autoindexed()) // true
 	{
-		std::cout << "lautoindex est on :" << server.autoindexed() << std::endl;
-		std::cout << "index est : " <<  server.index << std::endl;
+		std::cout << "index est : " << *indexIT << std::endl;
 		if (server.index.empty())
 		{
 			std::string tmp;
 			//std::cout << &index << std::endl;
 			std::cout << "index est empty donc renvoyer vers une page de sommaire" << std::endl;
-			newIndex = basicsummary("."); //page a creeer
+			array[i].newIndex = basicsummary("."); //page a creeer
 			nbfiles = 666;
 		}
 		else
 		{
-			newIndex = server.index.substr(1, server.index.length()); 
+			array[i].newIndex = (*indexIT).substr(1, (*indexIT).length()); 
+			std::cerr << "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE: " << array[i].newIndex << "\n";
+			std::cerr << "LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n";
 			std::cout << " pas empty " << std::endl;
+			*indexIT++;
 			// pb car on lance le server en lui donannt ladresse de index - >>> mais si changer de page, il garde tjrs ladresse initiale
 		}
 	}
 	else
 	{
-		std::cout << "lautoindex est off :" << server.autoindexed() << std::endl;
 		if (server.index.empty())
 		{
 			std::cout << "foutre une page 404" << std::endl;
@@ -835,24 +851,27 @@ void	StartServer(Server server)
 		}
 		else
 		{
-			newIndex = server.index.substr(1, server.index.length()); 
+			array[i].newIndex = (*indexIT).substr(1, (*indexIT).length()); 
 			std::cout << " pas empty " << std::endl;
 		}
 	}
-
-	// newIndex = "./html/home.html";
-
+	i++;
+	}
+	//this->newIndex = "./html/home.html";
 	while (1)
 	{
-		event_count = epoll_wait(server.epoll_fd, events, 5, 1000);
-		if (event_count < 0)
-			fprintf(stderr, "error in epoll_wait\n");
-		if (event_count > 0)
-			server.event_receptor(events, event_count);
-		//newIndex = "";
-		server.vectorenv.clear();
-		server.vectorenv = server.vectorenvcpy;
-		error = 0;
+			for (i = 0; i < len; i++)
+			{
+			event_count = epoll_wait(array[i].epoll_fd, events, 5, 1000);
+			if (event_count < 0)
+				fprintf(stderr, "error in epoll_wait\n");
+			if (event_count > 0)
+				array[i].event_receptor(events, event_count);
+			//this->newIndex = "";
+			array[i].vectorenv.clear();
+			array[i].vectorenv = array[i].vectorenvcpy;
+			error = 0;
+		}
 	}
 }
 
@@ -909,7 +928,7 @@ void	StartServer(Server server)
 			CheckRequest(buffer);
 			//std::string str1 = "HTTP/1.1 200 OK\nContent-Type: text/html\nContent-Length: 33\n\n<p style=\"color:red\">Coucou</p>\n";
 			CheckRequest(buffer);
-			std::string str1 = FirstPage(newIndex);
+			std::string str1 = FirstPage(this->newIndex);
 			std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 			//std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + std::to_string(str1.length()) + "\n\n" + str1 + "\n";
 			//char str[] = "GET /hello.html HTTP/1.1\r\n";
@@ -918,13 +937,13 @@ void	StartServer(Server server)
 				char str3[] = "HTTP/1.1 404 Not Found\nContent-Type: text/plain\nContent-Length: 19\n\n404 page not found\n";
 				write(tab[k], str3, strlen(str3));
 			}
-			if (newIndex.length() > 0)
+			if (this->newIndex.length() > 0)
 			{
 				//std::string header1 = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + std::to_string(str2.length()) + "\n\n" + str2 + "\n";
-				std::string str2 = fileToString(newIndex);
+				std::string str2 = fileToString(this->newIndex);
 				std::string header1 = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str2.length()) + "\n\n" + str2 + "\n";
 				write(tab[k], header1.c_str(), strlen(header1.c_str()));
-				newIndex="";
+				this->newIndex="";
 			}
 			else
 				send(tab[k], header.c_str(), header.length(), 0);

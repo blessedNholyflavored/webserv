@@ -1,7 +1,6 @@
 Content-type: text/html; charset=UTF-8
 
 <!DOCTYPE html>
-<html>
 <title >webserv's super html page</title>
 
 <body id =\"all\" style="font-family:'Roboto',sans-serif;margin: 0em; padding: 0em;">
@@ -20,40 +19,13 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
 </ul>
 </div>
 
-<h2 style="font-family:'Roboto',sans-serif; text-align: center;"> PAGE EXEMPLE TEXTE</h2>
-<p style="font-family:'Roboto',sans-serif; text-align: center;"> utilise le menu pour tester des trucs, ca marche super bien</p>
+<h2 style="font-family:'Roboto',sans-serif;text-align: center;"> ca fonctionne c tiptoptap</h2>
 
 <hr>
-
-<h2 style ="text-align: center;" > TEST DE NOM ET PRENOM</h2>
-<p style ="text-align: center;" > dis nous t ki stp</p>
-
-<form style ="text-align: center;" id="nom_form" action="./reponse.php" method="GET">
-    <label for="fname">donnes ton prenom</label><br>
-    <input style ="text-align: center;" type="text" id="fname" name="fname" value="mon prenom"><br>
-    <label for="lname">donnes ton nom</label><br>
-    <input  style ="text-align:  center;" type="text" id="lname" name="lname" value="mon nom"><br><br>
-    <input type="submit" value="Submit">
-  </form> 
-  
-<hr>
-	<div>
-		<div>
-                        <h2>Upload a text to the server</h2>
-
-                        <form action="/html/text.php" method="POST">
-                                Type text to upload to the server:<br><br>
-                                <input type="text" name="textToUpload"><br><br>
-                                <input type="submit" value="Send text" name="submit">
-                        </form>
-		</div>	
-		
-		<div>
-                        <h2>Read the text uploaded to the server</h2>
-
-                        <input id="read_box" type="text" value="" readonly>		</div>
-	</div>	
 	
+
+Bonjour, mon prenom.
+Tu as mon nom ans.
 
 
 <hr>
@@ -78,3 +50,5 @@ overflow: hidden;">
         <a href="https://profile.intra.42.fr/users/mmhaya"> Intra Profile</a>
     </p>
   </footer>
+</body>
+</html>

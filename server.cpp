@@ -251,7 +251,8 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 		{
 			std::cerr << "expecting one argument after index"<< std::endl;
 		}
-		this->index =  (res[j].c_str() + 6);
+		std::string tmp(res[j].c_str() + 6);
+		this->index.push_back(tmp);
 	}
 	else if (res[j].find("root") != std::string::npos)
 	{

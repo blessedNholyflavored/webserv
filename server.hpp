@@ -30,10 +30,10 @@ class Server
 	std::string					name_server;
 	std::string					root;
 	std::string 				ip;
-	size_t						port;
+	int						port;
 	std::vector<std::string>	cgi_exec;
 	std::vector<std::string>	cgi_address;
-	std::string					index;
+	std::vector<std::string>	index;
 	std::vector<std::string>	error_page;
 	std::vector<std::string>	error_name;
 	std::vector<int>			nbport;
@@ -41,6 +41,7 @@ class Server
 	std::vector<Location>		location;
 	char **env;
 	Request						*request;
+	std::string			newIndex;
 
 	int							epoll_fd;
 	int							server_fd;
