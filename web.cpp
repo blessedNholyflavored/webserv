@@ -850,35 +850,48 @@ void	StartServer(Server server)
 	int len = server.nbport.size();
 	std::vector<int>::iterator portIT = server.nbport.begin();
 	std::vector<std::string>::iterator indexIT = server.index.begin();
+	std::vector<int>::iterator autoindexIT = server.vectorauto.begin();
+	std::vector<std::string>::iterator rootIT = server.vectorroot.begin();
+	std::vector<std::string>::iterator nameIT = server.vectorname_server.begin();
 	for(; portIT != server.nbport.end(); portIT++)
 	{
 		array[i].port = *portIT;
+		if (nameIT <= server.vectorname_server.end())
+		{
+			array[i].name_server = *nameIT;
+			nameIT++;
+		}
+		if (autoindexIT <= server.vectorauto.end())
+		{
+			array[i].autoindex = *autoindexIT;
+			std::cout << "autoindex est : " << *autoindexIT << std::endl;
+			autoindexIT++;
+		}
+		if (rootIT <= server.vectorroot.end())
+		{
+			array[i].root = *rootIT;
+			rootIT++;
+		}
 		array[i].epoll_fd = epoll_create1(0);
 		array[i].vectorenv = server.vectorenv;
 		array[i].vectorenvcpy = server.vectorenvcpy;
 		if (array[i].init_serv())
 			return ;
-		printf("IIIIIIIIIIIIIIIIIIIIIIIII = %d\n", i);
 		array[i].newIndex = "";
-	if (server.autoindexed()) // true
+	if (array[i].autoindex) // true
 	{
-		std::cout << "index est : " << *indexIT << std::endl;
 		if (server.index.empty())
 		{
 			std::string tmp;
-			//std::cout << &index << std::endl;
 			std::cout << "index est empty donc renvoyer vers une page de sommaire" << std::endl;
-			array[i].newIndex = basicsummary("."); //page a creeer
+			array[i].newIndex = basicsummary("."); 
 			nbfiles = 666;
 		}
 		else
 		{
 			array[i].newIndex = (*indexIT).substr(1, (*indexIT).length()); 
-			std::cerr << "EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE: " << array[i].newIndex << "\n";
-			std::cerr << "LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA\n";
-			std::cout << " pas empty " << std::endl;
-			*indexIT++;
-			// pb car on lance le server en lui donannt ladresse de index - >>> mais si changer de page, il garde tjrs ladresse initiale
+			std::cout << " pas empty mais autoindex on " << std::endl;
+			indexIT++;
 		}
 	}
 	else
@@ -892,12 +905,11 @@ void	StartServer(Server server)
 		else
 		{
 			array[i].newIndex = (*indexIT).substr(1, (*indexIT).length()); 
-			std::cout << " pas empty " << std::endl;
+			std::cout << " pas empty mais autoindex off" << std::endl;
 		}
 	}
 	i++;
 	}
-	//this->newIndex = "./html/home.html";
 	while (1)
 	{
 			for (i = 0; i < len; i++)

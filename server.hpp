@@ -26,18 +26,31 @@ class Server
 	s_list *lst;
 	std::vector<char *> vectorenv;
 	std::vector<char *> vectorenvcpy;
+
 	std::string					max_client_body_size;
+	
 	std::string					name_server;
+	std::vector<std::string>	vectorname_server;
+	
 	std::string					root;
+	std::vector<std::string>	vectorroot;
+
 	std::string 				ip;
-	int						port;
+	
 	std::vector<std::string>	cgi_exec;
 	std::vector<std::string>	cgi_address;
+	
+	std::string 				nom_index;
 	std::vector<std::string>	index;
+
 	std::vector<std::string>	error_page;
 	std::vector<std::string>	error_name;
+	
+	int							port;
 	std::vector<int>			nbport;
-	bool						autoindex;
+	
+	std::vector<int>	vectorauto;
+	int							autoindex;
 	std::vector<Location>		location;
 	char **env;
 	Request						*request;
