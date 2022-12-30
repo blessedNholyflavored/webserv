@@ -77,27 +77,35 @@ int Server::parser(std::string str)
 	}
 	j = 0;
 	int y = 0;
+	int z = 0;
+	size_t it;
 	while(nbline <= countEndl(content))
 	{
-		std::string tmp(res[j]);
 		if (res[0] == "server {")
 		{
 			this->parser_le_server(res, nbline, j);
 		}
-		
-		else if (!(res[0] == "server {"))
+		std::string tmp(res[j]);
+		if ((it = tmp.find("{") != std::string::npos))
 		{
-			std::cerr << "opening brace missing dude" <<std::endl;
-			return(0);
+			if (tmp.find("server") < it || tmp.find("location") <= it)
+			{
+				z++;
+			}
+			else
+			{
+				std::cerr << "check tes }}}}} cest le bordel" << std::endl;
+				exit(1);
+			}
 		}
-		if(tmp.find("}") != std::string::npos)
+		if ((tmp.find("}") != std::string::npos))
 		{
 			y++;
 		}
 	j++;
 	nbline++;
 	}
-	if (y != 2 )
+	if (z != y)
 	{
 		std::cerr << "check tes }}}}} cest le bordel" << std::endl;
 		exit(1);
@@ -211,7 +219,9 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 			std::cerr << "port should be an int" << std::endl;
 		this->port = atoi(port.c_str());
 		this->nbport.push_back(this->port);
-		
+	std::vector<int>::iterator it = this->nbport.begin();
+	for (; it != this->nbport.end(); it++)
+		std::cerr << "vec: " << *it << std::endl;
 	}
 	else if (res[j].find("error_page") != std::string::npos)
 	{

@@ -794,7 +794,6 @@ void	StartServer(Server server)
 		std::cout << "lautoindex est off :" << server.autoindexed() << std::endl;
 		if (server.index.empty())
 		{
-			//std::cout << &index << std::endl;
 			std::cout << "foutre une page 404" << std::endl;
 			nbfiles = 76;
 			
