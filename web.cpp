@@ -78,7 +78,8 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 	arr[i] = str.substr(start, end - start);
 	std::cout << "SPLIT = " << arr[1] << std::endl;
 //	std::cout << "IN SPLIT: " << str.substr(start, end - start) << std::endl;
-	if (arr[1].compare("/") != 0 && arr[0].compare("GET") == 0 && arr[1].compare("/html/text.php"))
+	if (arr[1].compare("/") != 0 && arr[0].compare("GET") == 0 && arr[1].compare("/html/text.php")
+			&& arr[1].compare("/html/galerie.php"))
 	{
 		//arr[1] = "./html" + arr[1];
 		std::ifstream file(arr[1].c_str() + 1, std::ios::in);
@@ -106,7 +107,7 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 			error = 200;
 		}
 	}
-	else if (arr[0].compare("POST") == 0 || arr[1].compare("/html/text.php") == 0)
+	else if (arr[0].compare("POST") == 0 || arr[1].compare("/html/text.php") == 0 || arr[1].compare("/html/galerie.php") == 0)
 	{
 		//ne1wIndex = arr[1].substr(1, arr[1].length());
 		this->newIndex = arr[1];
@@ -150,7 +151,47 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 			this->vectorenv.clear();
 			this->vectorenv = this->vectorenvcpy;
 		}
-		if (arr[0].compare("POST") == 0 && arr[1].compare("/html/text.php") == 0)
+		else if (arr[1].compare("/html/galerie.php") == 0)
+		{
+			int tmp;
+			std::string recup = "." + arr[1];
+			tmp = open(recup.c_str(), O_RDONLY, 0644);
+			std::cerr << "FILEEEEEEEEEEEEEEEEEEE: " << recup << std::endl;
+			if (tmp == -1)
+				printf("laaaaaaaaaaaaaaaa\n");
+				
+			int lucie = open("lucieCGI", O_CREAT | O_WRONLY | O_RDONLY | O_TRUNC, 0644);
+			char	**cmd = (char **)malloc(3);;
+			cmd[0] = strdup("/usr/bin/php-cgi");
+			cmd[1] = strdup("./html/galerie.php");
+			cmd[2] = 0;
+			this->vectorenv.push_back((char *)("REQUEST_METHOD=GET"));
+			this->vectorenv.push_back((char *)"PATH_INFO=./html/galerie.php");
+			this->vectorenv.push_back((char *)"PATH_TRANSLATED=./html/galerie.php");
+			this->vectorenv.push_back((char *)"PATH_NAME=./html/galerie.php");
+			this->vectorenv.push_back((char *)"SCRIPT_NAME=./html/galerie.php");
+			this->vectorenv.push_back((char *)"SCRIPT_FILENAME=./html/galerie.php");
+			this->env = ft_regroup_envVector(this->vectorenv);
+			int frk = fork();
+			if (frk == 0)
+			{
+				dup2(tmp, 0);
+				close(tmp);
+				dup2(lucie, 1);
+				close(lucie);
+				execve("/usr/bin/php-cgi", cmd, this->env);
+				exit(0);
+			}
+			else
+			{
+				wait(NULL);
+				error = 54;
+			}
+			this->vectorenv.clear();
+			this->vectorenv = this->vectorenvcpy;
+		}
+		if (arr[0].compare("POST") == 0 && (arr[1].compare("/html/text.php") == 0
+					|| arr[1].compare("/html/galerie.php") == 0))
 			error = 998;
 	}
 	else
@@ -579,7 +620,6 @@ int	Server::recvConnection(int fd)
 				break ;
 			i++;
 		}
-		recup[i] = strdup("textToUpload=123&submit=Send+text");
 		std::string res = recup[agent];
 		std::string strAgent = "USER_AGENT=" + res;
 		this->vectorenv.push_back((char *)strAgent.c_str());
@@ -624,7 +664,7 @@ int	Server::recvConnection(int fd)
 		}
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		//unlink("lucieCGI");
-		//unlink(".tmp");
+		unlink(".tmp");
 		this->vectorenv.clear();
 		this->vectorenv = this->vectorenvcpy;
 		send(fd, header.c_str(), header.length(), 0);

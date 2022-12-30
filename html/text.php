@@ -13,7 +13,7 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
 <div class="menu" >
 <ul style=" margin: 0em; padding: 0em; list-style-type: none; overflow: hidden; background-color: #333;">
     <li style="float:left;"><a href="/html/home.html" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">accueil</a></li>
-    <li style="float:left;"><a href="/html/galerie.html" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">galerie</a></li>
+    <li style="float:left;"><a href="/html/galerie.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">galerie</a></li>
     <li style="float:left;"><a href="/html/text.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">upload text</a></li>
 </ul>
 </div>
@@ -50,9 +50,11 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
                         <h2>Read the text uploaded to the server</h2>
 
                         <?php
-                        $file = 'salut.txt';
+				$file = 'salut.txt';
+				$test = file_get_contents("../.tmp");
+				parse_str($test, $CC);
 				//$_POST['textToUpload'] = "lol";
-                                $txt = htmlspecialchars($_POST['textToUpload']);
+                                $txt = htmlspecialchars($CC['textToUpload']);
                                 file_put_contents($file, $txt);
                         $file = file_get_contents($file, true);
                         echo "<input id=\"read_box\" type=\"text\" value=\"$file\" readonly>";
