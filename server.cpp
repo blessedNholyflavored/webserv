@@ -178,6 +178,7 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 				std::cerr << "expecting at least 1 argument after 'server_name' "<< std::endl;
 			}
 		this->name_server = (res[j].c_str() + 13);
+		this->vectorname_server.push_back(this->name_server);
 	}
 	else if (res[j].find("autoindex") != std::string::npos)
 	{
@@ -188,10 +189,12 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 		if (res[j].find("on") != std::string::npos && res[j].find("off") == std::string::npos) 
 		{
 			this->autoindex = 1;
+			this->vectorauto.push_back(this->autoindex);
 		}
 		else
 		{
 			this->autoindex = 0;
+			this->vectorauto.push_back(this->autoindex);
 		}
 	}
 	else if (res[j].find("listen") != std::string::npos)
@@ -251,8 +254,10 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 		{
 			std::cerr << "expecting one argument after index"<< std::endl;
 		}
-		std::string tmp(res[j].c_str() + 6);
-		this->index.push_back(tmp);
+		this->nom_index = res[j].c_str() + 6;
+		this->index.push_back(nom_index);
+
+
 	}
 	else if (res[j].find("root") != std::string::npos)
 	{
@@ -264,8 +269,12 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 		if (tmp.size() > 1 && tmp[tmp.size() - 1] == '/')
 			tmp.resize(tmp.size() - 1);
 		this->root = (tmp.c_str());
-		// nginx garde le root qui a le plus long prefixe et lattribue
-		std::cout << "root " <<  root << std::endl;
+		this->vectorroot.push_back(this->root);	
+	}
+	else if (!(res[j].find("root")))
+	{
+		std::cerr << "there should be a root" << std::endl;
+		exit(1);
 	}
 	else if (res[j].find("max_client_body_size") != std::string::npos) 
 	{
