@@ -511,17 +511,17 @@ int	Server::recvConnection(int fd)
 	len = recv(fd, buff, 3000, 0);
 	if (len > 0)
 		printf("BUFF in recv:\n%s\n", buff);
-	request = new Request;
+	/*request = new Request;
 	request->parsRequest(buff, location);
 	this->newIndex = request->getPath();
 	std::cout << "ooooooooooooooooooo" << this->newIndex << std::endl;
 	if (this->newIndex == "./")
 		this->newIndex = "./html/home.html";
-	//CheckRequest(buff, fd);
 	if (request->getRetCode() == 400){
 		char str3[] = "bad version http";
 		write(fd, str3, ft_strlen(str3));
-	}
+	}*/
+	CheckRequest(buff, fd);
 	// else if (request->getRetCode() == 404)
 	// {
 	// 	printf("%d\n", error);
@@ -843,7 +843,8 @@ void	StartServer(Server server)
 	int	event_count;
 	struct	epoll_event events[5];
 
-	std::cerr << "ROOOOOOOOOOOOOOOOT: " << server.root << std::endl;
+	//std::vector<std::string>::iterator op = server.vectorroot.begin();
+	//std::cerr << "ROOOOOOOOOOOOOOOOT: " << *op << std::endl;
 	/*std::vector<char *>::iterator it = server.vectorenvcpy.begin();
 	for (; it != server.vectorenvcpy.end(); it++)
 		std::cerr << "vec first: " << *it << std::endl;*/
