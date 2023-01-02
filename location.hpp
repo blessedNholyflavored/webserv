@@ -28,7 +28,7 @@
 		public:
 			Location();
 			~Location();
-			void		parser_la_location(int j);
+			int		parser_la_location(int j);
 			void		parseMethod(std::string str);
 			void		parseRoot(std::string str);
 			void		parseIndex(std::string str);

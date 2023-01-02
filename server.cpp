@@ -18,6 +18,26 @@ Server::~Server()
 // 	this->location.push_back(location);
 // }
 
+void	Server::parsLoc(int i){
+	int indexline = 0;
+	for (int count = -1; count < i; count++){
+		if (res[indexline] == "server {")
+			count++;
+		if (count < i)
+			indexline++;
+	}
+	while (res[indexline].find("}") == std::string::npos){
+		if (res[indexline].find("location") != std::string::npos)
+		{
+			Location *tmp;
+			tmp = new Location;
+			indexline = tmp->parser_la_location(indexline);
+			location.push_back(*tmp);
+		}
+		indexline++;
+	}
+}
+
 size_t countEndl(std::string content){
 	int nbEndl = 0;
 	for (int i = 0; content[i]; i++)
