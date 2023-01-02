@@ -160,7 +160,7 @@ int Location::parser_la_location(int j)
 	_methods.push_back("");
 	_methods.push_back("");
 	std::string str;
-	this->_scale = false;
+	this->_defaut = false;
 	for (int i = 10; res[j][i] != ' '; i++){
 		str += res[j][i];
 	}
@@ -193,8 +193,8 @@ int Location::parser_la_location(int j)
 		}
 		j++;
 	}
-	if (_root + _location == "/scale/")
-		_scale = true;
+	if (_root + _location == "//")
+		this->_defaut = true;
 	return j;
 	// std::cout << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" << std::endl;
 	// std::cout << "location : " << _location << std::endl; 
@@ -211,7 +211,7 @@ std::string Location::getLocation() { return (this->_location); }
 
 std::string Location::getRoot() { return (this->_root); }
 
-bool		Location::getScale() { return (this->_scale); }
+bool		Location::getDefaut() { return (this->_defaut); }
 
 bool		Location::getGet() { return (this->_GET); }
 
