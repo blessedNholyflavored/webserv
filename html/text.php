@@ -52,9 +52,9 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
                         <?php
 				$file = 'salut.txt';
 				$test = file_get_contents("../.tmp");
-				parse_str($test, $CC);
+				parse_str($test, $POST);
 				//$_POST['textToUpload'] = "lol";
-                                $txt = htmlspecialchars($CC['textToUpload']);
+                                $txt = htmlspecialchars($POST['textToUpload']);
                                 file_put_contents($file, $txt);
                         $file = file_get_contents($file, true);
                         echo "<input id=\"read_box\" type=\"text\" value=\"$file\" readonly>";
