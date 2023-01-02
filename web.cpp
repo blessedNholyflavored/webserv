@@ -514,10 +514,13 @@ int	Server::recvConnection(int fd)
 	request = new Request;
 	request->parsRequest(buff, this->location);
 	this->newIndex = request->getPath();
-	std::cout << "ooooooooooooooooooo" << this->newIndex << std::endl;
 	if (this->newIndex == "./")
 		this->newIndex = "./html/home.html";
-	//CheckRequest(buff, fd);
+	std::string firstline;
+	for (int index = 0; buff[index] != '\n'; index++){
+		firstline += buff[index];
+	}
+	this->splitString(firstline.c_str(), " ", fd);
 	if (request->getRetCode() == 400){
 		char str3[] = "bad version http";
 		write(fd, str3, ft_strlen(str3));
@@ -895,25 +898,26 @@ void	StartServer(Server server)
 				//std::cout << " pas empty mais autoindex on " << std::endl;
 				indexIT++;
 			}
-	}
-	else
-	{
-		if (server.index.empty())
-		{
-			//std::cout << "foutre une page 404" << std::endl;
-			nbfiles = 76;
 		}
 		else
 		{
-			array[i].newIndex = (*indexIT).substr(1, (*indexIT).length()); 
-			array[i].newIndex = array[i].root +  "/" + array[i].newIndex;
-			std::cerr << "TRYYYYYYYYYY: " << array[i].newIndex << std::endl;
-			*indexIT++;
+			if (server.index.empty())
+			{
+				//std::cout << "foutre une page 404" << std::endl;
+				nbfiles = 76;
+			}
+			else
+			{
+				array[i].newIndex = (*indexIT).substr(1, (*indexIT).length()); 
+				array[i].newIndex = array[i].root +  "/" + array[i].newIndex;
+				std::cerr << "TRYYYYYYYYYY: " << array[i].newIndex << std::endl;
+				*indexIT++;
 
-			//std::cout << " pas empty mais autoindex off" << std::endl;
+				//std::cout << " pas empty mais autoindex off" << std::endl;
+			}
 		}
-	}
-	i++;
+		array[i].parsLoc(i);
+		i++;
 	}
 	while (1)
 	{

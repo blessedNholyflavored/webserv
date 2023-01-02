@@ -192,8 +192,10 @@ int Location::parser_la_location(int j)
 		}
 		j++;
 	}
-	if (_root + _location == "//")
+	std::cout << _root + _location << std::endl;
+	if (_root + _location == "//"){
 		this->_defaut = true;
+	}
 	return j;
 	// std::cout << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" << std::endl;
 	// std::cout << "location : " << _location << std::endl; 

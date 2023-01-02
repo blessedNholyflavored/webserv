@@ -128,8 +128,11 @@ void	Request::findGoodLocation(std::string str, std::vector<Location> &location)
 	}
 	if (bestPos == -1){
 		_it = location.begin();
-		for (; _it->getDefaut() == false; _it++) {
+		while ((!_it->getDefaut()) && (_it != location.end())) {
+			_it++;
 		}
+		if (_it == location.end())
+			_it --;
 		return ;
 	}
 	else {
