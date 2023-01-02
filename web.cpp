@@ -842,6 +842,7 @@ void	StartServer(Server server)
 	int	event_count;
 	struct	epoll_event events[5];
 
+	std::cerr << "ROOOOOOOOOOOOOOOOT: " << server.root << std::endl;
 	/*std::vector<char *>::iterator it = server.vectorenvcpy.begin();
 	for (; it != server.vectorenvcpy.end(); it++)
 		std::cerr << "vec first: " << *it << std::endl;*/
