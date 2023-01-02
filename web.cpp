@@ -490,19 +490,19 @@ int	Server::recvConnection(int fd)
 	{
 		this->newIndex = FirstPage("./html/403.html"); // page a creer
 		if (intToString(this->newIndex.length()) > max_client_body_size)
-			{
-				error = 413;
-			}
-		std::string header = "HTTP/1.1 403 FORBIDDEN\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(this->newIndex.length()) + "\n\n" + this->newIndex + "\n";
+		{
+			error = 413;
+		}
+		std::string header = "HTTP/1.1 404 NOT FOUND\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(this->newIndex.length()) + "\n\n" + this->newIndex + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 		nbfiles = 0;
 	}
 	if (nbfiles == 666)
 	{
 		if (intToString(this->newIndex.length()) > max_client_body_size)
-			{
-				error = 413;
-			}
+		{
+			error = 413;
+		}
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(this->newIndex.length()) + "\n\n" + this->newIndex + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 		nbfiles = 0;
