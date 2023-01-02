@@ -66,6 +66,7 @@ class Server
 	int	event_receptor(struct epoll_event events[5], int event_count);
 	int parser_le_server(std::string res[], size_t nbligne, int j);
 	int parser(std::string str);
+	void	parsLoc(int i);
 	void transfer_location(Location location);
 	bool autoindexed() const;
 	void CheckRequest(char *buffer, int fd);

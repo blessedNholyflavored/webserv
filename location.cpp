@@ -55,8 +55,9 @@ void Location::parseMethod(std::string str){
 		if (str[i] == ' ' || str[i] == '\t' || str[i] == '\0')
 		{
 			*it = tmp;
-			if (*it == "GET")
+			if (*it == "GET"){
 				_GET = true;
+			}
 			else if (*it == "DELETE")
 				_DELETE = true;
 			else if (*it == "POST")
@@ -153,7 +154,7 @@ bool isspace_string(const std::string& s)
 	return true;
 }
 
-void Location::parser_la_location(int j)
+int Location::parser_la_location(int j)
 {
 	_methods.push_back("");
 	_methods.push_back("");
@@ -194,6 +195,7 @@ void Location::parser_la_location(int j)
 	}
 	if (_root + _location == "/scale/")
 		_scale = true;
+	return j;
 	// std::cout << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" << std::endl;
 	// std::cout << "location : " << _location << std::endl; 
 	// std::cout << "root : " << this->_root << std::endl; 
