@@ -62,8 +62,6 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
 		</div>
 	</div>	
 	
-
-
 <hr>
 <footer style="background-color: orange;
 position: absolute;

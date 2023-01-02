@@ -597,6 +597,8 @@ int	Server::recvConnection(int fd)
 	{
 		int fd1;
 
+		std::cerr << "LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa\n";
+
 		this->vectorenv.push_back((char *)("REQUEST_METHOD=POST"));
 		this->vectorenv.push_back((char *)("REMOTE_HOST=localhost"));
 		this->vectorenv.push_back((char *)"PATH_INFO=html/text.php");
@@ -862,13 +864,12 @@ void	StartServer(Server server)
 			array[i].name_server = *nameIT;
 			nameIT++;
 		}
-		if (autoindexIT <= server.vectorauto.end())
+		if (autoindexIT <= server.vectorauto.end() && server.vectorauto.size() > 0)
 		{
 			array[i].autoindex = *autoindexIT;
-			std::cout << "autoindex est : " << *autoindexIT << std::endl;
 			autoindexIT++;
 		}
-		if (rootIT <= server.vectorroot.end())
+		if (rootIT <= server.vectorroot.end() && server.vectorroot.size() > 0)
 		{
 			array[i].root = *rootIT;
 			rootIT++;
@@ -883,34 +884,36 @@ void	StartServer(Server server)
 		{
 			if (server.index.empty())
 			{
-				std::string tmp;
-				std::cout << "index est empty donc renvoyer vers une page de sommaire" << std::endl;
-				array[i].newIndex = basicsummary("."); 
-				nbfiles = 666;
+			std::string tmp;
+			//std::cout << "index est empty donc renvoyer vers une page de sommaire" << std::endl;
+			array[i].newIndex = basicsummary("."); 
+			nbfiles = 666;
 			}
 			else
 			{
-				array[i].newIndex = (*indexIT).substr(1, (*indexIT).length()); 
-				std::cout << " pas empty mais autoindex on " << std::endl;
+				array[i].newIndex = (*indexIT).substr(1, (*indexIT).length());
+				//std::cout << " pas empty mais autoindex on " << std::endl;
 				indexIT++;
 			}
+	}
+	else
+	{
+		if (server.index.empty())
+		{
+			//std::cout << "foutre une page 404" << std::endl;
+			nbfiles = 76;
 		}
 		else
 		{
-			if (server.index.empty())
-			{
-				std::cout << "foutre une page 404" << std::endl;
-				nbfiles = 76;
-				
-			}
-			else
-			{
-				array[i].newIndex = (*indexIT).substr(1, (*indexIT).length()); 
-				std::cout << " pas empty mais autoindex off" << std::endl;
-			}
+			array[i].newIndex = (*indexIT).substr(1, (*indexIT).length()); 
+			array[i].newIndex = array[i].root +  "/" + array[i].newIndex;
+			std::cerr << "TRYYYYYYYYYY: " << array[i].newIndex << std::endl;
+			*indexIT++;
+
+			//std::cout << " pas empty mais autoindex off" << std::endl;
 		}
-		array[i].parsLoc(i);
-		i++;
+	}
+	i++;
 	}
 	while (1)
 	{
