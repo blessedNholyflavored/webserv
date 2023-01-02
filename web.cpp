@@ -512,7 +512,7 @@ int	Server::recvConnection(int fd)
 	if (len > 0)
 		printf("BUFF in recv:\n%s\n", buff);
 	request = new Request;
-	request->parsRequest(buff, location);
+	request->parsRequest(buff, this->location);
 	this->newIndex = request->getPath();
 	std::cout << "ooooooooooooooooooo" << this->newIndex << std::endl;
 	if (this->newIndex == "./")

@@ -4,7 +4,7 @@
 #include <vector>
 #include "server.hpp"
 
-void	Request::parsRequest(std::string str, std::vector<Location> location){
+void	Request::parsRequest(std::string str, std::vector<Location> &location){
 	std::string method;
 	size_t i = 0;
 	for (; str[i] != ' '; i++){
@@ -84,7 +84,7 @@ std::string getLastSlash(std::string str){
 	
 }
 
-void	Request::findGoodLocation(std::string str, std::vector<Location> location){
+void	Request::findGoodLocation(std::string str, std::vector<Location> &location){
 
 	int		pos = 0;
 	int 	bestPos = -1;
@@ -140,10 +140,10 @@ void	Request::findGoodLocation(std::string str, std::vector<Location> location){
 	}
 }
 
-int	Request::checkLocation(std::string str, int method, std::vector<Location> location){
+int	Request::checkLocation(std::string str, int method, std::vector<Location> &location){
 	findGoodLocation(str, location);
 	if (method == 1){
-		if (_it->getGet() == false)
+		if (!(_it->getGet()))
 			return (0);
 	}
 	else if (method == 2){
