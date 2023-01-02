@@ -36,6 +36,7 @@
 			void		parseAutoindex(std::string str);
 			std::string	getLocation();
 			std::string	getRoot();
+			std::string	getIndex();
 			bool		getScale();
 			bool		getGet();
 			bool		getDel();

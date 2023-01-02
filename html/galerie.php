@@ -35,18 +35,24 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
     font-weight:400;
     color:#696969;
     text-align:center;" type="button" onclick="removeImg()">Remove</button>
-	
-<div >
-
-<form enctype = "multipart/form-data" onsubmit="return false;" >
-       <input id="file" type="file" name="static_file" />
-       <button id="upload-button" onclick="uploadFile(this.form)"> Upload </button>
-    </form>
+	<hr>
 
 
-</div>
+	<?php
+	$files = scandir('../images');
+        foreach ($files as $file) {
+        	if ($file !== "." && $file !== "..") {
+			    echo "<div>";
+			    echo $file;
+                $image = "../images/"."$file";
 
-</div>
+                echo '<img style="width:50%; display: block; margin: auto;" src="'.$image.'"/>';
+                echo "</div>";
+                }
+        }
+        ?>
+
+
 
 <hr>
 <footer style="background-color: orange;
