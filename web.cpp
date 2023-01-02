@@ -882,17 +882,19 @@ void	StartServer(Server server)
 		array[i].newIndex = "";
 		if (array[i].autoindex) // true
 		{
+			if (server.index.empty())
+			{
 			std::string tmp;
 			//std::cout << "index est empty donc renvoyer vers une page de sommaire" << std::endl;
 			array[i].newIndex = basicsummary("."); 
 			nbfiles = 666;
-		}
-		else
-		{
-			array[i].newIndex = (*indexIT).substr(1, (*indexIT).length());
-			//std::cout << " pas empty mais autoindex on " << std::endl;
-			indexIT++;
-		}
+			}
+			else
+			{
+				array[i].newIndex = (*indexIT).substr(1, (*indexIT).length());
+				//std::cout << " pas empty mais autoindex on " << std::endl;
+				indexIT++;
+			}
 	}
 	else
 	{
