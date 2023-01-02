@@ -35,6 +35,21 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
     font-weight:400;
     color:#696969;
     text-align:center;" type="button" onclick="removeImg()">Remove</button>
+	
+	<?php
+	$files = scandir('../images');
+        foreach ($files as $file) {
+        	if ($file !== "." && $file !== "..") {
+                	//echo "<div id=\"form_del\">";
+			echo "<div>";
+			echo $file;
+                        echo "<img src='../images/$file'>";
+                        //echo "<button type=\"button\" id=\"del_button\" onclick=\"deleteSomething('../$file')\">";
+                        //echo "Delete this image</button>";
+                        echo "</div>";
+                }
+        }
+        ?>
 
 </div>
 
