@@ -91,7 +91,6 @@ void Location::parseRoot(std::string str){
 		i++;
 	while ( str[i] == ' ' || str[i] == '\t')
 		i++;
-	std::cout << &str[i] << std::endl;
 	std::string tmp;
 	for (; str[i]; i++){
 		tmp += str[i];
@@ -208,6 +207,8 @@ void Location::parser_la_location(int j)
 std::string Location::getLocation() { return (this->_location); }
 
 std::string Location::getRoot() { return (this->_root); }
+
+std::string Location::getIndex() { return (this->_index); }
 
 bool		Location::getScale() { return (this->_scale); }
 

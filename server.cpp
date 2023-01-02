@@ -84,7 +84,8 @@ int Server::parser(std::string str)
 	{
 		if (res[0] == "server {")
 		{
-			this->parser_le_server(res, nbline, j);
+			if(this->parser_le_server(res, nbline, j))
+				return(0);
 		}
 		std::string tmp(res[j]);
 		if ((it = tmp.find("{") != std::string::npos))
@@ -163,15 +164,39 @@ std::string ltrim(std::string &s)
 int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 {
 	//std::cout << res[j] << std::endl;
-	if (res[j].find("location") != std::string::npos)
+		int k = 0;
+	if (res[j].find("location") != std::string::npos && j != 1)
 	{
 		Location *tmp;
 
 		tmp = new Location;
 		tmp->parser_la_location(j);
 		this->location.push_back(*tmp);
+	std::vector<Location>::iterator it = location.begin();
+	for (; it != location.end(); it++)
+	{
+		if ((*it).getRoot().length() > 0)
+		{
+			std::cerr << "MEHDI: " << (*it).getRoot() << std::endl;
+			k++;
+		}
+		}
+		std::cerr << k << std::endl;
 	}
-	else if (res[j].find("server_name") != std::string::npos)
+	int h = j;
+	int floc = 0;
+	while (h >= 0)
+	{
+		if (res[h].find("server") != std::string::npos)
+			break ;
+		if (res[h].find("location") != std::string::npos)
+		{
+			floc = 1;
+			break ;
+		}
+		h--;
+	}
+	if (res[j].find("server_name") != std::string::npos)
 	{
 		if (static_cast<std::string>(&res[j][13]).size() < 2)
 			{
@@ -248,7 +273,7 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 			this->cgi_address.push_back(cgi[2]);
 		}
 	}
-	else if (res[j].find("index") != std::string::npos && res[j].find("autoindex") == std::string::npos)
+	else if (res[j].find("index") != std::string::npos && res[j].find("autoindex") == std::string::npos && !floc)
 	{
 		if (static_cast<std::string>(&res[j][6]).size() < 3)
 		{
@@ -256,20 +281,24 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 		}
 		this->nom_index = res[j].c_str() + 6;
 		this->index.push_back(nom_index);
-
-
 	}
-	else if (res[j].find("root") != std::string::npos)
+	else if (res[j].find("root") != std::string::npos && !floc)
 	{
-		if (static_cast<std::string>(&res[j][6]).size() == 1)
-			std::cerr << "expecting one argument after root"<< std::endl;
+		if (static_cast<std::string>(&res[j][6]).size() <= 0)
+			{
+				std::cerr << "expecting one argument after root"<< std::endl;
+				return (1);
+			}
 		std::string tmp(&res[j][6]);
-		if (tmp.size() > 0 && tmp[0] == '/')
-			tmp = tmp.substr(1);
-		if (tmp.size() > 1 && tmp[tmp.size() - 1] == '/')
-			tmp.resize(tmp.size() - 1);
+		// if (tmp.size() > 0 && tmp[0] == '/')
+		// 	tmp = tmp.substr(1);
+		// if (tmp.size() > 1 && tmp[tmp.size() - 1] == '/')
+		// 	tmp.resize(tmp.size() - 1);
 		this->root = (tmp.c_str());
-		this->vectorroot.push_back(this->root);	
+		this->vectorroot.push_back(this->root);
+		std::vector<std::string>::iterator it = vectorroot.begin();
+		for (; it != vectorroot.end(); it++){
+			std::cerr << "LUCIE: " << *it << std::endl;}
 	}
 	else if (!(res[j].find("root")))
 	{
