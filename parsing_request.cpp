@@ -4,7 +4,7 @@
 #include <vector>
 #include "server.hpp"
 
-void	Request::parsRequest(std::string str, std::vector<Location> location){
+void	Request::parsRequest(std::string str, std::vector<Location> &location){
 	std::string method;
 	size_t i = 0;
 	for (; str[i] != ' '; i++){
@@ -44,10 +44,8 @@ void	Request::parsRequest(std::string str, std::vector<Location> location){
 			std::cout << "pas les droits" << std::endl;
 			return ;
 		}
-		std::cout << "path = "<< path << "-          qqqqqqqqqqqqqqqqqq" << std::endl;
 		file.open(_path.c_str(), std::ifstream::in);
 		if (!file.is_open()){
-			std::cerr << "ALLLLLLLLLLLLLLLLLLLLLLOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO" << std::endl;
 			_retCode = 404;
 			return ;
 		}
@@ -86,7 +84,7 @@ std::string getLastSlash(std::string str){
 	
 }
 
-std::vector<Location>::iterator	&Request::findGoodLocation(std::string str, std::vector<Location> location, std::vector<Location>::iterator &it){
+void	Request::findGoodLocation(std::string str, std::vector<Location> &location){
 
 	int		pos = 0;
 	int 	bestPos = -1;
@@ -128,34 +126,32 @@ std::vector<Location>::iterator	&Request::findGoodLocation(std::string str, std:
 		pos++;
 	}
 	if (bestPos == -1){
-		it = location.begin();
-		for (; it->getScale() == false; it++) {
-			std::cout << "dekdkoed" << std::endl;
+		_it = location.begin();
+		for (; _it->getScale() == false; _it++) {
 		}
-		return it;
+		return ;
 	}
 	else {
-		it = location.begin();
+		_it = location.begin();
 		for (int i = 0; i < bestPos; i++){
-			it++;
+			_it++;
 		}
-		return it;
+		return ;
 	}
 }
 
-int	Request::checkLocation(std::string str, int method, std::vector<Location> location){
-	std::vector<Location>::iterator it;
-	it = findGoodLocation(str, location, it);
+int	Request::checkLocation(std::string str, int method, std::vector<Location> &location){
+	findGoodLocation(str, location);
 	if (method == 1){
-		if (it->getGet() == false)
+		if (!(_it->getGet()))
 			return (0);
 	}
 	else if (method == 2){
-		if (it->getDel() == false)
+		if (_it->getDel() == false)
 			return (0);
 	}
 	else{
-		if (it->getPost() == false)
+		if (_it->getPost() == false)
 			return (0);
 	}
 	return (1);

@@ -511,16 +511,17 @@ int	Server::recvConnection(int fd)
 	len = recv(fd, buff, 3000, 0);
 	if (len > 0)
 		printf("BUFF in recv:\n%s\n", buff);
-	//request = new Request;
-	//request->parsRequest(buff, location);
-	//this->newIndex = request->getPath();
-	//if (this->newIndex == "/")
-	//	this->newIndex = FirstPage("./html/home.html");
-	CheckRequest(buff, fd);
-	//if (request->getRetCode() == 400){
-	//	char str3[] = "bad version http";
-	//	write(fd, str3, ft_strlen(str3));
-	//}
+	request = new Request;
+	request->parsRequest(buff, this->location);
+	this->newIndex = request->getPath();
+	std::cout << "ooooooooooooooooooo" << this->newIndex << std::endl;
+	if (this->newIndex == "./")
+		this->newIndex = "./html/home.html";
+	//CheckRequest(buff, fd);
+	if (request->getRetCode() == 400){
+		char str3[] = "bad version http";
+		write(fd, str3, ft_strlen(str3));
+	}
 	// else if (request->getRetCode() == 404)
 	// {
 	// 	printf("%d\n", error);
@@ -879,9 +880,7 @@ void	StartServer(Server server)
 		if (array[i].init_serv())
 			return ;
 		array[i].newIndex = "";
-	if (array[i].autoindex) // true
-	{
-		if (server.index.empty())
+		if (array[i].autoindex) // true
 		{
 			std::string tmp;
 			//std::cout << "index est empty donc renvoyer vers une page de sommaire" << std::endl;
