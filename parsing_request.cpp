@@ -4,7 +4,7 @@
 #include <vector>
 #include "server.hpp"
 
-void	Request::parsRequest(std::string str, std::vector<Location> &location){
+int	Request::parsRequest(std::string str, std::vector<Location> &location){
 	std::string method;
 	size_t i = 0;
 	for (; str[i] != ' '; i++){
@@ -27,27 +27,28 @@ void	Request::parsRequest(std::string str, std::vector<Location> &location){
 	if (version != "HTTP/1.1"){
 		std::cerr << "bad version" << std::endl;
 		_retCode = 400;
-		return ;
+		return 400;
 	}
 
 	if (method != "GET" && method != "POST" && method != "DELETE")
 	{
 		std::cerr << "method didnt exist" << std::endl;
 		_retCode = 401;
-		return ;
+		return 401;
 	}
 	
 	if (method == "GET"){
 		std::ifstream file;
+		std::cerr << "PPPPPPPPPPPPPPPPPPPPPPPPPPP: " << path << std::endl;
 		if (!checkLocation(path, 1, location)){
-			_retCode = 777;
+			_retCode = 775;
 			std::cout << "pas les droits" << std::endl;
-			return ;
+			return 775;
 		}
 		file.open(_path.c_str(), std::ifstream::in);
 		if (!file.is_open()){
 			_retCode = 404;
-			return ;
+			return 404;
 		}
 		file.close();
 	}
@@ -55,25 +56,25 @@ void	Request::parsRequest(std::string str, std::vector<Location> &location){
 		std::ifstream file;
 		file.open(path.c_str(), std::ifstream::in);
 		if (!checkLocation(path, 2, location)){
-			_retCode = 777;
+			_retCode = 776;
 			std::cout << "pas les droits" << std::endl;
-			return ;
+			return 776;
 		}
 		if (!file.is_open()){
 			std::cerr << "cannot delete cause file not existing" << std::endl;
 			_retCode = 404;
-			return ;
+			return 404;
 		}
 		file.close();
 	}
 	else {
 		if (!checkLocation(path, 3, location)){
 			_retCode = 404;
-			return ;
+			return 404;
 		}
 	}
 	_retCode = 200;
-	return ;
+	return 200;
 }
 
 std::string getLastSlash(std::string str){

@@ -1,5 +1,3 @@
-Content-type: text/html; charset=UTF-8
-
 <!DOCTYPE html>
 <title >webserv's galerie super page</title>
 
@@ -40,9 +38,10 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
 </div>
 	<hr>
 
-	<div><img src='../images/geoguessing2.jpeg' style='width:20%';>
-<button type="button" onclick="deleteSomething('../images/geoguessing2.jpeg')">Delete</button></div><hr><div><img src='../images/sadpepe.png' style='width:20%';>
-<button type="button" onclick="deleteSomething('../images/sadpepe.png')">Delete</button></div><hr>
+<div class="column" style="text-align: center ;">
+    <img src="sadpepe.png" style="width:10%; display: block; margin: auto;" alt="Img" id="blah"><br><br>
+</div>
+	
 
 
 <hr>
@@ -67,15 +66,21 @@ overflow: hidden;">
         <a href="https://profile.intra.42.fr/users/mmhaya"> Intra Profile</a>
     </p>
   </footer>
+	<script>
+
 <script>
         async function deleteSomething(path) {
-		await doDelete(path);
+                await doDelete(path);
                 window.location.reload();
-	}
+        }
 
         async function doDelete(path) {
                 return fetch(path, {
                         method: 'DELETE'
                 })
         }
+</script>
+
+
+
 </script>

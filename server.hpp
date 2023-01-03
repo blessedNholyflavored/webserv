@@ -52,13 +52,15 @@ class Server
 	std::vector<int>	vectorauto;
 	int							autoindex;
 	std::vector<Location>		location;
+	Location		loc;
 	char **env;
 	Request						*request;
 	std::string			newIndex;
 
 	int							epoll_fd;
 	int							server_fd;
-
+	
+	std::string FirstPage(std::string filePath);
 	int	sendConnection(int fd);
 	int	recvConnection(int fd);
 	int	newConnection(struct epoll_event event, int fd);

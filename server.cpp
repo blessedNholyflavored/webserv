@@ -32,6 +32,7 @@ void	Server::parsLoc(int i){
 			Location *tmp;
 			tmp = new Location;
 			indexline = tmp->parser_la_location(indexline);
+			this->loc = *tmp;
 			location.push_back(*tmp);
 		}
 		indexline++;

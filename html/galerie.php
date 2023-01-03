@@ -35,19 +35,21 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
     font-weight:400;
     color:#696969;
     text-align:center;" type="button" onclick="removeImg()">Remove</button>
+</div>
 	<hr>
-
 
 	<?php
 	$files = scandir('../images');
         foreach ($files as $file) {
         	if ($file !== "." && $file !== "..") {
-			    echo "<div>";
-			    echo $file;
-                $image = "../images/"."$file";
-
-                echo '<img style="width:50%; display: block; margin: auto;" src="'.$image.'"/>';
+		echo "<div>";
+                $image = "../images/$file";
+			
+		echo "<img src='$image' style='width:20%';>\n";
+		echo "<button type=\"button\" onclick=\"deleteSomething('$image')\">";
+                echo "Delete</button>";
                 echo "</div>";
+		echo "<hr>";
                 }
         }
         ?>
@@ -76,26 +78,15 @@ overflow: hidden;">
         <a href="https://profile.intra.42.fr/users/mmhaya"> Intra Profile</a>
     </p>
   </footer>
-	<script>
+<script>
+        async function deleteSomething(path) {
+		await doDelete(path);
+                window.location.reload();
+	}
 
-
-function uploadFile(form){
-     const formData = new FormData(form);
-     var oOutput = document.getElementById("static_file_response")
-     var oReq = new XMLHttpRequest();
-         oReq.open("POST", "uploads", true);
-     oReq.onload = function(oEvent) {
-         if (oReq.status == 200) {
-           oOutput.innerHTML = "Uploaded!";
-           console.log(oReq.response)
-         } else {
-           oOutput.innerHTML = "Error occurred when trying to upload your file.<br \/>";
-         }
-         };
-     oOutput.innerHTML = "Sending file!";
-     console.log("Sending file!")
-     oReq.send(formData);
-    }
-
-
+        async function doDelete(path) {
+                return fetch(path, {
+                        method: 'DELETE'
+                })
+        }
 </script>

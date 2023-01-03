@@ -4,7 +4,7 @@
 
 class Request {
 	public:
-		void							parsRequest(std::string str, std::vector<Location> &location);
+		int							parsRequest(std::string str, std::vector<Location> &location);
 		int								checkLocation(std::string str, int method, std::vector<Location> &location);
 		void							findGoodLocation(std::string str, std::vector<Location> &location);
 		int								getRetCode() const;
