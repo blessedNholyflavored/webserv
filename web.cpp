@@ -513,14 +513,16 @@ int	Server::recvConnection(int fd)
 		printf("BUFF in recv:\n%s\n", buff);
 	request = new Request;
 	request->parsRequest(buff, this->location);
-	this->newIndex = request->getPath();
+	//this->newIndex = request->getPath();
+	std::cout << "ICIIIII" <<  this->newIndex << std::endl;
 	if (this->newIndex == "./")
 		this->newIndex = "./html/home.html";
 	std::string firstline;
 	for (int index = 0; buff[index] != '\n'; index++){
 		firstline += buff[index];
 	}
-	this->splitString(firstline.c_str(), " ", fd);
+	//this->splitString(firstline.c_str(), " ", fd);
+	CheckRequest(buff, fd);
 	if (request->getRetCode() == 400){
 		char str3[] = "bad version http";
 		write(fd, str3, ft_strlen(str3));
@@ -684,6 +686,7 @@ int	Server::recvConnection(int fd)
 	else
 	{
 		std::string str1 = FirstPage(this->newIndex);
+		std::cout << "TESTTTT 22222 RECVEEEE   " << this->newIndex << std::cout;
 		if (error == 54)
 		{
 			str1 = fileToString("lucieCGI");
@@ -707,6 +710,8 @@ int	Server::sendConnection(int fd)
 	if (a == 0)
 	{
 		std::string str1 = FirstPage(this->newIndex);
+		std::cout << "TESTTTT 1111 SENDCONNECTION" << this->newIndex << std::cout;
+
 		if ((int)str1.length() > ft_atoi(max_client_body_size.c_str()))
 		{
 			error = 413;
@@ -895,6 +900,7 @@ void	StartServer(Server server)
 			else
 			{
 				array[i].newIndex = (*indexIT).substr(1, (*indexIT).length());
+				std::cout << "oui" << array[i].newIndex << std::endl;
 				//std::cout << " pas empty mais autoindex on " << std::endl;
 				indexIT++;
 			}
@@ -909,10 +915,10 @@ void	StartServer(Server server)
 			else
 			{
 				array[i].newIndex = (*indexIT).substr(1, (*indexIT).length()); 
+				//std::cerr << "avant concatene: " << array[i].newIndex << std::endl;
 				array[i].newIndex = array[i].root +  "/" + array[i].newIndex;
-				std::cerr << "TRYYYYYYYYYY: " << array[i].newIndex << std::endl;
+				//std::cerr << "apres concatene: " << array[i].newIndex << std::endl;
 				*indexIT++;
-
 				//std::cout << " pas empty mais autoindex off" << std::endl;
 			}
 		}

@@ -1,3 +1,10 @@
 #probleme de parsing si ya index dans location 
 #basicsummary fonctionne pas si on veut se deplacer ds les dossiers
 #le multiport
+
+
+
+parser la location est appele deux fois
+
+deux index selon lautoindex ca marche plus
+parser les ;
