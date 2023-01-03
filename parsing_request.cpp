@@ -92,16 +92,15 @@ void	Request::findGoodLocation(std::string str, std::vector<Location> &location)
 	int		countTmp = -1;
 	bool	isFind = false;
 
-	str = "/scale" + str;
-	if (str[str.length() - 1] == '/')
-		str.erase(str.length(), 1);
 	for(std::vector<Location>::iterator it2 = location.begin(); it2 != location.end(); it2++){
 		std::string tmpLoc = it2->getRoot() + it2->getLocation();
-		if (tmpLoc[tmpLoc.length() - 1] == '/')
-			str.erase(str.length() - 1, 1);
+		if (tmpLoc == "//")
+			tmpLoc = "/";
 		countTmp = -1;
 		int len = str.length() - 1;
-		while(str != "/scale"){
+		isFind = false;
+		std::cout << "str  == "<< str << std::endl;
+		while (str != "/"){
 			if (countTmp >= 0)
 				countTmp++;
 			if (str == tmpLoc){
@@ -114,8 +113,10 @@ void	Request::findGoodLocation(std::string str, std::vector<Location> &location)
 				str.erase(str.length() - 1, 1);
 				len--;
 			}
-			str.erase(str.length() - 1, 1);
-			len--;
+			if (len > 0){
+				str.erase(str.length() - 1, 1);
+				len--;
+			}
 			if (countTmp == -1)
 				countTmp = 0;
 		}
@@ -127,8 +128,11 @@ void	Request::findGoodLocation(std::string str, std::vector<Location> &location)
 	}
 	if (bestPos == -1){
 		_it = location.begin();
-		for (; _it->getScale() == false; _it++) {
+		while ((!_it->getDefaut()) && (_it != location.end())) {
+			_it++;
 		}
+		if (_it == location.end())
+			_it --;
 		return ;
 	}
 	else {
