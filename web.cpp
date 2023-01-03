@@ -740,6 +740,7 @@ int	Server::recvConnection(int fd)
 	{
 		std::cerr << "0000000000000000000000000000000000000000000000000000: " << this->newIndex << std::endl;
 		std::string str1 = FirstPage(this->newIndex);
+		std::cout << "TESTTTT 22222 RECVEEEE   " << this->newIndex << std::cout;
 		if (error == 54)
 		{
 			str1 = fileToString("lucieCGI");
@@ -763,6 +764,8 @@ int	Server::sendConnection(int fd)
 	if (a == 0)
 	{
 		std::string str1 = FirstPage(this->newIndex);
+		std::cout << "TESTTTT 1111 SENDCONNECTION" << this->newIndex << std::cout;
+
 		if ((int)str1.length() > ft_atoi(max_client_body_size.c_str()))
 		{
 			error = 413;
@@ -968,10 +971,10 @@ void	StartServer(Server server)
 			else
 			{
 				array[i].newIndex = (*indexIT).substr(1, (*indexIT).length()); 
+				//std::cerr << "avant concatene: " << array[i].newIndex << std::endl;
 				array[i].newIndex = array[i].root +  "/" + array[i].newIndex;
-				std::cerr << "TRYYYYYYYYYY: " << array[i].newIndex << std::endl;
+				//std::cerr << "apres concatene: " << array[i].newIndex << std::endl;
 				*indexIT++;
-
 				//std::cout << " pas empty mais autoindex off" << std::endl;
 			}
 		}

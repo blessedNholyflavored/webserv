@@ -15,11 +15,10 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
     <li style="float:left;"><a href="/html/home.html" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">accueil</a></li>
     <li style="float:left;"><a href="/html/galerie.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">galerie</a></li>
     <li style="float:left;"><a href="/html/text.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">upload text</a></li>
-    <li style="float:left;"><a href="/html/cookies.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">Cookies</a></li>
 </ul>
 </div>
 
-<h2 style="font-family:'Roboto',sans-serif; text-align: center;"> PAGE EXEMPLE TEXTE</h2>
+<h2 style="font-family:'Roboto',sans-serif; text-align: center;"> PAGE POST PYTHON LE SERPENT </h2>
 <p style="font-family:'Roboto',sans-serif; text-align: center;"> utilise le menu pour tester des trucs, ca marche super bien</p>
 
 <hr>
@@ -27,41 +26,22 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
 <h2 style ="text-align: center;" > TEST DE NOM ET PRENOM</h2>
 <p style ="text-align: center;" > dis nous t ki stp</p>
 
-<form style ="text-align: center;" id="nom_form" action="./reponse.php" method="GET">
-    <label for="fname">donnes ton prenom</label><br>
-    <input style ="text-align: center;" type="text" id="fname" name="fname" value="mon prenom"><br>
-    <label for="lname">donnes ton nom</label><br>
-    <input  style ="text-align:  center;" type="text" id="lname" name="lname" value="mon nom"><br><br>
-    <input type="submit" value="Submit">
-  </form> 
-  
-<hr>
-	<div>
-		<div>
-                        <h2>Upload a text to the server</h2>
+<form name=f1 method=POST action=post.py>
+    <table>
+    <tr><td>First Name </td><td><input type=text name=f_name><td></tr>
+    <tr><td>Second Name</td><td> <input type=text name=s_name></td></tr>
+    <tr><td>Sex</td><td> <input type=radio name=r1 value=male> Male 
+    <input type=radio name=r1 value=female> Female </td></tr>
+    <tr><td>Class</td><td> <select name=class>
+    <option value='Three'>Three</option>
+    <option value='Four'>Four</option>
+    <option value='Five'>Five</option>
+    </select>
+     </td></tr>
+     <tr><td><input type=submit value=Submit></td><td> </td></tr>
+    </table>
+    </form>
 
-                        <form action="/html/text.php" method="POST">
-                                Type text to upload to the server:<br><br>
-                                <input type="text" name="textToUpload"><br><br>
-                                <input type="submit" value="Send text" name="submit">
-                        </form>
-		</div>	
-		
-		<div>
-                        <h2>Read the text uploaded to the server</h2>
-
-                        <?php
-				$file = 'salut.txt';
-				$test = file_get_contents("../.tmp");
-				parse_str($test, $POST);
-				//$_POST['textToUpload'] = "lol";
-                                $txt = htmlspecialchars($POST['textToUpload']);
-                                file_put_contents($file, $txt);
-                        $file = file_get_contents($file, true);
-                        echo "<input id=\"read_box\" type=\"text\" value=\"$file\" readonly>";
-                        ?>
-		</div>
-	</div>	
 	
 <hr>
 <footer style="background-color: orange;

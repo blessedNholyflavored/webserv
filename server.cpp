@@ -198,7 +198,7 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 	{
 		if ((*it).getRoot().length() > 0)
 		{
-			std::cerr << "MEHDI: " << (*it).getRoot() << std::endl;
+			//std::cerr << "MEHDI: " << (*it).getRoot() << std::endl;
 			k++;
 		}
 		}
@@ -317,9 +317,7 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 		// 	tmp.resize(tmp.size() - 1);
 		this->root = (tmp.c_str());
 		this->vectorroot.push_back(this->root);
-		std::vector<std::string>::iterator it = vectorroot.begin();
-		for (; it != vectorroot.end(); it++){
-			std::cerr << "LUCIE: " << *it << std::endl;}
+		
 	}
 	else if (!(res[j].find("root")))
 	{
