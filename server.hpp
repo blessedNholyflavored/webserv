@@ -76,6 +76,15 @@ class Server
 	std::string	execFile(std::string file);
 	std::string     execPOST(void);
 	std::string	recupHeader(int ret, std::string index);
+
+
+	////test
+	void creation_href(std::vector<std::string> _list_name, std::string filePath);
+	std::string insert_html(std::vector<std::string> _list_name, std::vector<std::string> _list_href, std::string index, std::string filePath);;
+	std::string	read_directory(std::string filePath, std::string index);
+	std::string basicsummary( std::string filePath);
+
+
 };
 
 size_t countEndl(std::string content);
