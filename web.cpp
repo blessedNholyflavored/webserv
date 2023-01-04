@@ -454,7 +454,7 @@ int	Server::recvConnection(int fd)
 //		write(fd, str3, ft_strlen(str3));
 //	}
 	//std::cerr << "111111111111111111111111111111: " << error << std::endl;
-	CheckRequest(buff, fd);
+	CheckRequest(buff, fd, ret);
 	//std::cerr << "222222222222222222222222222222: " << error << std::endl;
 	// else if (request->getRetCode() == 404)
 	// {
