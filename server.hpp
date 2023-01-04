@@ -73,6 +73,7 @@ class Server
 	bool autoindexed() const;
 	void CheckRequest(char *buffer, int fd);
 	void splitString(const char *buf, std::string deli, int fd);
+	std::string	execFile(std::string file);
 };
 
 size_t countEndl(std::string content);

@@ -120,91 +120,13 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 	}
 	else if (arr[0].compare("POST") == 0 || arr[1].compare("/html/text.php") == 0 || arr[1].compare("/html/galerie.php") == 0)
 	{
-		//ne1wIndex = arr[1].substr(1, arr[1].length());
-		this->newIndex = arr[1];
-		std::cout << "NEW INDEX: " << this->newIndex << std::endl;
-		if (arr[1].compare("/html/text.php") == 0)
-		{
-			int tmp;
-			std::string recup = "." + arr[1];
-			tmp = open(recup.c_str(), O_RDONLY, 0644);
-			std::cerr << "FILEEEEEEEEEEEEEEEEEEE: " << recup << std::endl;
-			if (tmp == -1)
-				printf("laaaaaaaaaaaaaaaa\n");
-				
-			int lucie = open("lucieCGI", O_CREAT | O_WRONLY | O_RDONLY | O_TRUNC, 0644);
-			char	**cmd = (char **)malloc(3);;
-			cmd[0] = strdup("/usr/bin/php-cgi");
-			cmd[1] = strdup("./html/text.php");
-			cmd[2] = 0;
-			this->vectorenv.push_back((char *)("REQUEST_METHOD=GET"));
-			this->vectorenv.push_back((char *)"PATH_INFO=./html/text.php");
-			this->vectorenv.push_back((char *)"PATH_TRANSLATED=./html/text.php");
-			this->vectorenv.push_back((char *)"PATH_NAME=./html/text.php");
-			this->vectorenv.push_back((char *)"SCRIPT_NAME=./html/text.php");
-			this->vectorenv.push_back((char *)"SCRIPT_FILENAME=./html/text.php");
-			this->env = ft_regroup_envVector(this->vectorenv);
-			int frk = fork();
-			if (frk == 0)
-			{
-				dup2(tmp, 0);
-				close(tmp);
-				dup2(lucie, 1);
-				close(lucie);
-				execve("/usr/bin/php-cgi", cmd, this->env);
-				exit(0);
-			}
-			else
-			{
-				wait(NULL);
-				error = 54;
-			}
-			this->vectorenv.clear();
-			this->vectorenv = this->vectorenvcpy;
-		}
-		else if (arr[1].compare("/html/galerie.php") == 0)
-		{
-			int tmp;
-			std::string recup = "." + arr[1];
-			tmp = open(recup.c_str(), O_RDONLY, 0644);
-			std::cerr << "FILEEEEEEEEEEEEEEEEEEE: " << recup << std::endl;
-			if (tmp == -1)
-				printf("laaaaaaaaaaaaaaaa\n");
-				
-			int lucie = open("lucieCGI", O_CREAT | O_WRONLY | O_RDONLY | O_TRUNC, 0644);
-			char	**cmd = (char **)malloc(3);;
-			cmd[0] = strdup("/usr/bin/php-cgi");
-			cmd[1] = strdup("./html/galerie.php");
-			cmd[2] = 0;
-			this->vectorenv.push_back((char *)("REQUEST_METHOD=GET"));
-			this->vectorenv.push_back((char *)"PATH_INFO=./html/galerie.php");
-			this->vectorenv.push_back((char *)"PATH_TRANSLATED=./html/galerie.php");
-			this->vectorenv.push_back((char *)"PATH_NAME=./html/galerie.php");
-			this->vectorenv.push_back((char *)"SCRIPT_NAME=./html/galerie.php");
-			this->vectorenv.push_back((char *)"SCRIPT_FILENAME=./html/galerie.php");
-			this->env = ft_regroup_envVector(this->vectorenv);
-			int frk = fork();
-			if (frk == 0)
-			{
-				dup2(tmp, 0);
-				close(tmp);
-				dup2(lucie, 1);
-				close(lucie);
-				execve("/usr/bin/php-cgi", cmd, this->env);
-				exit(0);
-			}
-			else
-			{
-				wait(NULL);
-				error = 54;
-			}
-			this->vectorenv.clear();
-			this->vectorenv = this->vectorenvcpy;
-		}
-		if (arr[0].compare("POST") == 0 && (arr[1].compare("/html/text.php") == 0
-					|| arr[1].compare("/html/galerie.php") == 0))
-			error = 998;
+		std::string recup = "." + arr[1];
+		recup = execFile(recup);
+		error = 54;
 	}
+	if (arr[0].compare("POST") == 0 && (arr[1].compare("/html/text.php") == 0
+			|| arr[1].compare("/html/galerie.php") == 0))
+		error = 998;
 	else if (arr[0].compare("DELETE") == 0)
 		unlink(arr[1].c_str() + 1);
 	else
@@ -248,41 +170,6 @@ void	Server::CheckRequest(char *buffer, int fd)
 	a++;
 }
 
-// static void	createLink(std::string & index, int i)
-// {
-// 	if (i == 0)
-// 	{
-// 		std::string test;
-// 		std::ifstream f("coke.html");
-// 		getline(f, test);
-// 		index += test;
-// 		index += "jtaravel: ";
-// 		index += "<a href=\"";
-// 		index += "https://profile.intra.42.fr/users/jtaravel";
-// 		index += "\">";
-// 		index += "jtaravel";
-// 		index += "</a>";
-// 	}
-// 	if (i == 1)
-// 	{
-// 		index += "lkhamlac: ";
-// 		index += "<a href=\"";
-// 		index += "https://profile.intra.42.fr/users/lkhamlac";
-// 		index += "\">";
-// 		index += "lkhamlac";
-// 		index += "</a>";
-// 	}
-// 	if (i == 2)
-// 	{
-// 		index += "mmhaya: ";
-// 		index += "<a href=\"";
-// 		index += "https://profile.intra.42.fr/users/mmhaya";
-// 		index += "\">";
-// 		index += "mmhaya";
-// 		index += "</a>";
-// 	}
-// }
-
 std::string	intToString(int i)
 {
 	std::string res;
@@ -305,6 +192,14 @@ std::string Server::FirstPage(std::string filePath)
 	path += filePath;
 	dirp = opendir(path.c_str());*/
 	std::cerr << "FILEPATHHHHHHHHHHHHHHH: " << filePath << std::endl;
+	if (filePath.find(".php") != std::string::npos
+		|| filePath.find(".py") != std::string::npos)
+	{
+		index = execFile(filePath);
+		index += "</body>";
+		index += "</html>";
+		return index;
+	}
 	
 	std::string recup;
 	std::ifstream findex(filePath.c_str());
@@ -560,12 +455,13 @@ int	Server::recvConnection(int fd)
 //		firstline += buff[index];
 //	}
 	//this->splitString(firstline.c_str(), " ", fd);
-	std::cerr << "eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee: " << ret << std::endl;
 	if (request->getRetCode() == 400){
 		char str3[] = "bad version http";
 		write(fd, str3, ft_strlen(str3));
 	}
+	std::cerr << "111111111111111111111111111111: " << error << std::endl;
 	CheckRequest(buff, fd);
+	std::cerr << "222222222222222222222222222222: " << error << std::endl;
 	// else if (request->getRetCode() == 404)
 	// {
 	// 	printf("%d\n", error);
@@ -738,16 +634,17 @@ int	Server::recvConnection(int fd)
 	}
 	else
 	{
-		std::cerr << "0000000000000000000000000000000000000000000000000000: " << this->newIndex << std::endl;
-		std::string str1 = FirstPage(this->newIndex);
-		std::cout << "TESTTTT 22222 RECVEEEE   " << this->newIndex << std::cout;
+		std::string str1;
 		if (error == 54)
 		{
 			str1 = fileToString("lucieCGI");
 			std::string skip = "Content-type: text/html; charset=UTF-8 ";
+			std::cerr << "0000000000000000000000000000000000000000000000000000: " << str1 << std::endl;
 			str1 = str1.substr(skip.length(), str1.length());
 			error = 0;
 		}
+		else
+		str1 = FirstPage(this->newIndex);
 		if (((int)str1.length())  > ft_atoi(max_client_body_size.c_str()))
 		{
 			error = 413;
@@ -1099,5 +996,6 @@ std::string	fileToString(std::string loc)
 	std::ifstream fin(loc.c_str());
 	getline(fin, buffer, char(-1));
 	fin.close();
+	std::cerr << "LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOCCCCC : " << buffer << std::endl;
 	return buffer;
 }

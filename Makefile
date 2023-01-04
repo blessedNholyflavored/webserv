@@ -8,6 +8,7 @@ SRCS		=	main.cpp \
 				parsing_request.cpp \
 				env.cpp \
 				ft_split.cpp \
+				execFile.cpp \
 
 OBJS		=	$(SRCS:.cpp=.o)
 CC			=	c++
