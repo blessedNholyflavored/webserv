@@ -56,7 +56,6 @@ void	freeTab(char **tab)
 
 std::string	fileToString(std::string loc);
 std::string     intToString(int i);
-std::string	basicsummary(std::string filePath);
 
 void	Server::splitString(const char *buf, std::string deli, int fd)
 {
@@ -88,10 +87,10 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 			std::cout << arr[1] << std::endl;
 			std::cerr << "NO FILE" << std::endl;
 			this->newIndex = arr[1];
-			std::cout << "HYDRO CONARDDDDDDDDDDDDDDDDDDD: " << this->root + this->loc.getIndex() << std::endl;
+			//std::cout << "HYDRO CONARDDDDDDDDDDDDDDDDDDD: " << this->root + this->loc.getIndex() << std::endl;
 			if (this->loc.getLocation().length() > 0 && this->loc.getIndex().length() > 0)
 				this->newIndex = this->root + this->loc.getIndex();
-			std::cout << "SALOOOOOOOOOOOP: " << this->newIndex << std::endl;
+		//	std::cout << "SALOOOOOOOOOOOP: " << this->newIndex << std::endl;
 			if (arr[1].compare(0, 12, "/reponse.php") == 0
 			|| arr[1].compare(0, 17, "/html/reponse.php") == 0)
 				error = 999;
@@ -102,7 +101,7 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 		}
 		else if (open(arr[1].c_str() + 1, O_DIRECTORY) > 0)
 		{
-			std::cerr << "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKk: " << arr[1] << std::endl;
+			//std::cerr << "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKk: " << arr[1] << std::endl;
 			this->newIndex = basicsummary(arr[1].substr(1, arr[1].length()));
 			error = -99;
 		}
@@ -126,10 +125,10 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 		unlink(arr[1].c_str() + 1);
 	std::cerr << "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb: " << this->newIndex << std::endl;
 	 //if (this->newIndex == "./" || this->newIndex == "/" || this->newIndex == "/favicon.ico")
-	 if (this->newIndex.length() <= 1 || this->newIndex == "/favicon.ico")
-	 	this->newIndex = "./html/home.html";
-	
-	std::cerr << "kgdfvbdfvsdffvsfvrfrfdvrfvifffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff: " << error << "\n";
+	if (this->newIndex.length() <= 1 || this->newIndex == "/favicon.ico")
+			this->newIndex = "./html/home.html";
+	//iciicicicicici
+	//std::cerr << "kgdfvbdfvsdffvsfvrfrfdvrfvifffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff: " << error << "\n";
 }
 
 
@@ -436,7 +435,7 @@ int	Server::recvConnection(int fd)
 		printf("BUFF in recv:\n%s\n", buff);
 	int	ret = 0;
 	request = new Request;
-	std::cerr << "999999999999999999999999999999999999999999999999999: " << this->loc.getIndex() << std::endl;
+	//std::cerr << "999999999999999999999999999999999999999999999999999: " << this->loc.getIndex() << std::endl;
 	//ret = request->parsRequest(buff, this->location, this->loc);
 //	this->newIndex = request->getPath();
 //	if (this->newIndex == "./")
@@ -450,16 +449,16 @@ int	Server::recvConnection(int fd)
 //		char str3[] = "bad version http";
 //		write(fd, str3, ft_strlen(str3));
 //	}
-	std::cerr << "111111111111111111111111111111: " << error << std::endl;
+	//std::cerr << "111111111111111111111111111111: " << error << std::endl;
 	CheckRequest(buff, fd);
-	std::cerr << "222222222222222222222222222222: " << error << std::endl;
+	//std::cerr << "222222222222222222222222222222: " << error << std::endl;
 	// else if (request->getRetCode() == 404)
 	// {
 	// 	printf("%d\n", error);
 	// 	char str3[] = "HTTP/1.1 404 Not Found\nContent-Type: text/plain\nContent-Length: 19\n\n404 page not found\n";
 	// 	write(fd, str3, strlen(str3));
 	// }
-	std::cerr << "RETTTTTT: " << ret << "\n";
+	//std::cerr << "RETTTTTT: " << ret << "\n";
 	if (ret && ret != 200)
 		this->newIndex = checkRet(ret);
 	if (this->newIndex.length() > 1 && ret && ret != 200)
@@ -537,7 +536,7 @@ int	Server::recvConnection(int fd)
 	{
 		int fd1;
 
-		std::cerr << "LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa\n";
+		//std::cerr << "LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa\n";
 
 		this->vectorenv.push_back((char *)("REQUEST_METHOD=POST"));
 		this->vectorenv.push_back((char *)("REMOTE_HOST=localhost"));
@@ -703,100 +702,206 @@ bool is_directory(const std::string &filename)
 	return (S_ISDIR(st_buf.st_mode) == 1);
 }
 
-std::string	basicsummary(std::string filePath)
+bool	ft_in_charset(char const c, const std::string &charset)
 {
-	DIR*			dirp;
-	struct dirent*	direntp;
-	std::string		index;
-	//char			buffer[PATH_MAX];
-	std::string		path;
-	static	std::string old;
+	int	i_charset;
 
-	//path = getcwd(buffer, PATH_MAX);
-	//if (open(filePath.c_str(), O_DIRECTORY) >= 0)
-	//	filePath += "/";
-	//old = "";
-	path = filePath;
-	/*while (filePath.find("//") != std::string::npos)
+	i_charset = 0;
+	while (charset[i_charset])
 	{
-		filePath.erase(filePath.find("//"), 1);
+		if (c == charset[i_charset++])
+			return true;
 	}
-	std::cerr << "pooooooooooooooooooooooooooooooooooooooooooooooooooooooo: " << old << std::endl;
-		//filePath = "/";
-	if (filePath == "/")
-		path = old;
-	else
-		path += filePath; // ici
-	if (open(old.c_str(), O_DIRECTORY) >= 0)
-		path = old + path;
-	old = path;
-	//path += "/";*/
-
-	index += "<!DOCTYPE html>\n<html>\n\n<title>INDEX</title>\n\n<h1>INDEX</h1>";
-	index += "<hr>";
-	/*if (path.compare("/") == 0)
-	{
-		path = ".";
-*/
-	std::cerr << "LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA: " << path << std::endl;
-	// if (path.compare(".") != 0)
-	// {
-	// 	path = "." + path;
-	// 	path += old;
-	// }
-	dirp = opendir(path.c_str());
-	if( dirp != NULL )
-	{
-		std::string test;
-		while((direntp = readdir(dirp)) != NULL)
-		{
-			test = direntp->d_name;	
-			if (is_directory(path + '/' + test))
-			{	
-				index += "<ul>";
-				index += "<li><p><a <style=\"font-weight:bold'\" href=\"";
-				index += test;
-				index += "\" class=\"active\">";
-				index += test;
-				index += "</li></a></p>\n";
-				index += "</ul>";
-		 	}
-			else
-			{
-		 		index += "<ul>";
-		 		index += "<li><p><a <style=\"font-weight:bold'\" href=\"";
-		 		index += test;
-		 		index += "\" class=\"active\">";
-		 		index += test;
-		 		index += "</li></a></p>\n";
-		 		index += "</ul>";
-			}
-		}
-		//index += "<title>ici aussi</title>";
-		//int	i = 0;
-        // for(;;)
-		// {
-        //     direntp = readdir( dirp );
-        //     if ( direntp == NULL )
-		// break;
-		// 	index += "<h4>";
-		// std::string test = direntp->d_name;
-		// std::cout << "dirp  ---> " <<  test << std::endl;
-		//index += "<a href=\"" + test +"\">" + test + "</a>\n";
-
-		// if ( direntp->d_type == DT_DIR)
-		// 		index += "__Directory__| ";
-		// else if ( direntp->d_type == DT_REG)
-		// 		index += "_Regular file_| ";
-		// else
-		// 		index += "                ";
-		// 	index += "</h4>\n"
-		index += "</body>";
-		index += "</html>";;
-		closedir( dirp );
-	}
-	return index;
+	return false;
 }
+
+std::vector<std::string> ft_cpp_split(const std::string &str, const std::string &charset)
+{
+	std::vector<std::string> res;
+	std::string			tmp;
+	size_t			i;
+
+	i = 0;
+	while (i < str.length())
+	{
+		while (i < str.length() && ft_in_charset(str[i], charset))
+			i++;
+		if (i < str.length())
+		{
+			tmp = "";
+			while (i < str.length() && !ft_in_charset(str[i], charset))
+				tmp += str[i++];
+			res.push_back(tmp);
+		}
+	}
+	return res;
+}
+
+void	Server::creation_href(std::vector<std::string> _list_name, std::string filePath)
+{
+	std::vector<std::string>	_list_href;
+	_list_href = _list_name;
+	// std::vector<std::string>::iterator it = _list_href.begin();
+	// for (; it != _list_href.end(); it++)
+	// std::cerr << "LISTEHREFFFFF: " << *it << std::endl;
+	std::string new_path = "";
+	std::vector<std::string> path_noroot = ft_cpp_split(filePath, "/");
+	new_path += path_noroot.back();
+	// std::vector<std::string>::iterator et = new_path.begin();
+	// for (; et != new_path.end(); et++)
+	
+	for (std::vector<std::string>::iterator it = _list_href.begin(); it != _list_href.end(); it++)
+	{
+		if (this->root.find(new_path) == std::string::npos)
+			*it = new_path + "/" + *it;
+	}
+}
+
+std::string	Server::insert_html(std::vector<std::string> _list_name, std::vector<std::string> _list_href, std::string index, std::string filePath)
+{
+	size_t i = 0;
+	(void) _list_href;
+	(void) filePath;
+	//creation_href(_list_name, filePath);
+		
+	while (i < _list_name.size())
+	{
+		index += "\n<tr><td><a href=\"" /*+ _list_href[i] + "\">		"*/ + _list_name[i] +  "</a>" +  _list_name[i] + "</td><td style=\"padding-left: 250px;\">" + "</td></tr></br>";
+		i++;
+	}
+	index += "</table><br/><hr>";
+	return (index);
+}
+
+std::string	Server::read_directory(std::string filePath, std::string index)
+{
+	DIR				*dir; // pointer to directory
+	struct dirent	*entry; //all stuff in the directory
+
+	dir = opendir(filePath.c_str());
+	if (!dir)
+		return (0);
+	entry = readdir(dir);
+	std::vector<std::string>	_list_name;
+	std::vector<std::string>	_list_href;
+	while (entry)
+	{
+//		test = entry->d_name;	
+		_list_name.push_back(entry->d_name);
+		entry = readdir(dir);
+	}
+	closedir(dir);
+	std::vector<std::string>::iterator at = _list_name.begin();
+	for (; at != _list_name.end(); at++)
+	std::cerr << "liste name --> " << *at << std::endl;
+	std::cout << " INDEX --> " 	<< index << std::endl;
+	std::cout << " FILEPATH --> "<< filePath << std::endl;
+
+	index += insert_html(_list_name, _list_href, index, filePath);
+	return(index);
+}
+
+std::string Server::basicsummary(std::string filePath) //Server const &serv
+{
+	std::string index = "<h1>Index of " + filePath + "</h1></br>";
+	index += read_directory(filePath, index);
+	return(index);
+}
+
+// std::string	basicsummary(std::string filePath)
+// {
+// 	DIR*			dirp;
+// 	struct dirent*	direntp;
+// 	std::string		index;
+// 	//char			buffer[PATH_MAX];
+// 	std::string		path;
+// 	static	std::string old;
+
+// 	//path = getcwd(buffer, PATH_MAX);
+// 	//if (open(filePath.c_str(), O_DIRECTORY) >= 0)
+// 	//	filePath += "/";
+// 	//old = "";
+// 	path = filePath;
+// 	/*while (filePath.find("//") != std::string::npos)
+// 	{
+// 		filePath.erase(filePath.find("//"), 1);
+// 	}
+// 	std::cerr << "pooooooooooooooooooooooooooooooooooooooooooooooooooooooo: " << old << std::endl;
+// 		//filePath = "/";
+// 	if (filePath == "/")
+// 		path = old;
+// 	else
+// 		path += filePath; // ici
+// 	if (open(old.c_str(), O_DIRECTORY) >= 0)
+// 		path = old + path;
+// 	old = path;
+// 	//path += "/";*/
+
+// 	index += "<!DOCTYPE html>\n<html>\n\n<title>INDEX</title>\n\n<h1>INDEX</h1>";
+// 	index += "<hr>";
+// 	/*if (path.compare("/") == 0)
+// 	{
+// 		path = ".";
+// */
+// 	//std::cerr << "LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA: " << path << std::endl;
+// 	// if (path.compare(".") != 0)
+// 	// {
+// 	// 	path = "." + path;
+// 	// 	path += old;
+// 	// }
+// 	dirp = opendir(path.c_str());
+// 	if( dirp != NULL )
+// 	{
+// 		std::string test;
+// 		while((direntp = readdir(dirp)) != NULL)
+// 		{
+// 			test = direntp->d_name;	
+// 			if (is_directory(path + '/' + test))
+// 			{	
+// 				index += "<ul>";
+// 				index += "<li><p><a <style=\"font-weight:bold'\" href=\"";
+// 				index += test;
+// 				index += "\" class=\"active\">";
+// 				index += test;
+// 				index += "</li></a></p>\n";
+// 				index += "</ul>";
+// 		 	}
+// 			else
+// 			{
+// 		 		index += "<ul>";
+// 		 		index += "<li><p><a <style=\"font-weight:bold'\" href=\"";
+// 		 		index += test;
+// 		 		index += "\" class=\"active\">";
+// 		 		index += test;
+// 		 		index += "</li></a></p>\n";
+// 		 		index += "</ul>";
+// 			}
+// 		}
+// 		//index += "<title>ici aussi</title>";
+// 		//int	i = 0;
+//         // for(;;)
+// 		// {
+//         //     direntp = readdir( dirp );
+//         //     if ( direntp == NULL )
+// 		// break;
+// 		// 	index += "<h4>";
+// 		// std::string test = direntp->d_name;
+// 		// std::cout << "dirp  ---> " <<  test << std::endl;
+// 		//index += "<a href=\"" + test +"\">" + test + "</a>\n";
+
+// 		// if ( direntp->d_type == DT_DIR)
+// 		// 		index += "__Directory__| ";
+// 		// else if ( direntp->d_type == DT_REG)
+// 		// 		index += "_Regular file_| ";
+// 		// else
+// 		// 		index += "                ";
+// 		// 	index += "</h4>\n"
+// 		index += "</body>";
+// 		index += "</html>";;
+// 		closedir( dirp );
+// 	}
+// 	return index;
+// }
 
 void	StartServer(Server server)
 {
@@ -851,7 +956,7 @@ void	StartServer(Server server)
 			{
 				std::string tmp;
 				//std::cout << "index est empty donc renvoyer vers une page de sommaire" << std::endl;
-				array[i].newIndex = basicsummary("."); 
+				array[i].newIndex = array[i].basicsummary("."); 
 				nbfiles = 666;
 			}
 			else
