@@ -14,14 +14,14 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
         <li style="float:left;"><a href="/html/home.html" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">accueil</a></li>
         <li style="float:left;"><a href="/html/galerie.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">galerie</a></li>
         <li style="float:left;"><a href="/html/text.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">upload text</a></li>
-        <li style="float:left;"><a href="/html/cookies.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">Cookies</a></li>
+        <li style="float:left;"><a href="/html/cookies.html" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">Cookies</a></li>
     </ul>
     </div>
 
 <h2 style="font-family:'Roboto',sans-serif; text-align: center;"> Page qui gere les images upload et delete mec</h2>
 <p style="font-family:'Roboto',sans-serif;text-align: center;"> utilise le menu pour tester des trucs, ca marche super bien</p>
 
-<div class="column" style="text-align: center ;">
+<div class="column" style="text-align: center; ">
     
     <img style="width:10%; display: block; margin: auto;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/2048px-42_Logo.svg.png" id="blah" alt="Img"><br><br>
     <input style="width:10%; display: block; margin: auto; display: inline-block; 
@@ -55,16 +55,13 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
         }
         ?>
 
-
-
-<hr>
-<footer style="background-color: orange;
-position: absolute;
-left: 0;
-bottom: 0;
-height: 20%;
-width: 100%;
-overflow: hidden;">
+<footer style="  
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  background-color: orange;
+  text-align: center;">
     <h2>The team</h2>
     <p>
         <strong>Lucie Khamlach:</strong>
