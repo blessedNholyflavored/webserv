@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 11:03:05 by jtaravel          #+#    #+#             */
-/*   Updated: 2023/01/04 12:06:05 by jtaravel         ###   ########.fr       */
+/*   Updated: 2023/01/04 19:01:17 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,29 @@ std::string	Server::execFile(std::string file)
 	std::string skip = "Content-type: text/html; charset=UTF-8 ";
 	str1 = str1.substr(skip.length(), str1.length());
 	return str1;
+}
+
+std::string	Server::recupHeader(int ret, std::string index)
+{
+	std::string code;
+	
+	if (ret == 404)
+		code = "Not Found";
+	if (ret == 400)
+		code = "Bad Request";
+	if (ret == 403)
+		code = "Forbidden";
+	if (ret == 405)
+		code = "Method Not Allowed";
+	if (ret == 505)
+		code = "HTTP Version Not Supported";
+
+	std::string errorPage = "./html/" + intToString(ret) + ".html";
+	errorPage = fileToString(errorPage);
+	std::string header = "HTTP/1.1 " + intToString(ret) + code;
+	header += "\nContent-type: text/html; charset=UTF-8\nContent-Length: ";
+	header += intToString(errorPage.length()) + "\n\n" + errorPage + "\n";
+	(void)index;
+	std::cerr << "////////////////////////////////////////////////////////: " << header << std::endl;
+	return header;
 }

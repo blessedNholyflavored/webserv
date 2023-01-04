@@ -58,7 +58,7 @@ std::string	fileToString(std::string loc);
 std::string     intToString(int i);
 std::string	basicsummary(std::string filePath);
 
-void	Server::splitString(const char *buf, std::string deli, int fd)
+void	Server::splitString(const char *buf, std::string deli, int fd, int ret)
 {
 	(void)fd;
 	std::string str(buf);
@@ -89,7 +89,9 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 			std::cerr << "NO FILE" << std::endl;
 			this->newIndex = arr[1];
 			std::cout << "HYDRO CONARDDDDDDDDDDDDDDDDDDD: " << this->root + this->loc.getIndex() << std::endl;
-			if (this->loc.getLocation().length() > 0 && this->loc.getIndex().length() > 0)
+			if (this->newIndex.length() <= 1 && this->loc.getLocation().length() > 0 && this->loc.getIndex().length() > 0)
+				this->newIndex = this->root + this->loc.getIndex();
+			if (arr[1] == this->loc.getLocation() && this->loc.getIndex().length() > 1)
 				this->newIndex = this->root + this->loc.getIndex();
 			std::cout << "SALOOOOOOOOOOOP: " << this->newIndex << std::endl;
 			if (arr[1].compare(0, 12, "/reponse.php") == 0
@@ -122,7 +124,7 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 	if (arr[0].compare("POST") == 0 && (arr[1].compare("/html/text.php") == 0
 			|| arr[1].compare("/html/galerie.php") == 0))
 		error = 998;
-	else if (arr[0].compare("DELETE") == 0)
+	else if (arr[0].compare("DELETE") == 0 && ret != 405)
 		unlink(arr[1].c_str() + 1);
 	std::cerr << "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb: " << this->newIndex << std::endl;
 	 //if (this->newIndex == "./" || this->newIndex == "/" || this->newIndex == "/favicon.ico")
@@ -133,7 +135,7 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 }
 
 
-void	Server::CheckRequest(char *buffer, int fd)
+void	Server::CheckRequest(char *buffer, int fd, int ret)
 {
 	std::string cpy(buffer);
 	std::string	test;
@@ -157,7 +159,7 @@ void	Server::CheckRequest(char *buffer, int fd)
 		exit (0);
 	}
 		//printf("BEFORESPLIT: %s\n", test.c_str());
-		splitString(test.c_str(), " ", fd);
+		splitString(test.c_str(), " ", fd, ret);
 }
 
 std::string	intToString(int i)
@@ -358,7 +360,7 @@ int	Server::init_serv(void)
 		std::cerr << "Error in socket" << std::endl;
 		return (1);
 	}
-	if (setsockopt(this->server_fd, SOL_SOCKET, SO_REUSEADDR | SO_REUSEPORT, &on, sizeof(int)) == -1)
+	if (setsockopt(this->server_fd, SOL_SOCKET, SO_REUSEADDR & SO_REUSEPORT, &on, sizeof(int)) == -1)
 		return (close(this->server_fd), perror("Setsockopt failed"), -1);
 	if (fcntl(server_fd, F_SETFL, O_NONBLOCK) == -1)
 		return (close(this->server_fd), perror("Fcntl failed"), -1);
@@ -400,6 +402,8 @@ std::string	checkRet(int ret)
 	std::string str;
 	if (ret == 775)
 		return (fileToString("./html/405.html"));
+	if (ret == 404)
+		return (fileToString("./html/404.html"));
 	else
 		return str;
 }
@@ -437,7 +441,7 @@ int	Server::recvConnection(int fd)
 	int	ret = 0;
 	request = new Request;
 	std::cerr << "999999999999999999999999999999999999999999999999999: " << this->loc.getIndex() << std::endl;
-	//ret = request->parsRequest(buff, this->location, this->loc);
+	ret = request->parsRequest(buff, this->location, *this);
 //	this->newIndex = request->getPath();
 //	if (this->newIndex == "./")
 //		this->newIndex = "./html/home.html";
@@ -450,9 +454,7 @@ int	Server::recvConnection(int fd)
 //		char str3[] = "bad version http";
 //		write(fd, str3, ft_strlen(str3));
 //	}
-	std::cerr << "111111111111111111111111111111: " << error << std::endl;
-	CheckRequest(buff, fd);
-	std::cerr << "222222222222222222222222222222: " << error << std::endl;
+	CheckRequest(buff, fd, ret);
 	// else if (request->getRetCode() == 404)
 	// {
 	// 	printf("%d\n", error);
@@ -460,26 +462,24 @@ int	Server::recvConnection(int fd)
 	// 	write(fd, str3, strlen(str3));
 	// }
 	std::cerr << "RETTTTTT: " << ret << "\n";
-	if (ret && ret != 200)
-		this->newIndex = checkRet(ret);
 	if (this->newIndex.length() > 1 && ret && ret != 200)
 	{
-		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(this->newIndex.length()) + "\n\n" + this->newIndex + "\n";
+		std::string header = recupHeader(ret, this->newIndex);
 		send(fd, header.c_str(), header.length(), 0);
-		return 0;
+		//return 0;
 	}
-	if (error == 999)
+	else if (error == 999)
 	{
-		
-		int fd1;
+			
+		std::string str1 = execPOST();
+		std::string header;
+		/*int fd1;
 		this->vectorenv.push_back((char *)("REQUEST_METHOD=GET"));
 		this->vectorenv.push_back((char *)"PATH_INFO=./reponse.php");
 		this->vectorenv.push_back((char *)"PATH_TRANSLATED=./reponse.php");
 		this->vectorenv.push_back((char *)"PATH_NAME=./reponse.php");
 		this->vectorenv.push_back((char *)"SCRIPT_NAME=./reponse.php");
 		this->vectorenv.push_back((char *)"SCRIPT_FILENAME=./reponse.php");
-		std::string str1;// = fileToString(this->newIndex);
-		std::string header;// = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		char	**cmd = (char **)malloc(3);;
 		cmd[0] = strdup("/usr/bin/php-cgi");
 		cmd[1] = strdup("./reponse.php");
@@ -493,6 +493,7 @@ int	Server::recvConnection(int fd)
 				break ;
 			i++;
 		}
+		std::cerr << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;: " << recup[i] << std::endl;
 		int tmp = open(".tmp", O_CREAT | O_WRONLY | O_TRUNC, 0666);
 		write(tmp, recup[i], ft_strlen(recup[i]));
 		lseek(tmp, 0, SEEK_SET);
@@ -521,16 +522,13 @@ int	Server::recvConnection(int fd)
 		str1 = fileToString("lucieCGI");
 		std::string skip = "Content-type: text/html; charset=UTF-8 ";
 		str1 = str1.substr(skip.length(), str1.length());
-		if (intToString(str1.length())  > max_client_body_size)
-		{
-			error = 413;
-		}
+		if (intToString(str1.length())  > max_client_body_size)*/
 		header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		//unlink(".tmp");
 		//unlink("lucieCGI");
 		//freeTab(this->env);
-		this->vectorenv.clear();
-		this->vectorenv = this->vectorenvcpy;
+		//this->vectorenv.clear();
+		//this->vectorenv = this->vectorenvcpy;
 		send(fd, header.c_str(), header.length(), 0);
 	}
 	else if (error == 998)
@@ -889,7 +887,7 @@ void	StartServer(Server server)
 				fprintf(stderr, "error in epoll_wait\n");
 			if (event_count > 0)
 				array[i].event_receptor(events, event_count);
-			//this->newIndex = "";
+			//array[i].newIndex = "";
 			array[i].vectorenv.clear();
 			array[i].vectorenv = array[i].vectorenvcpy;
 			error = 0;

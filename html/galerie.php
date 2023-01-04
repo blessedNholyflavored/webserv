@@ -42,7 +42,10 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
 	<?php
 	$files = scandir('../images');
         foreach ($files as $file) {
-        	if ($file !== "." && $file !== "..") {
+		if ($file !== "." && $file !== ".." && pathinfo($file, PATHINFO_EXTENSION) == "png"
+			|| pathinfo($file, PATHINFO_EXTENSION) == "jpeg"
+			|| pathinfo($file, PATHINFO_EXTENSION) == "jpg")
+		{
 		echo "<div>";
                 $image = "../images/$file";
 			
