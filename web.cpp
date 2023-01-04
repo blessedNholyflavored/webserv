@@ -88,20 +88,15 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 			std::cout << arr[1] << std::endl;
 			std::cerr << "NO FILE" << std::endl;
 			this->newIndex = arr[1];
-			std::cout << "HYDRO CONARDDDDDDDDDDDDDDDDDDD: " << this->root + this->loc.getLocation() << std::endl;
-			if ("." + this->newIndex == this->root + this->loc.getLocation())
-			{
-				this->newIndex = this->root + this->loc.getRoot() + this->loc.getIndex();
-			}
-				std::cout << "SALOOOOOOOOOOOP: " << this->newIndex << std::endl;
+			std::cout << "HYDRO CONARDDDDDDDDDDDDDDDDDDD: " << this->root + this->loc.getIndex() << std::endl;
+			if (this->loc.getLocation().length() > 0 && this->loc.getIndex().length() > 0)
+				this->newIndex = this->root + this->loc.getIndex();
+			std::cout << "SALOOOOOOOOOOOP: " << this->newIndex << std::endl;
 			if (arr[1].compare(0, 12, "/reponse.php") == 0
 			|| arr[1].compare(0, 17, "/html/reponse.php") == 0)
 				error = 999;
-			if (this->newIndex + "/" == "./html/")
-			{
-				this->newIndex = ".";
+			if (this->loc.getIndex().length() == 0 && this->loc.getAuto() == 1)
 				error = -7;
-			}
 
 			//error = 404;
 		}
@@ -129,10 +124,10 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 		error = 998;
 	else if (arr[0].compare("DELETE") == 0)
 		unlink(arr[1].c_str() + 1);
-	else
-		basicsummary(arr[1]);
-	// else
-	// 	this->newIndex = "./html/home.html";
+	std::cerr << "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb: " << this->newIndex << std::endl;
+	 //if (this->newIndex == "./" || this->newIndex == "/" || this->newIndex == "/favicon.ico")
+	 if (this->newIndex.length() <= 1 || this->newIndex == "/favicon.ico")
+	 	this->newIndex = "./html/home.html";
 	
 	std::cerr << "kgdfvbdfvsdffvsfvrfrfdvrfvifffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff: " << error << "\n";
 }
@@ -140,7 +135,6 @@ void	Server::splitString(const char *buf, std::string deli, int fd)
 
 void	Server::CheckRequest(char *buffer, int fd)
 {
-	static	int a = 0;
 	std::string cpy(buffer);
 	std::string	test;
 	int	l = 0;
@@ -156,18 +150,14 @@ void	Server::CheckRequest(char *buffer, int fd)
 			space++;
 		l++;
 	}
-	if (space != 2 && a > 0)
+	if (space != 2)
 	{
 		printf("SPACE = %d\n", space);
 		std::cout << "BUFFER:" << buffer << std::endl;
 		exit (0);
 	}
-	if (a > 0)
-	{
 		//printf("BEFORESPLIT: %s\n", test.c_str());
 		splitString(test.c_str(), " ", fd);
-	}
-	a++;
 }
 
 std::string	intToString(int i)
@@ -419,6 +409,7 @@ int	Server::recvConnection(int fd)
 	ssize_t	len;
 	char	buff[3000];
 
+	std::cerr << "lllllllllllllllllllllllllllllllllllllllllllllllll: " << this->newIndex << std::endl;
 	if (nbfiles == 76)
 	{
 		this->newIndex = FirstPage("./html/403.html"); // page a creer
@@ -440,25 +431,25 @@ int	Server::recvConnection(int fd)
 		send(fd, header.c_str(), header.length(), 0);
 		nbfiles = 0;
 	}
-
 	len = recv(fd, buff, 3000, 0);
 	if (len > 0)
 		printf("BUFF in recv:\n%s\n", buff);
 	int	ret = 0;
-	//request = new Request;
-	//ret = request->parsRequest(buff, this->location);
-	//this->newIndex = request->getPath();
+	request = new Request;
+	std::cerr << "999999999999999999999999999999999999999999999999999: " << this->loc.getIndex() << std::endl;
+	//ret = request->parsRequest(buff, this->location, this->loc);
+//	this->newIndex = request->getPath();
 //	if (this->newIndex == "./")
 //		this->newIndex = "./html/home.html";
-//	std::string firstline;
+///	std::string firstline;
 //	for (int index = 0; buff[index] != '\n'; index++){
 //		firstline += buff[index];
 //	}
 	//this->splitString(firstline.c_str(), " ", fd);
-	if (request->getRetCode() == 400){
-		char str3[] = "bad version http";
-		write(fd, str3, ft_strlen(str3));
-	}
+//	if (request->getRetCode() == 400){
+//		char str3[] = "bad version http";
+//		write(fd, str3, ft_strlen(str3));
+//	}
 	std::cerr << "111111111111111111111111111111: " << error << std::endl;
 	CheckRequest(buff, fd);
 	std::cerr << "222222222222222222222222222222: " << error << std::endl;
@@ -468,6 +459,7 @@ int	Server::recvConnection(int fd)
 	// 	char str3[] = "HTTP/1.1 404 Not Found\nContent-Type: text/plain\nContent-Length: 19\n\n404 page not found\n";
 	// 	write(fd, str3, strlen(str3));
 	// }
+	std::cerr << "RETTTTTT: " << ret << "\n";
 	if (ret && ret != 200)
 		this->newIndex = checkRet(ret);
 	if (this->newIndex.length() > 1 && ret && ret != 200)
@@ -639,7 +631,6 @@ int	Server::recvConnection(int fd)
 		{
 			str1 = fileToString("lucieCGI");
 			std::string skip = "Content-type: text/html; charset=UTF-8 ";
-			std::cerr << "0000000000000000000000000000000000000000000000000000: " << str1 << std::endl;
 			str1 = str1.substr(skip.length(), str1.length());
 			error = 0;
 		}
@@ -722,19 +713,24 @@ std::string	basicsummary(std::string filePath)
 	static	std::string old;
 
 	//path = getcwd(buffer, PATH_MAX);
-	if (open(filePath.c_str(), O_DIRECTORY) >= 0)
-		filePath += "/";
-	while (filePath.find("//") != std::string::npos)
+	//if (open(filePath.c_str(), O_DIRECTORY) >= 0)
+	//	filePath += "/";
+	//old = "";
+	path = filePath;
+	/*while (filePath.find("//") != std::string::npos)
 	{
 		filePath.erase(filePath.find("//"), 1);
 	}
+	std::cerr << "pooooooooooooooooooooooooooooooooooooooooooooooooooooooo: " << old << std::endl;
 		//filePath = "/";
 	if (filePath == "/")
 		path = old;
 	else
 		path += filePath; // ici
+	if (open(old.c_str(), O_DIRECTORY) >= 0)
+		path = old + path;
 	old = path;
-	//path += "/";
+	//path += "/";*/
 
 	index += "<!DOCTYPE html>\n<html>\n\n<title>INDEX</title>\n\n<h1>INDEX</h1>";
 	index += "<hr>";
@@ -765,13 +761,16 @@ std::string	basicsummary(std::string filePath)
 				index += "</li></a></p>\n";
 				index += "</ul>";
 		 	}
-		// index += "<ul>";
-		// index += "<li><p><a <style=\"font-weight:bold'\" href=\"";
-		// index += test;
-		// index += "\" class=\"active\">";
-		// index += test;
-		// index += "</li></a></p>\n";
-		// index += "</ul>";
+			else
+			{
+		 		index += "<ul>";
+		 		index += "<li><p><a <style=\"font-weight:bold'\" href=\"";
+		 		index += test;
+		 		index += "\" class=\"active\">";
+		 		index += test;
+		 		index += "</li></a></p>\n";
+		 		index += "</ul>";
+			}
 		}
 		//index += "<title>ici aussi</title>";
 		//int	i = 0;
@@ -820,7 +819,7 @@ void	StartServer(Server server)
 	for(; portIT != server.nbport.end(); portIT++)
 	{
 		array[i].port = *portIT;
-		if (nameIT <= server.vectorname_server.end())
+		if (nameIT <= server.vectorname_server.end() && server.vectorname_server.size() > 0)
 		{
 			array[i].name_server = *nameIT;
 			nameIT++;
@@ -835,6 +834,11 @@ void	StartServer(Server server)
 			array[i].root = *rootIT;
 			rootIT++;
 		}
+		if (indexIT <= server.index.end() && server.index.size() > 0)
+		{
+			array[i].nom_index = *indexIT;
+			indexIT++;
+		}
 		array[i].epoll_fd = epoll_create1(0);
 		array[i].vectorenv = server.vectorenv;
 		array[i].vectorenvcpy = server.vectorenvcpy;
@@ -843,40 +847,37 @@ void	StartServer(Server server)
 		array[i].newIndex = "";
 		if (array[i].autoindex) // true
 		{
-			if (server.index.empty())
+			if (array[i].nom_index.length() == 0)
 			{
-			std::string tmp;
-			//std::cout << "index est empty donc renvoyer vers une page de sommaire" << std::endl;
-			array[i].newIndex = basicsummary("."); 
-			nbfiles = 666;
+				std::string tmp;
+				//std::cout << "index est empty donc renvoyer vers une page de sommaire" << std::endl;
+				array[i].newIndex = basicsummary("."); 
+				nbfiles = 666;
 			}
 			else
 			{
-				array[i].newIndex = (*indexIT).substr(1, (*indexIT).length()); 
+				array[i].newIndex = (array[i].nom_index).substr(1, array[i].nom_index.length()); 
 				array[i].newIndex = array[i].root +  "/" + array[i].newIndex;
 				//std::cout << " pas empty mais autoindex on " << std::endl;
-				indexIT++;
 			}
 		}
 		else
 		{
-			if (server.index.empty())
+			if (array[i].nom_index.length() == 0)
 			{
 				//std::cout << "foutre une page 404" << std::endl;
 				nbfiles = 76;
 			}
 			else
 			{
-				array[i].newIndex = (*indexIT).substr(1, (*indexIT).length()); 
+				array[i].newIndex = (array[i].nom_index).substr(1, array[i].nom_index.length()); 
 				//std::cerr << "avant concatene: " << array[i].newIndex << std::endl;
 				array[i].newIndex = array[i].root +  "/" + array[i].newIndex;
 				//std::cerr << "apres concatene: " << array[i].newIndex << std::endl;
-				*indexIT++;
 				//std::cout << " pas empty mais autoindex off" << std::endl;
 			}
 		}
 		array[i].parsLoc(i);
-		std::cerr << "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIII: " << array[i].newIndex << std::endl;
 		i++;
 	}
 	while (1)
@@ -996,6 +997,5 @@ std::string	fileToString(std::string loc)
 	std::ifstream fin(loc.c_str());
 	getline(fin, buffer, char(-1));
 	fin.close();
-	std::cerr << "LOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOCCCCC : " << buffer << std::endl;
 	return buffer;
 }

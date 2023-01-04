@@ -41,6 +41,7 @@
 			bool		getGet();
 			bool		getDel();
 			bool		getPost();
+			bool		getAuto();
 
 	};
 

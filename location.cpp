@@ -221,3 +221,4 @@ bool		Location::getGet() { return (this->_GET); }
 bool		Location::getDel() { return (this->_DELETE); }
 
 bool		Location::getPost() { return (this->_POST); }
+bool		Location::getAuto() { return (this->_autoindex); }

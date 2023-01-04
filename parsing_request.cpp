@@ -4,8 +4,9 @@
 #include <vector>
 #include "server.hpp"
 
-int	Request::parsRequest(std::string str, std::vector<Location> &location){
+int	Request::parsRequest(std::string str, std::vector<Location> &location, Location loc){
 	std::string method;
+
 	size_t i = 0;
 	for (; str[i] != ' '; i++){
 		method.push_back(str[i]);
@@ -29,7 +30,6 @@ int	Request::parsRequest(std::string str, std::vector<Location> &location){
 		_retCode = 400;
 		return 400;
 	}
-
 	if (method != "GET" && method != "POST" && method != "DELETE")
 	{
 		std::cerr << "method didnt exist" << std::endl;
@@ -37,16 +37,31 @@ int	Request::parsRequest(std::string str, std::vector<Location> &location){
 		return 401;
 	}
 	
+	int	flag = 0;
+	std::vector<Location>::iterator it = location.begin();
+        for (; it != location.end(); it++)
+	{
+		if (path == (*it).getLocation())
+		{
+			flag = 1;
+			break ;
+		}
+                std::cerr << "vec first: " << (*it).getIndex() << std::endl;
+	}
+	//if (!flag)
+	//{
+	//	this-> 
+	//if (method == "GET"
+	
 	if (method == "GET"){
 		std::ifstream file;
-		std::cerr << "PPPPPPPPPPPPPPPPPPPPPPPPPPP: " << path << std::endl;
 		if (!checkLocation(path, 1, location)){
 			_retCode = 775;
 			std::cout << "pas les droits" << std::endl;
 			return 775;
 		}
 		file.open(_path.c_str(), std::ifstream::in);
-		if (!file.is_open()){
+		if (!file.is_open() || _path == loc.getLocation()){
 			_retCode = 404;
 			return 404;
 		}
