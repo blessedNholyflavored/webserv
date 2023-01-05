@@ -1,5 +1,5 @@
-<!DOCTYPE html>
-<title >webserv's galerie super page</title>
+a<!DOCTYPE html>
+<title >webserv's super html page</title>
 
 <body id =\"all\" style="font-family:'Roboto',sans-serif;margin: 0em; padding: 0em;">
 <div class="header" style="display:block; background-color: orange; text-align: center; padding: 15px; "><h1 style="
@@ -10,37 +10,37 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
 </div>
 
 <div class="menu" >
-    <ul style=" margin: 0em; padding: 0em; list-style-type: none; overflow: hidden; background-color: #333;">
-        <li style="float:left;"><a href="/html/home.html" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">accueil</a></li>
-        <li style="float:left;"><a href="/html/galerie.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">galerie</a></li>
-        <li style="float:left;"><a href="/html/text.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">upload text</a></li>
-        <li style="float:left;"><a href="/html/cookies.html" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">Cookies</a></li>
-        <li style="float:left;"><a href="/html/upload.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">Upload image</a></li>
-    </ul>
-    </div>
-
-<h2 style="font-family:'Roboto',sans-serif; text-align: center;"> Page qui gere les images upload et delete mec</h2>
-<p style="font-family:'Roboto',sans-serif;text-align: center;"> utilise le menu pour tester des trucs, ca marche super bien</p>
-
-<div class="column" style="text-align: center; ">
-    
-    <img style="width:10%; display: block; margin: auto;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/2048px-42_Logo.svg.png" id="blah" alt="Img"><br><br>
-			<form id="form_img" action="/html/upload_img.php" method="POST" enctype="multipart/form-data">
-				Select image to upload:
-				<input type="file" name="fileToUpload" id="fileToUpload" required>
-				<input type="submit" value="Upload Image" name="submit">
-			  </form>
-
+<ul style=" margin: 0em; padding: 0em; list-style-type: none; overflow: hidden; background-color: #333;">
+    <li style="float:left;"><a href="/html/home.html" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">accueil</a></li>
+    <li style="float:left;"><a href="/html/galerie.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">galerie</a></li>
+    <li style="float:left;"><a href="/html/text.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">upload text</a></li>
+</ul>
 </div>
-	<hr>
 
-<footer style="  
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding: 1rem;
-  background-color: orange;
-  text-align: center;">
+<h2 style="font-family:'Roboto',sans-serif;text-align: center;"> ca fonctionne c tiptoptap</h2>
+
+<hr>
+
+<input type="file" accept="image/*" onchange="loadFile(event)">
+<img id="output"/>
+<script>
+  var loadFile = function(event) {
+    var output = document.getElementById('output');
+    output.src = URL.createObjectURL(event.target.files[0]);
+    output.onload = function() {
+      URL.revokeObjectURL(output.src)
+    }
+  };
+</script>
+
+<hr>
+<footer style="background-color: orange;
+position: absolute;
+left: 0;
+bottom: 0;
+height: 20%;
+width: 100%;
+overflow: hidden;">
     <h2>The team</h2>
     <p>
         <strong>Lucie Khamlach:</strong>
@@ -55,3 +55,5 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
         <a href="https://profile.intra.42.fr/users/mmhaya"> Intra Profile</a>
     </p>
   </footer>
+</body>
+</html>
