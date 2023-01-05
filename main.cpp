@@ -117,6 +117,21 @@ std::vector<char *>	init_vectorenv(char **env, std::vector<char *> vec)
 
 }
 
+std::string recupCWD(char **env, std::string cwd)
+{
+	int i = 0;
+	while (env[i])
+	{
+		if (strncmp(env[i], "PWD=", 4) == 0)
+		{
+			std::string ret(env[i] + 4);
+			return ret;
+		}       
+		i++;
+	}
+	return cwd;
+}
+
 int    main(int ac, char **av, char **env)
 {
 	Server server;
@@ -136,8 +151,8 @@ int    main(int ac, char **av, char **env)
         return (0);
 	}
     	std::vector<char *> tmp;
-    	server.vectorenv = init_vectorenv(env, tmp);
-    	server.vectorenvcpy = init_vectorenv(env, server.vectorenvcpy);
+    	server.cwd = recupCWD(env, server.cwd);
+    	//server.vectorenvcpy = init_vectorenv(env, server.vectorenvcpy);
 	//server.lst = init_lst(env, server.lst);
 	server.vectorenv = addCGI(server);
 	server.vectorenvcpy = addCGIcpy(server);

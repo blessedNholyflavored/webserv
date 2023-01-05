@@ -33,6 +33,7 @@ class Server
 	std::vector<std::string>	vectorname_server;
 	
 	std::string					root;
+	std::string					cwd;
 	std::vector<std::string>	vectorroot;
 
 	std::string 				ip;
@@ -77,9 +78,9 @@ class Server
 
 
 	////test
-	void creation_href(std::vector<std::string> _list_name, std::string filePath);
-	std::string insert_html(std::vector<std::string> _list_name, std::vector<std::string> _list_href, std::string index, std::string filePath);;
-	std::string	read_directory(std::string filePath, std::string index);
+	// std::vector<std::string> creation_href(std::vector<std::string> _list_name, std::string filePath);
+	// std::string insert_html(std::vector<std::string> _list_name, std::vector<std::string> _list_href, std::string index, std::string filePath);;
+	// std::string	read_directory(std::string filePath, std::string index);
 	std::string basicsummary( std::string filePath);
 
 
