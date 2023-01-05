@@ -22,8 +22,8 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
 <hr>
 	
 
-Bonjour, <?php echo htmlspecialchars($_GET['fname']); ?>.
-Tu as <?php echo $_GET['lname']; ?> ans.
+Bonjour, <?php if (isset($_GET['fname'])){echo htmlspecialchars($_GET['fname']);} ?>.
+Tu as <?php if (isset($_GET['lname'])){echo $_GET['lname'];} ?> ans.
 
 
 <hr>

@@ -20,15 +20,10 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
 <h2 style="font-family:'Roboto',sans-serif;text-align: center;"> ca fonctionne c tiptoptap</h2>
 
 <hr>
-<?php	
+	
 
-	$file  = 'salut.txt';
-	$test = file_get_contents("../.tmp");
-	parse_str($test, $POST);
- //       $txt = htmlspecialchars($POST['textToUpload']);
-Bonjour echo ($POST['fileToUpload']);
-
-?>
+Bonjour, <?php echo htmlspecialchars($_GET['fname']); ?>.
+Tu as <?php echo $_GET['lname']; ?> ans.
 
 
 <hr>

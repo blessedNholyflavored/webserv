@@ -81,10 +81,6 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
         <strong>Julien Taravella:</strong>
         <a href="https://profile.intra.42.fr/users/jtaravel"> Intra Profile</a>
     </p>
-    <p>
-        <strong>Mehdi Mhaya:</strong>
-        <a href="https://profile.intra.42.fr/users/mmhaya"> Intra Profile</a>
-    </p>
   </footer>
 <script>
         async function deleteSomething(path) {

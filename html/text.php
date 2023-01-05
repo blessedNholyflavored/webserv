@@ -53,7 +53,8 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
 
                         <?php
 				$file = 'salut.txt';
-				$test = file_get_contents("../.tmp");
+				$tmp = '../.tmp';
+				$test = file_get_contents($tmp);
 				parse_str($test, $POST);
 				//$_POST['textToUpload'] = "lol";
                                 $txt = htmlspecialchars($POST['textToUpload']);
@@ -80,9 +81,5 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
     <p>
         <strong>Julien Taravella:</strong>
         <a href="https://profile.intra.42.fr/users/jtaravel"> Intra Profile</a>
-    </p>
-    <p>
-        <strong>Mehdi Mhaya:</strong>
-        <a href="https://profile.intra.42.fr/users/mmhaya"> Intra Profile</a>
     </p>
   </footer>

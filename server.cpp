@@ -185,8 +185,8 @@ std::string ltrim(std::string &s)
 int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 {
 	//std::cout << res[j] << std::endl;
-		int k = 0;
-	if (res[j].find("location") != std::string::npos && j != 1)
+	//	int k = 0;
+	/*if (res[j].find("location") != std::string::npos && j != 1)
 	{
 		Location *tmp;
 
@@ -203,7 +203,7 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 		}
 		}
 		std::cerr << k << std::endl;
-	}
+	}*/
 	int h = j;
 	int floc = 0;
 	while (h >= 0)

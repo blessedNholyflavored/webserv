@@ -38,7 +38,7 @@ char	**ft_regroup_envVector(std::vector<char *> vec)
 		//printf("REGROUP: %s\n", res[i]);
 		i++;
 	}
-	res[i] = 0;
+	res[i] = NULL;
 	return res;
 }
 
@@ -61,7 +61,6 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret)
 {
 	(void)fd;
 	std::string str(buf);
-	std::cout << "STARTSPLIT:" << str << std::endl;
 	int start = 0;
 	int end = str.find(deli);
 	std::string	arr[5];
@@ -75,12 +74,9 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret)
 		i++;
 	}
 	arr[i] = str.substr(start, end - start);
-	std::cout << "SPLIT = " << arr[1] << std::endl;
+	//std::cout << "SPLIT = " << arr[1] << std::endl;
 	if (arr[0].compare("POST") && arr[1].compare(0, 21, "/html/upload_img.php") == 0)
-	{
-		std::cerr << "????????????????????????????????????????????\n";
 		error = 996;
-	}
 //	std::cout << "IN SPLIT: " << str.substr(start, end - start) << std::endl;
 	if (arr[1].compare("/") != 0 && arr[0].compare("GET") == 0 && arr[1].compare("/html/text.php")
 			&& arr[1].compare("/html/galerie.php"))
@@ -89,15 +85,13 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret)
 		std::ifstream file(arr[1].c_str() + 1, std::ios::in);
 		if (!file && open(arr[1].c_str() + 1, O_DIRECTORY) == -1)
 		{
-			std::cout << arr[1] << std::endl;
-			std::cerr << "NO FILE" << std::endl;
+			//std::cout << arr[1] << std::endl;
+			//std::cerr << "NO FILE" << std::endl;
 			this->newIndex = arr[1];
-			std::cout << "HYDRO CONARDDDDDDDDDDDDDDDDDDD: " << this->root + this->loc.getIndex() << std::endl;
 			if (this->newIndex.length() <= 1 && this->loc.getLocation().length() > 0 && this->loc.getIndex().length() > 0)
 				this->newIndex = this->root + this->loc.getIndex();
 			if (arr[1] == this->loc.getLocation() && this->loc.getIndex().length() > 1)
 				this->newIndex = this->root + this->loc.getIndex();
-		//	std::cout << "SALOOOOOOOOOOOP: " << this->newIndex << std::endl;
 			if (arr[1].compare(0, 12, "/reponse.php") == 0
 			|| arr[1].compare(0, 17, "/html/reponse.php") == 0)
 				error = 999;
@@ -116,7 +110,6 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret)
 		else
 		{
 			this->newIndex = arr[1].substr(1, arr[1].length());
-			std::cerr << "HEREEEEEEE this->newIndex: " << this->newIndex << std::endl; 
 			error = 200;
 		}
 	}
@@ -128,20 +121,15 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret)
 		error = 54;
 	}
 	else if (arr[0].compare("POST") && arr[1].compare(0, 17, "/html/upload.php") == 0)
-	{
-		std::cerr << "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU\n";
 		error = 996;
-	}
 	if (arr[0].compare("POST") == 0 && (arr[1].compare("/html/text.php") == 0
 				|| arr[1].compare("/html/galerie.php") == 0))
 	{
-		std::cerr << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
 		error = 998;
 	}
 
 	else if (arr[0].compare("DELETE") == 0 && ret != 405)
 		unlink(arr[1].c_str() + 1);
-	std::cerr << "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb: " << this->newIndex << std::endl;
 	 //if (this->newIndex == "./" || this->newIndex == "/" || this->newIndex == "/favicon.ico")
 	if (this->newIndex.length() <= 1 || this->newIndex == "/favicon.ico")
 			this->newIndex = "./html/home.html";
@@ -160,7 +148,6 @@ void	Server::CheckRequest(char *buffer, int fd, int ret)
 	test = cpy.substr(0, l);
 	l = 0;
 	int	space = 0;
-	printf("test[l] = %s\n", test.c_str());
 	std::string res(test);
 	while (test[l])
 	{
@@ -197,7 +184,7 @@ std::string Server::FirstPage(std::string filePath)
 	std::string		path;
 
 
-	std::cerr << "FILEPATHHHHHHHHHHHHHHH: " << filePath << std::endl;
+	//std::cerr << "FILEPATHHHHHHHHHHHHHHH: " << filePath << std::endl;
 	if (filePath.find(".php") != std::string::npos
 		|| filePath.find(".py") != std::string::npos)
 	{
@@ -331,7 +318,6 @@ void	ParseBuffer(std::string buffer)
 	splitRet(buffer, "\n");
 	int i = 0;
 	int	l = 0;
-	std::cout << "START PRINT SPLIT" << std::endl;
 	for (i = 0; i < 4096; i++)
 	{
 		if (split[i].length() > 0 && split[i].compare(0, 20, "Content-Disposition:") == 0)
@@ -427,7 +413,6 @@ int	Server::recvConnection(int fd)
 	ssize_t	len;
 	char	buff[3000];
 
-	std::cerr << "lllllllllllllllllllllllllllllllllllllllllllllllll: " << this->newIndex << std::endl;
 	if (nbfiles == 76)
 	{
 		this->newIndex = FirstPage("./html/403.html"); // page a creer
@@ -454,7 +439,6 @@ int	Server::recvConnection(int fd)
 		printf("BUFF in recv:\n%s\n", buff);
 	int	ret = 0;
 	request = new Request;
-	std::cerr << "999999999999999999999999999999999999999999999999999: " << this->loc.getIndex() << std::endl;
 	ret = request->parsRequest(buff, this->location, *this);
 //	this->newIndex = request->getPath();
 //	if (this->newIndex == "./")
@@ -470,14 +454,14 @@ int	Server::recvConnection(int fd)
 //	}
 	//std::cerr << "111111111111111111111111111111: " << error << std::endl;
 	CheckRequest(buff, fd, ret);
-	std::cerr << "222222222222222222222222222222: " << error << std::endl;
+	//std::cerr << "222222222222222222222222222222: " << error << std::endl;
 	// else if (request->getRetCode() == 404)
 	// {
 	// 	printf("%d\n", error);
 	// 	char str3[] = "HTTP/1.1 404 Not Found\nContent-Type: text/plain\nContent-Length: 19\n\n404 page not found\n";
 	// 	write(fd, str3, strlen(str3));
 	// }
-	std::cerr << "RETTTTTT: " << ret << "\n";
+	//std::cerr << "RETTTTTT: " << ret << "\n";
 	if (this->newIndex.length() > 1 && ret && ret != 200)
 	{
 		std::string header = recupHeader(ret, this->newIndex);
@@ -489,56 +473,6 @@ int	Server::recvConnection(int fd)
 			
 		std::string str1 = execPOST();
 		std::string header;
-		/*int fd1;
-		this->vectorenv.push_back((char *)("REQUEST_METHOD=GET"));
-		this->vectorenv.push_back((char *)"PATH_INFO=./reponse.php");
-		this->vectorenv.push_back((char *)"PATH_TRANSLATED=./reponse.php");
-		this->vectorenv.push_back((char *)"PATH_NAME=./reponse.php");
-		this->vectorenv.push_back((char *)"SCRIPT_NAME=./reponse.php");
-		this->vectorenv.push_back((char *)"SCRIPT_FILENAME=./reponse.php");
-		char	**cmd = (char **)malloc(3);;
-		cmd[0] = strdup("/usr/bin/php-cgi");
-		cmd[1] = strdup("./reponse.php");
-		cmd[2] = 0;
-		int i = 0 ;
-		char **recup = ft_split(this->newIndex.c_str(), '?');
-		i = 0;
-		while (recup[i])
-		{
-			if (strncmp(recup[i], "fname", 5) == 0)
-				break ;
-			i++;
-		}
-		std::cerr << ";;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;: " << recup[i] << std::endl;
-		int tmp = open(".tmp", O_CREAT | O_WRONLY | O_TRUNC, 0666);
-		write(tmp, recup[i], ft_strlen(recup[i]));
-		lseek(tmp, 0, SEEK_SET);
-		fd1 = open("lucieCGI", O_CREAT | O_RDONLY | O_WRONLY | O_TRUNC, 0666);
-		if (ft_strlen(recup[i]) > ft_atoi(max_client_body_size.c_str()))
-			{
-				error = 413;
-			}
-		std::string len = "CONTENT_LENGTH=" + intToString(ft_strlen(recup[i]));
-		std::string res = recup[i];
-		std::string query = "QUERY_STRING=" + res;
-		this->vectorenv.push_back((char *)query.c_str());
-		this->vectorenv.push_back((char *)len.c_str());
-		this->env =  ft_regroup_envVector(this->vectorenv);
-		int frk = fork();
-		if (frk == 0)
-		{
-			dup2(tmp, 0);
-			close(tmp);
-			dup2(fd1, 1);
-			close(fd1);
-			execve("/usr/bin/php-cgi", cmd, this->env);
-		}
-		else
-			wait(NULL);
-		str1 = fileToString("lucieCGI");
-		std::string skip = "Content-type: text/html; charset=UTF-8 ";
-		str1 = str1.substr(skip.length(), str1.length());
-		if (intToString(str1.length())  > max_client_body_size)*/
 		header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		//unlink(".tmp");
 		//unlink("lucieCGI");
@@ -551,18 +485,18 @@ int	Server::recvConnection(int fd)
 	{
 		int fd1;
 
-		//std::cerr << "LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAa\n";
-
 		this->vectorenv.push_back((char *)("REQUEST_METHOD=POST"));
 		this->vectorenv.push_back((char *)("REMOTE_HOST=localhost"));
 		this->vectorenv.push_back((char *)"PATH_INFO=html/text.php");
 		this->vectorenv.push_back((char *)"PATH_TRANSLATED=html/text.php");
-		//this->vectorenv.push_back((char *)"PATH_NAME=html/text.php");
 		this->vectorenv.push_back((char *)"SCRIPT_NAME=html/text.php");
 		this->vectorenv.push_back((char *)"SCRIPT_FILENAME=html/text.php");
-		char	**cmd = (char **)malloc(3);;
-		cmd[0] = strdup("/usr/bin/php-cgi8.1");
-		cmd[1] = strdup("html/text.php");
+		char	**cmd = new char*[3];
+		cmd[0] = new char[16];
+		cmd[0] = (char *)"/usr/bin/php-cgi";
+		cmd[1] = new char[13];
+		cmd[1] = (char *)("html/text.php");
+		cmd[2] = new char[1];
 		cmd[2] = 0;
 		int i = 0 ;
 		int agent = 0;
@@ -595,12 +529,6 @@ int	Server::recvConnection(int fd)
 		this->vectorenv.push_back((char *)query.c_str());
 		this->vectorenv.push_back((char *)len.c_str());
 		this->env = ft_regroup_envVector(this->vectorenv);
-		i = 0;
-		while (this->env[i])
-		{
-			printf("ENV: %s\n", this->env[i]);
-			i++;
-		}
 		int frk = fork();
 		if (frk == 0)
 		{
@@ -638,8 +566,6 @@ int	Server::recvConnection(int fd)
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 	}
-	else if (error == 996)
-		std::cerr << "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW\n";
 	else
 	{
 		std::string str1;
@@ -669,8 +595,6 @@ int	Server::sendConnection(int fd)
 	if (a == 0)
 	{
 		std::string str1 = FirstPage(this->newIndex);
-		std::cout << "TESTTTT 1111 SENDCONNECTION" << this->newIndex << std::cout;
-
 		if ((int)str1.length() > ft_atoi(max_client_body_size.c_str()))
 		{
 			error = 413;
@@ -742,13 +666,16 @@ std::string	Server::basicsummary(std::string filePath)
 		while((direntp = readdir(dirp)) != NULL)
 		{
 			std::string test = direntp->d_name;
-			if (is_directory(filePath + '/' + test))
+			if (test != "." && test != "..")
 			{
-				test += '/';
+				if (is_directory(filePath + '/' + test))
+				{
+					test += '/';
+				}
+				if (is_directory(this->newIndex) && newIndex[newIndex.size() - 1] != '/')
+					newIndex += '/';
+				auto_index << "<p><a href=\"" << test << "\" class=\"active\">" << test << "</a></p>\n";
 			}
-			if (is_directory(this->newIndex) && newIndex[newIndex.size() - 1] != '/')
-				newIndex += '/';
-			auto_index << "<p><a href=\"" << test << "\" class=\"active\">" << test << "</a></p>\n";
 
 		}
 		closedir (dirp);

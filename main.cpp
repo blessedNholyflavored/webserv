@@ -110,9 +110,10 @@ std::vector<char *>	init_vectorenv(char **env, std::vector<char *> vec)
 	int i = 0;
 	while (env[i])
 	{       
-//		vec.push_back(env[i]);
+		vec.push_back(env[i]);
 		i++;
 	}
+	vec.push_back((char *)NULL);
 	return vec;
 
 }
@@ -152,7 +153,8 @@ int    main(int ac, char **av, char **env)
 	}
     	std::vector<char *> tmp;
     	server.cwd = recupCWD(env, server.cwd);
-    	//server.vectorenvcpy = init_vectorenv(env, server.vectorenvcpy);
+    	server.vectorenv = init_vectorenv(env, server.vectorenv);
+    	server.vectorenvcpy = init_vectorenv(env, server.vectorenvcpy);
 	//server.lst = init_lst(env, server.lst);
 	server.vectorenv = addCGI(server);
 	server.vectorenvcpy = addCGIcpy(server);

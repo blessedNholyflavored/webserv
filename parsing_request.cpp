@@ -61,8 +61,6 @@ int	Request::parsRequest(std::string str, std::vector<Location> &location, Serve
 	std::vector<Location>::iterator it = location.begin();
         for (; it != location.end(); it++)
 	{
-		std::cerr << "888888888888888888888888888: " << path << std::endl;
-		std::cerr << "666666666666666666666666666: " << (*it).getLocation() << std::endl;
 		if (path == (*it).getLocation())
 		{
 			tmp = *it;
@@ -73,14 +71,13 @@ int	Request::parsRequest(std::string str, std::vector<Location> &location, Serve
 			c++;
 		else if (method == "POST" && (*it).getPost() == 0)
 			p++;
-                std::cerr << "vec first: " << (*it).getIndex() << std::endl;
 	}
 	std::string conca = server.root + path;
-	std::cerr << "roooooooooooooooooooooooooooooooooooooooooooooot: " <<  flag << std::endl;
 	if (_path == "./")
 		return 200;
 	if (!flag && ((open(conca.c_str(), O_RDONLY) == -1 && open(_path.c_str(), O_RDONLY) == -1)
-		&& path.compare(0, 17, "/html/reponse.php") && path.compare(0, 21, "/html/upload_img.php")))
+		&& path.compare(0, 17, "/html/reponse.php") && path.compare(0, 21, "/html/upload_img.php")
+		&& path.compare(0, 12, "/reponse.php")))
 	{
 		this->_retCode = 404;
 		return 404;
