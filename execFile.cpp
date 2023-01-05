@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 11:03:05 by jtaravel          #+#    #+#             */
-/*   Updated: 2023/01/04 19:01:17 by jtaravel         ###   ########.fr       */
+/*   Updated: 2023/01/05 13:29:57 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -50,6 +50,8 @@ std::string	Server::execFile(std::string file)
 	res = "SCRIPT_FILENAME=" + file;
 	this->vectorenv.push_back((char *)(res.c_str()));
 	this->env = ft_regroup_envVector(this->vectorenv);
+	std::string index;
+	std::cerr << "FIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII: " << file << std::endl;
 	int frk = fork();
 	if (frk == 0)
 	{

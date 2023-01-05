@@ -76,6 +76,11 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret)
 	}
 	arr[i] = str.substr(start, end - start);
 	std::cout << "SPLIT = " << arr[1] << std::endl;
+	if (arr[0].compare("POST") && arr[1].compare(0, 21, "/html/upload_img.php") == 0)
+	{
+		std::cerr << "????????????????????????????????????????????\n";
+		error = 996;
+	}
 //	std::cout << "IN SPLIT: " << str.substr(start, end - start) << std::endl;
 	if (arr[1].compare("/") != 0 && arr[0].compare("GET") == 0 && arr[1].compare("/html/text.php")
 			&& arr[1].compare("/html/galerie.php"))
@@ -96,6 +101,8 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret)
 			if (arr[1].compare(0, 12, "/reponse.php") == 0
 			|| arr[1].compare(0, 17, "/html/reponse.php") == 0)
 				error = 999;
+			if (arr[0].compare("POST") && arr[1].compare(0, 21, "/html/upload_img.php") == 0)
+				error = 996;
 			if (this->loc.getIndex().length() == 0 && this->loc.getAuto() == 1)
 				error = -7;
 
@@ -103,7 +110,6 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret)
 		}
 		else if (open(arr[1].c_str() + 1, O_DIRECTORY) > 0)
 		{
-			//std::cerr << "KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKk: " << arr[1] << std::endl;
 			this->newIndex = basicsummary(arr[1].substr(1, arr[1].length()));
 			error = -99;
 		}
@@ -114,15 +120,25 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret)
 			error = 200;
 		}
 	}
-	else if (arr[0].compare("POST") == 0 || arr[1].compare("/html/text.php") == 0 || arr[1].compare("/html/galerie.php") == 0)
+	else if ((arr[0].compare("POST") == 0 || arr[1].compare("/html/text.php") == 0 || arr[1].compare("/html/galerie.php") == 0)
+			&& arr[1].compare(0, 21, "/html/upload_img.php"))
 	{
 		std::string recup = "." + arr[1];
 		recup = execFile(recup);
 		error = 54;
 	}
+	else if (arr[0].compare("POST") && arr[1].compare(0, 17, "/html/upload.php") == 0)
+	{
+		std::cerr << "UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU\n";
+		error = 996;
+	}
 	if (arr[0].compare("POST") == 0 && (arr[1].compare("/html/text.php") == 0
-			|| arr[1].compare("/html/galerie.php") == 0))
+				|| arr[1].compare("/html/galerie.php") == 0))
+	{
+		std::cerr << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO\n";
 		error = 998;
+	}
+
 	else if (arr[0].compare("DELETE") == 0 && ret != 405)
 		unlink(arr[1].c_str() + 1);
 	std::cerr << "bbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb: " << this->newIndex << std::endl;
@@ -145,17 +161,19 @@ void	Server::CheckRequest(char *buffer, int fd, int ret)
 	l = 0;
 	int	space = 0;
 	printf("test[l] = %s\n", test.c_str());
+	std::string res(test);
 	while (test[l])
 	{
 		if (test[l] == ' ')
 			space++;
 		l++;
 	}
-	if (space != 2)
-	{
-		printf("SPACE = %d\n", space);
+	if (space != 2 && res.compare(6, 18, "WebKitFormBoundary"))
+	{	
+		int fd = open("tesssss", O_CREAT | O_WRONLY | O_WRONLY | O_TRUNC, 0644);
+		write(fd, buffer, strlen(buffer));
 		std::cout << "BUFFER:" << buffer << std::endl;
-		exit (0);
+	//	exit (0);
 	}
 		//printf("BEFORESPLIT: %s\n", test.c_str());
 		splitString(test.c_str(), " ", fd, ret);
@@ -455,7 +473,7 @@ int	Server::recvConnection(int fd)
 //	}
 	//std::cerr << "111111111111111111111111111111: " << error << std::endl;
 	CheckRequest(buff, fd, ret);
-	//std::cerr << "222222222222222222222222222222: " << error << std::endl;
+	std::cerr << "222222222222222222222222222222: " << error << std::endl;
 	// else if (request->getRetCode() == 404)
 	// {
 	// 	printf("%d\n", error);
@@ -623,6 +641,8 @@ int	Server::recvConnection(int fd)
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 	}
+	else if (error == 996)
+		std::cerr << "WWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWWW\n";
 	else
 	{
 		std::string str1;

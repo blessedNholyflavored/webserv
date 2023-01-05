@@ -75,6 +75,7 @@ class Server
 	void splitString(const char *buf, std::string deli, int fd, int ret);
 	std::string	execFile(std::string file);
 	std::string     execPOST(void);
+	std::string     execGET(void);
 	std::string	recupHeader(int ret, std::string index);
 
 
