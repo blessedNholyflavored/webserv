@@ -9,6 +9,7 @@ SRCS		=	main.cpp \
 				env.cpp \
 				ft_split.cpp \
 				execFile.cpp \
+				execGET_POST.cpp \
 
 OBJS		=	$(SRCS:.cpp=.o)
 CC			=	c++

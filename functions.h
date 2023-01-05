@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 14:28:47 by jtaravel          #+#    #+#             */
-/*   Updated: 2023/01/04 11:16:38 by jtaravel         ###   ########.fr       */
+/*   Updated: 2023/01/04 18:17:47 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,5 +37,6 @@ int		ft_strlen(char *str);
 int	ft_atoi(const char *str);
 std::string     fileToString(std::string loc);
 char    **ft_regroup_envVector(std::vector<char *> vec);
+std::string     intToString(int i);
 
 #endif

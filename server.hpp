@@ -72,9 +72,12 @@ class Server
 	void	parsLoc(int i);
 	void transfer_location(Location location);
 	bool autoindexed() const;
-	void CheckRequest(char *buffer, int fd);
-	void splitString(const char *buf, std::string deli, int fd);
+	void CheckRequest(char *buffer, int fd, int ret);
+	void splitString(const char *buf, std::string deli, int fd, int ret);
 	std::string	execFile(std::string file);
+	std::string     execPOST(void);
+	std::string     execGET(void);
+	std::string	recupHeader(int ret, std::string index);
 
 
 	////test

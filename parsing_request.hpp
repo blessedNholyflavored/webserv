@@ -1,10 +1,14 @@
+#ifndef PARSING_REQUEST_HPP
+#define PARSING_REQUEST_HPP
+
+class Server;
 
 #include "server.hpp"
 #include <string>
 
 class Request {
 	public:
-		int							parsRequest(std::string str, std::vector<Location> &location, Location loc);
+		int							parsRequest(std::string str, std::vector<Location> &location, Server server);
 		int								checkLocation(std::string str, int method, std::vector<Location> &location);
 		void							findGoodLocation(std::string str, std::vector<Location> &location);
 		int								getRetCode() const;
@@ -17,3 +21,6 @@ class Request {
 		std::string	_path;
 		int			_retCode;
 };
+
+
+#endif

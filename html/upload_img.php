@@ -14,40 +14,31 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
     <li style="float:left;"><a href="/html/home.html" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">accueil</a></li>
     <li style="float:left;"><a href="/html/galerie.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">galerie</a></li>
     <li style="float:left;"><a href="/html/text.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">upload text</a></li>
-    <li style="float:left;"><a href="/html/cookies.html" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">Cookies</a></li>
-    <li style="float:left;"><a href="/html/upload.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">Upload image</a></li>
 </ul>
 </div>
 
-<h2 style="font-family:'Roboto',sans-serif;text-align: center;"> Bienvenue sur notre page exemple de webserv</h2>
-<p style="font-family:'Roboto',sans-serif;text-align: center;"> utilise le menu pour tester des trucs, ca marche super bien</p>
+<h2 style="font-family:'Roboto',sans-serif;text-align: center;"> ca fonctionne c tiptoptap</h2>
 
 <hr>
-<button onclick="alert('ptdr voila un pop up qui sert a rien')">Cliquez moi !</button>
-<hr>
+<?php	
 
+	$file  = 'salut.txt';
+	$test = file_get_contents("../.tmp");
+	parse_str($test, $POST);
+ //       $txt = htmlspecialchars($POST['textToUpload']);
+Bonjour echo ($POST['fileToUpload']);
 
-<h2> TEST DE NOM ET PRENOM</h2>
-<p> dis nous t ki stp</p>
+?>
 
- <form id="nom_form" action="./reponse.php" method="GET">
-    <label for="fname">donnes ton prenom</label><br>
-    <input type="text" id="fname" name="fname" value="mon prenom"><br>
-    <label for="lname">donnes ton nom</label><br>
-    <input type="text" id="lname" name="lname" value="mon nom"><br><br>
-    <input type="submit" value="Submit">
-  </form> 
-  
-<hr>
 
 <hr>
-<footer style="  position: absolute;
-  right: 0;
-  bottom: 0;
-  left: 0;
-  padding: 1rem;
-  background-color: orange;
-  text-align: center;">
+<footer style="background-color: orange;
+position: absolute;
+left: 0;
+bottom: 0;
+height: 20%;
+width: 100%;
+overflow: hidden;">
     <h2>The team</h2>
     <p>
         <strong>Lucie Khamlach:</strong>
@@ -63,3 +54,4 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
     </p>
   </footer>
 </body>
+</html>

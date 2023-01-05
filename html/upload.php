@@ -25,20 +25,7 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
 <div class="column" style="text-align: center; ">
     
     <img style="width:10%; display: block; margin: auto;" src="https://upload.wikimedia.org/wikipedia/commons/thumb/8/8d/42_Logo.svg/2048px-42_Logo.svg.png" id="blah" alt="Img"><br><br>
-    <input style="width:10%; display: block; margin: auto; display: inline-block; 
-    border:0.16em solid #696969;
-    text-decoration:none;
-    font-weight:400;
-    color:#696969;
-    text-align:center;" type="file" id="inputFile" onchange="readUrl(this)">
-    <button style="width:10%; display: block; margin: auto; display: inline-block; 
-    border:0.16em solid #696969;
-    text-decoration:none;
-    font-weight:400;
-    color:#696969;
-    text-align:center;" type="button" onclick="removeImg()">Remove</button>
-
-			<form id="form_img" action="/html/upload_img_php.php" method="post" enctype="multipart/form-data">
+			<form id="form_img" action="/html/upload_img.php" method="POST" enctype="multipart/form-data">
 				Select image to upload:
 				<input type="file" name="fileToUpload" id="fileToUpload" required>
 				<input type="submit" value="Upload Image" name="submit">
@@ -47,24 +34,6 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
 </div>
 	<hr>
 
-	<?php
-	$files = scandir('../images');
-        foreach ($files as $file) {
-		if ($file !== "." && $file !== ".." && pathinfo($file, PATHINFO_EXTENSION) == "png"
-			|| pathinfo($file, PATHINFO_EXTENSION) == "jpeg"
-			|| pathinfo($file, PATHINFO_EXTENSION) == "jpg")
-		{
-		echo "<div>";
-                $image = "../images/$file";
-			
-		echo "<img src='$image' style='width:20%';>\n";
-		echo "<button type=\"button\" onclick=\"deleteSomething('$image')\">";
-                echo "Delete</button>";
-                echo "</div>";
-		echo "<hr>";
-                }
-        }
-        ?>
 <footer style="  
   right: 0;
   bottom: 0;
@@ -86,15 +55,3 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
         <a href="https://profile.intra.42.fr/users/mmhaya"> Intra Profile</a>
     </p>
   </footer>
-<script>
-        async function deleteSomething(path) {
-		await doDelete(path);
-                window.location.reload();
-	}
-
-        async function doDelete(path) {
-                return fetch(path, {
-                        method: 'DELETE'
-                })
-	}
-</script>
