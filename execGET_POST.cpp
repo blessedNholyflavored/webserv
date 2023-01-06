@@ -65,6 +65,7 @@ std::string	Server::execGET(void)
 	std::string str1 = fileToString("lucieCGI");
 	//std::string skip = "Content-type: text/html; charset=UTF-8 ";
 	//str1 = str1.substr(skip.length(), str1.length());
+	delete [] cmd;
 	return (str1);
 }
 
@@ -117,6 +118,7 @@ std::string	Server::execPOST(void)
 	std::string str1 = fileToString("lucieCGI");
 	std::string skip = "Content-type: text/html; charset=UTF-8 ";
 	str1 = str1.substr(skip.length(), str1.length());
+	delete [] cmd;
 	return (str1);
 }
 
@@ -169,5 +171,6 @@ std::string	Server::execGETpy(void)
 	std::string str1 = fileToString("lucieCGI");
 	std::string skip = "Content-type:text/html";
 	str1 = str1.substr(skip.length(), str1.length());
+	delete [] cmd;
 	return (str1);
 }

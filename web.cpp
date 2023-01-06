@@ -24,6 +24,7 @@ static std::string	split[4096];
 static std::string	newfile[5];
 static	int	nbfiles = 0;
 static	int	statusfile = 0;
+static	int	ext = 0;
 
 char	**ft_regroup_envVector(std::vector<char *> vec)
 {
@@ -48,7 +49,8 @@ void	freeTab(char **tab)
 	
 	while (tab[i])
 	{
-		free(tab[i]);
+		if (tab[i])
+			free(tab[i]);
 		i++;
 	}
 	free(tab);
@@ -460,6 +462,7 @@ int	Server::recvConnection(int fd)
 	int	ret = 0;
 	request = new Request;
 	ret = request->parsRequest(buff, this->location, *this);
+	delete request;
 //	this->newIndex = request->getPath();
 //	if (this->newIndex == "./")
 //		this->newIndex = "./html/home.html";
@@ -714,6 +717,14 @@ std::string	Server::basicsummary(std::string filePath)
 	return auto_index.str();
 }
 
+void	handler(int sig)
+{
+	if (sig == 2)
+	{
+		ext = 1;
+	}
+}
+
 void	StartServer(Server server)
 {
 	int	event_count;
@@ -774,6 +785,7 @@ void	StartServer(Server server)
 			else
 			{
 				array[i].newIndex = (array[i].nom_index).substr(1, array[i].nom_index.length()); 
+				array[i].newIndex = "";
 				array[i].newIndex = array[i].root +  "/" + array[i].newIndex;
 				//std::cout << " pas empty mais autoindex on " << std::endl;
 			}
@@ -799,11 +811,18 @@ void	StartServer(Server server)
 	}
 	while (1)
 	{
-			for (i = 0; i < len; i++)
-			{
+		signal(SIGINT, handler);
+		if (ext == 1)
+			return ;
+		for (i = 0; i < len; i++)
+		{
 			event_count = epoll_wait(array[i].epoll_fd, events, 5, 1000);
 			if (event_count < 0)
+			{
 				fprintf(stderr, "error in epoll_wait\n");
+				return ;
+
+			}
 			if (event_count > 0)
 				array[i].event_receptor(events, event_count);
 			//array[i].newIndex = "";
@@ -812,6 +831,7 @@ void	StartServer(Server server)
 			error = 0;
 		}
 	}
+
 }
 
 /*void	StartServer(Server server)
@@ -830,7 +850,7 @@ void	StartServer(Server server)
 		return ;
 	}
 	//int flags = fcntl(server_fd, F_GETFL, 0);
-	//`fcntl(server_fd, F_SETFL, flags | O_NONBLOCK);
+	//fcntl(server_fd, F_SETFL, flags | O_NONBLOCK);
 	address.sin_family= AF_INET;
 	address.sin_addr.s_addr = INADDR_ANY;
 	address.sin_port = htons(server.port);

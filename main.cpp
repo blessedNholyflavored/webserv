@@ -151,7 +151,7 @@ int    main(int ac, char **av, char **env)
 		std::cerr << "Parsing error in cong file" << std::endl;
         return (0);
 	}
-    	std::vector<char *> tmp;
+    	//std::vector<char *> tmp;
     	server.cwd = recupCWD(env, server.cwd);
     	server.vectorenv = init_vectorenv(env, server.vectorenv);
     	server.vectorenvcpy = init_vectorenv(env, server.vectorenvcpy);
