@@ -88,10 +88,14 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret)
 			//std::cout << arr[1] << std::endl;
 			//std::cerr << "NO FILE" << std::endl;
 			this->newIndex = arr[1];
-			if (this->newIndex.length() <= 1 && this->loc.getLocation().length() > 0 && this->loc.getIndex().length() > 0)
-				this->newIndex = this->root + this->loc.getIndex();
-			if (arr[1] == this->loc.getLocation() && this->loc.getIndex().length() > 1)
-				this->newIndex = this->root + this->loc.getIndex();
+			std::vector<Location>::iterator it = location.begin();
+        		for (; it != location.end(); it++)
+			{
+				if (this->newIndex.length() <= 1 && (*it).getLocation().length() > 0 && (*it).getIndex().length() > 0)
+					this->newIndex = this->root + (*it).getIndex();
+				if (arr[1] == (*it).getLocation() && (*it).getIndex().length() > 1)
+					this->newIndex = this->root + (*it).getIndex();
+			}
 			if (arr[1].compare(0, 12, "/reponse.php") == 0
 			|| arr[1].compare(0, 17, "/html/reponse.php") == 0)
 				error = 999;
@@ -549,7 +553,7 @@ int	Server::recvConnection(int fd)
 		}
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		//unlink("lucieCGI");
-		unlink(".tmp");
+		//unlink(".tmp");
 		this->vectorenv.clear();
 		this->vectorenv = this->vectorenvcpy;
 		send(fd, header.c_str(), header.length(), 0);
