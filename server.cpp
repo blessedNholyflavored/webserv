@@ -184,26 +184,15 @@ std::string ltrim(std::string &s)
 
 int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 {
-	//std::cout << res[j] << std::endl;
-	//	int k = 0;
-	/*if (res[j].find("location") != std::string::npos && j != 1)
+	static int flag;
+	if (!(res[j].find("location") != std::string::npos))
 	{
-		Location *tmp;
-
-		tmp = new Location;
-		tmp->parser_la_location(j);
-		this->location.push_back(*tmp);
-	std::vector<Location>::iterator it = location.begin();
-	for (; it != location.end(); it++)
-	{
-		if ((*it).getRoot().length() > 0)
-		{
-			//std::cerr << "MEHDI: " << (*it).getRoot() << std::endl;
-			k++;
-		}
-		}
-		std::cerr << k << std::endl;
-	}*/
+		flag = 1;
+		std::cerr << "ya pas de location dans ton fichier cousin" << std::endl;
+		return (1);
+	}
+	else 
+		flag = 0;
 	int h = j;
 	int floc = 0;
 	while (h >= 0)

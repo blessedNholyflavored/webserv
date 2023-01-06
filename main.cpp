@@ -148,7 +148,7 @@ int    main(int ac, char **av, char **env)
     }
     if (!(server.parser(av[1])))
 	{
-		std::cerr << "ya un pb mec" << std::endl;
+		std::cerr << "Parsing error in cong file" << std::endl;
         return (0);
 	}
     	std::vector<char *> tmp;
