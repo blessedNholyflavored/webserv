@@ -119,3 +119,55 @@ std::string	Server::execPOST(void)
 	str1 = str1.substr(skip.length(), str1.length());
 	return (str1);
 }
+
+std::string	Server::execGETpy(void)
+{
+	int fd1;
+	this->vectorenv.push_back((char *)("REQUEST_METHOD=GET"));
+	this->vectorenv.push_back((char *)"PATH_INFO=./html/py/post.py");
+	this->vectorenv.push_back((char *)"PATH_TRANSLATED=./html/py/post.py");
+	this->vectorenv.push_back((char *)"PATH_NAME=./html/py/post.py");
+	this->vectorenv.push_back((char *)"SCRIPT_NAME=./html/py/post.py");
+	this->vectorenv.push_back((char *)"SCRIPT_FILENAME=./html/py/post.py");
+	char	**cmd = new char*[3];
+	cmd[0] = new char[16];
+	cmd[0] = (char *)"/usr/bin/python";
+	cmd[1] = new char[13];
+	cmd[1] = (char *)("./html/py/post.py");
+	cmd[2] = new char[1];
+	cmd[2] = 0;
+	int i = 0 ;
+	char **recup = ft_split(this->newIndex.c_str(), '?');
+	i = 0;
+	while (recup[i])
+	{
+		if (strncmp(recup[i], "f_name", 6) == 0)
+			break ;
+		i++;
+	}
+	int tmp = open(".tmp", O_CREAT | O_WRONLY | O_TRUNC, 0666);
+	write(tmp, recup[i], ft_strlen(recup[i]));
+	lseek(tmp, 0, SEEK_SET);
+	fd1 = open("lucieCGI", O_CREAT | O_RDONLY | O_WRONLY | O_TRUNC, 0666);
+	std::string len = "CONTENT_LENGTH=" + intToString(ft_strlen(recup[i]));
+	std::string res = recup[i];
+	std::string query = "QUERY_STRING=" + res;
+	this->vectorenv.push_back((char *)query.c_str());
+	this->vectorenv.push_back((char *)len.c_str());
+	this->env =  ft_regroup_envVector(this->vectorenv);
+	int frk = fork();
+	if (frk == 0)
+	{
+		dup2(tmp, 0);
+		close(tmp);
+		dup2(fd1, 1);
+		close(fd1);
+		execve(cmd[0], cmd, this->env);
+	}
+	else
+		wait(NULL);
+	std::string str1 = fileToString("lucieCGI");
+	std::string skip = "Content-type:text/html";
+	str1 = str1.substr(skip.length(), str1.length());
+	return (str1);
+}

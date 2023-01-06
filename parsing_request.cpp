@@ -72,12 +72,14 @@ int	Request::parsRequest(std::string str, std::vector<Location> &location, Serve
 		else if (method == "POST" && (*it).getPost() == 0)
 			p++;
 	}
+	std::cerr << "PPPPPPPPPPPPPPPP: " << path << std::endl;
 	std::string conca = server.root + path;
 	if (_path == "./")
 		return 200;
 	if (!flag && ((open(conca.c_str(), O_RDONLY) == -1 && open(_path.c_str(), O_RDONLY) == -1)
 		&& path.compare(0, 17, "/html/reponse.php") && path.compare(0, 21, "/html/upload_img.php")
-		&& path.compare(0, 12, "/reponse.php")))
+		&& path.compare(0, 12, "/reponse.php"))
+		&& path.compare(0, 16, "/html/py/post.py"))
 	{
 		this->_retCode = 404;
 		return 404;

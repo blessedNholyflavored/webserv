@@ -122,6 +122,15 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret)
 	}
 	else if (arr[0].compare("POST") && arr[1].compare(0, 17, "/html/upload.php") == 0)
 		error = 996;
+	std::cerr << "NONNNNN" << arr[1] <<  std::endl;
+	std::cerr << "OUIIIIII" << arr[0] <<  std::endl;
+	if (arr[0].compare("GET") == 0 && arr[1].compare(0, 16, "/html/py/post.py") == 0)
+	{
+	std::cerr << "NODIWHDOIWHIODHOWIHDOIWHWODIH" << arr[1] <<  std::endl;
+		//std::string recuppy = "." + arr[1];
+		//recuppy = execFile_py(recuppy);
+		error = 63;
+	}
 	if (arr[0].compare("POST") == 0 && (arr[1].compare("/html/text.php") == 0
 				|| arr[1].compare("/html/galerie.php") == 0))
 	{
@@ -184,11 +193,18 @@ std::string Server::FirstPage(std::string filePath)
 	std::string		path;
 
 
-	//std::cerr << "FILEPATHHHHHHHHHHHHHHH: " << filePath << std::endl;
-	if (filePath.find(".php") != std::string::npos
-		|| filePath.find(".py") != std::string::npos)
+	std::cerr << "FILEPATHHHHHHHHHHHHHHH: " << filePath << std::endl;
+	if (filePath.find(".php") != std::string::npos)
 	{
 		index = execFile(filePath);
+		index += "</body>";
+		index += "</html>";
+		return index;
+	}
+	else if (filePath.find(".py") != std::string::npos)
+	{
+		std::cerr <<" SJOJOIHODW"  << std::endl;
+		index = execFile_py(filePath);
 		index += "</body>";
 		index += "</html>";
 		return index;
@@ -360,7 +376,7 @@ int	Server::init_serv(void)
 		std::cerr << "Error in socket" << std::endl;
 		return (1);
 	}
-	if (setsockopt(this->server_fd, SOL_SOCKET, SO_REUSEADDR & SO_REUSEPORT, &on, sizeof(int)) == -1)
+	if (setsockopt(this->server_fd, SOL_SOCKET, SO_REUSEPORT, &on, sizeof(int)) == -1)
 		return (close(this->server_fd), perror("Setsockopt failed"), -1);
 	if (fcntl(server_fd, F_SETFL, O_NONBLOCK) == -1)
 		return (close(this->server_fd), perror("Fcntl failed"), -1);
@@ -479,6 +495,13 @@ int	Server::recvConnection(int fd)
 		//freeTab(this->env);
 		//this->vectorenv.clear();
 		//this->vectorenv = this->vectorenvcpy;
+		send(fd, header.c_str(), header.length(), 0);
+	}
+	else if (error == 63)
+	{
+		std::string str1 = execGETpy();
+		std::string header;
+		header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		send(fd, header.c_str(), header.length(), 0);
 	}
 	else if (error == 998)

@@ -184,15 +184,15 @@ std::string ltrim(std::string &s)
 
 int Server::parser_le_server(std::string res[], size_t nbligne, int j)
 {
-	static int flag;
-	if (!(res[j].find("location") != std::string::npos))
-	{
-		flag = 1;
-		std::cerr << "ya pas de location dans ton fichier cousin" << std::endl;
-		return (1);
-	}
-	else 
-		flag = 0;
+	// static int flag;
+	// if (!(res[j].find("location") != std::string::npos))
+	// {
+	// 	flag = 1;
+	// 	std::cerr << "ya pas de location dans ton fichier cousin" << std::endl;
+	// 	return (1);
+	// }
+	// else 
+	// 	flag = 0;
 	int h = j;
 	int floc = 0;
 	while (h >= 0)

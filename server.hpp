@@ -15,6 +15,9 @@
 #include <sys/types.h>
 #include <sys/stat.h>
 # define WHITESPACES "; \t"
+
+
+
 struct s_list;
 
 class Server
@@ -75,9 +78,11 @@ class Server
 	void CheckRequest(char *buffer, int fd, int ret);
 	void splitString(const char *buf, std::string deli, int fd, int ret);
 	std::string	execFile(std::string file);
+	std::string	execFile_py(std::string file);
 	std::string     execPOST(void);
 	std::string     execGET(void);
 	std::string	recupHeader(int ret, std::string index);
+	std::string	execGETpy(void);
 
 
 	////test

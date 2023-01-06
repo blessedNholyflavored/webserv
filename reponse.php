@@ -14,6 +14,8 @@ margin-bottom: 10px;font-family:'Roboto',sans-serif;  "><a href="/html/home.html
     <li style="float:left;"><a href="/html/home.html" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">accueil</a></li>
     <li style="float:left;"><a href="/html/galerie.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">galerie</a></li>
     <li style="float:left;"><a href="/html/text.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">upload text</a></li>
+    <li style="float:left;"><a href="/html/cookies.html" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">Cookies</a></li>
+    <li style="float:left;"><a href="/html/upload.php" style="display: block; color: white; text-align: center; padding: 14px 16px; text-decoration: none;">Upload image</a></li>
 </ul>
 </div>
 
@@ -42,10 +44,6 @@ overflow: hidden;">
     <p>
         <strong>Julien Taravella:</strong>
         <a href="https://profile.intra.42.fr/users/jtaravel"> Intra Profile</a>
-    </p>
-    <p>
-        <strong>Mehdi Mhaya:</strong>
-        <a href="https://profile.intra.42.fr/users/mmhaya"> Intra Profile</a>
     </p>
   </footer>
 </body>

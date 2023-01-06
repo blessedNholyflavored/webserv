@@ -1,30 +1,31 @@
-
-print("HTTP/1.0 200 OK\n")
 import cgi
+import sys
+
 form = cgi.FieldStorage()
+
+f = open(".tmp", "r")
+print("----------------------")
+f = f.read()
+f = f.split("f_name=", 1)[-1]
+f = f.split("&")
+s1 = f[0]
+s2 = f[1]
+s2 = s2.split("s_name=")
+s2 = s2[1]
+
+
 try:
-    f_name=form["f_name"].value
+    f_name=s1
 except :
     f_name=' First name is blank ' 
 	
 try:
-    s_name=form["s_name"].value
+    s_name=s2
 except :
+
+    
     s_name=' Second name is blank ' 
-	
-try:
-    r1=form["r1"].value
-except :
-    r1=' No selection of  Sex'
 
-try:
-    my_class=form["class"].value
-except:	
-	my_class= ' Select Class '
-
-print("<title style='background-color:red'>")
 print("<br><b>First Name</b>",f_name)
 print("<br><b>Second Name</b>",s_name)
-print("<br><b>Sex</b>",r1)
-print("<br><b>Class</b>",my_class)
-print("<br><br><br><a href=form.htm>Back to Form</a>")
+
