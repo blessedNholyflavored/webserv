@@ -105,7 +105,7 @@ int Server::parser(std::string str)
 	{
 		if (res[0] == "server {")
 		{
-			if(this->parser_le_server(res, nbline, j))
+			if(this->parser_le_server(res, nbline, j, countEndl(content)))
 				return(0);
 		}
 		std::string tmp(res[j]);
@@ -182,7 +182,7 @@ std::string ltrim(std::string &s)
 }
 
 
-int Server::parser_le_server(std::string res[], size_t nbligne, int j)
+int Server::parser_le_server(std::string res[], size_t nbligne, int j, int max)
 {
 	// static int flag;
 	// if (!(res[j].find("location") != std::string::npos))
