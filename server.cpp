@@ -29,11 +29,11 @@ void	Server::parsLoc(int i){
 	while (res[indexline].find("}") == std::string::npos){
 		if (res[indexline].find("location") != std::string::npos)
 		{
-			Location *tmp;
-			tmp = new Location;
-			indexline = tmp->parser_la_location(indexline);
-			this->loc = *tmp;
-			location.push_back(*tmp);
+			Location tmp;
+			//tmp = Location;
+			indexline = tmp.parser_la_location(indexline);
+			this->loc = tmp;
+			location.push_back(tmp);
 		}
 		indexline++;
 	}

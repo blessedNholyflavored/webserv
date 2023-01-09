@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/29 14:28:47 by jtaravel          #+#    #+#             */
-/*   Updated: 2023/01/05 17:15:39 by jtaravel         ###   ########.fr       */
+/*   Updated: 2023/01/06 18:25:01 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,5 +39,6 @@ std::string     fileToString(std::string loc);
 char    **ft_regroup_envVector(std::vector<char *> vec);
 std::string     intToString(int i);
 char    *ft_strdup(char *s);
+void	freeTab(char **tab);
 
 #endif

@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 11:03:05 by jtaravel          #+#    #+#             */
-/*   Updated: 2023/01/05 18:19:40 by jtaravel         ###   ########.fr       */
+/*   Updated: 2023/01/06 18:30:34 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,9 +71,13 @@ std::string	Server::execFile(std::string file)
 		wait(NULL);
 	this->vectorenv.clear();
 	this->vectorenv = this->vectorenvcpy;
+	if (this->env)
+		freeTab(this->env);
+	this->env = NULL;
 	std::string str1 = fileToString("lucieCGI");
 	std::string skip = "Content-type: text/html; charset=UTF-8 ";
 	str1 = str1.substr(skip.length(), str1.length());
+	delete [] cmd;
 	return str1;
 }
 
@@ -123,10 +127,14 @@ std::string	Server::execFile_py(std::string file)
 		wait(NULL);
 	this->vectorenv.clear();
 	this->vectorenv = this->vectorenvcpy;
+	if (this->env)
+	freeTab(this->env);
+		this->env = NULL;
 	std::string str1 = fileToString("lucieCGI");
 	std::string skip = "Content-type: text/html; charset=UTF-8 ";
 	str1 = str1.substr(skip.length(), str1.length());
 	std::cerr <<" SJOJOIHODW" << str1 << std::endl;
+	delete [] cmd;
 	return str1;
 }
 
