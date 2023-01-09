@@ -74,7 +74,6 @@ int	Request::parsRequest(std::string str, std::vector<Location> &location, Serve
 		else if (method == "POST" && (*it).getPost() == 0)
 			p++;
 	}
-	std::cerr << "PPPPPPPPPPPPPPPP: " << path << std::endl;
 	std::string conca = server.root + path;
 	if (_path == "./")
 		return 200;

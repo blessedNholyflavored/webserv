@@ -116,7 +116,7 @@ text-align: center;" >
 <h2 style ="text-align: center;" > Test de la methode GET :)</h2>
 <p style ="text-align: center;" > dis nous t ki stp</p>
 
-<form style ="text-align: center;" id="nom_form" action="./reponse.php" method="GET">
+<form style ="text-align: center;" id="nom_form" action="../reponse.php" method="GET">
     <label for="fname">donnes ton prenom</label><br>
     <input style ="text-align: center;" type="text" id="fname" name="fname" value="mon prenom"><br>
     <label for="lname">donnes ton age</label><br>

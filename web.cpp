@@ -59,7 +59,9 @@ void	freeTab2(char **tab)
 	while (tab[i])
 	{
 		if (tab[i])
+		{
 			free(tab[i]);
+		}
 		i++;
 	}
 	free(tab);
@@ -105,7 +107,7 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret, std
 		i++;
 	}
 	arr[i] = str.substr(start, end - start);
-	//std::cout << "SPLIT = " << arr[1] << std::endl;
+	std::cout << "SPLIT = " << arr[1] << std::endl;
 	if (arr[0].compare(0, 24, "------WebKitFormBoundary") == 0)
 		if (ParseBufferupl(buffer) == 413)
 		{
@@ -606,11 +608,6 @@ int	Server::recvConnection(int fd)
 		std::string str1 = execPOST();
 		std::string header;
 		header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
-		//unlink(".tmp");
-		//unlink("lucieCGI");
-		//freeTab(this->env);
-		//this->vectorenv.clear();
-		//this->vectorenv = this->vectorenvcpy;
 		send(fd, header.c_str(), header.length(), 0);
 	}
 	else if (error == 63)
@@ -640,7 +637,7 @@ int	Server::recvConnection(int fd)
 		i = 0;
 		while (recup[i])
 		{
-			recup[i] = recup[i] + 1;
+			recup[i] = ft_strdup(recup[i] + 1);
 			if (strncmp(recup[i], "User-Agent", 10) == 0)
 				agent = i;
 			if (strncmp(recup[i], "textToUpload", 12) == 0)

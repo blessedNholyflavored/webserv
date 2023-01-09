@@ -113,7 +113,6 @@ text-align: center;" >
 
 <hr>
 	
-
 Bonjour, <?php if (isset($_GET['fname'])){echo htmlspecialchars($_GET['fname']);} ?>.
 Tu as <?php if (isset($_GET['lname'])){echo $_GET['lname'];} ?> ans.
 
