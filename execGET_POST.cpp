@@ -63,9 +63,11 @@ std::string	Server::execGET(void)
 	else
 		wait(NULL);
 	std::string str1 = fileToString("lucieCGI");
-	//std::string skip = "Content-type: text/html; charset=UTF-8 ";
+	//std::string skip = "Status: 500 Internal Server Error\n";
+	//skip += "Content-type: text/html; charset=UTF-8 ";
 	//str1 = str1.substr(skip.length(), str1.length());
 	delete [] cmd;
+	//std::cerr << "STR11111111111111 ---> " << str1 << std::endl;
 	return (str1);
 }
 

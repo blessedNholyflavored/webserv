@@ -23,6 +23,8 @@
 int	Request::parsRequest(std::string str, std::vector<Location> &location, Server server){
 	std::string method;
 
+	if (str.compare(0, 24, "------WebKitFormBoundary") == 0)
+		return (0);
 	size_t i = 0;
 	for (; str[i] != ' '; i++){
 		method.push_back(str[i]);
@@ -42,17 +44,17 @@ int	Request::parsRequest(std::string str, std::vector<Location> &location, Serve
 	for (; str[i] != '\r'; i++){
 		version.push_back(str[i]);
 	}
-	if (version != "HTTP/1.1"){
-		std::cerr << "bad version" << std::endl;
-		_retCode = 400;
-		return 400;
-	}
-	if (method != "GET" && method != "POST" && method != "DELETE")
-	{
-		std::cerr << "method didnt exist" << std::endl;
-		_retCode = 401;
-		return 401;
-	}
+	// if (version != "HTTP/1.1"){
+	// 	std::cerr << "bad version" << std::endl;
+	// 	_retCode = 400;
+	// 	return 400;
+	// }
+	// if (method != "GET" && method != "POST" && method != "DELETE")
+	// {
+	// 	std::cerr << "method didnt exist" << std::endl;
+	// 	_retCode = 401;
+	// 	return 401;
+	// }
 	
 	int	flag = 0;
 	int c = 0;

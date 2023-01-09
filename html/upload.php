@@ -118,7 +118,7 @@ text-align: center;" >
         <input type="submit" name="submit" value="Start Upload">
     </form>
 
-    <?php
+  <?php
     $uploadDirectory = '../images';
 
     $errors = []; // Store errors here
@@ -126,6 +126,7 @@ text-align: center;" >
     $fileExtensionsAllowed = ['jpeg','jpg','png']; // These will be the only file extensions allowed 
 
     $fileName = $_FILES['the_file']['name'];
+    $fileSize = $_FILES['the_file']['size'];
     $fileTmpName  = $_FILES['the_file']['tmp_name'];
     $fileType = $_FILES['the_file']['type'];
     $fileExtension = strtolower(end(explode('.',$fileName)));
@@ -133,12 +134,17 @@ text-align: center;" >
     echo $_FILES['the_file']['name'];
     $uploadPath = $uploadDirectory . basename($fileName); 
     $test = fopen(".test", "w+");
-    fwrite($test, $_FILES['the_file']['name']);
+    fwrite($test, $fileSize);
+   
 
     if (isset($_POST['submit'])) {
 
       if (! in_array($fileExtension,$fileExtensionsAllowed)) {
         $errors[] = "This file extension is not allowed. Please upload a JPEG or PNG file";
+      }
+
+      if ($fileSize > 50000) {
+        $errors[] = "File exceeds maximum size (4MB)";
       }
 
       if (empty($errors)) {

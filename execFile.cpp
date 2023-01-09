@@ -43,6 +43,8 @@ std::string	Server::execFile(std::string file)
 	//cmd[1] = (char *)file.c_str();
 	//cmd[2] = new char[1];
 	cmd[2] = 0;
+	std::cout << "RENTRERRRRRRRRRRRRRRRRRRR" << file <<  std::endl;
+
 	this->vectorenv.push_back((char *)("REQUEST_METHOD=GET"));
 	this->vectorenv.push_back((char *)("REQUEST_METHOD=POST"));
 	std::string res = "PATH_INFO=" + file;
@@ -91,7 +93,6 @@ std::string	Server::execFile(std::string file)
 	free(cmd[0]);
 	free(cmd[1]);
 	delete [] cmd;
-	
 	return str1;
 }
 
@@ -167,6 +168,8 @@ std::string	Server::recupHeader(int ret, std::string index)
 		code = "Method Not Allowed";
 	if (ret == 505)
 		code = "HTTP Version Not Supported";
+	if (ret == 413)
+		code = "Request Entity Too Large";
 
 	std::string errorPage = "./html/" + intToString(ret) + ".html";
 	errorPage = fileToString(errorPage);

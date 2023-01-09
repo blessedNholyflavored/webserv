@@ -26,6 +26,7 @@ static	int	nbfiles = 0;
 static	int	statusfile = 0;
 static	int	ext = 0;
 static char *bufall;
+static int lenall;
 
 char	**Server::ft_regroup_envVector(std::vector<char *> vec)
 {
@@ -73,7 +74,7 @@ void	freeTab(char **tab)
 	{
 		if (tab[i])
 		{
-			printf("TAB[i] = %s\n", tab[i]);
+			//printf("TAB[i] = %s\n", tab[i]);
 			//free(tab[i]);
 		}
 		i++;
@@ -106,7 +107,10 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret, std
 	arr[i] = str.substr(start, end - start);
 	//std::cout << "SPLIT = " << arr[1] << std::endl;
 	if (arr[0].compare(0, 24, "------WebKitFormBoundary") == 0)
-		ParseBufferupl(buffer);
+		if (ParseBufferupl(buffer) == 413)
+		{
+			return ;
+		}
 //	std::cout << "IN SPLIT: " << str.substr(start, end - start) << std::endl;
 	if (arr[1].compare("/") != 0 && arr[0].compare("GET") == 0 && arr[1].compare("/html/text.php")
 			&& arr[1].compare("/html/galerie.php"))
@@ -150,13 +154,18 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret, std
 	else if (arr[0].compare("POST") == 0 || arr[1].compare("/html/text.php") == 0 || arr[1].compare("/html/galerie.php") == 0)
 	{
 		std::string recup = "." + arr[1];
-		std::cout << "OUIIIIII" << recup << std::endl;
 		recup = execFile(recup);
 		error = 54;
 	}
 	if (arr[0].compare("GET") == 0 && arr[1].compare(0, 16, "/html/py/post.py") == 0)
 	{
 		error = 63;
+	}
+	if ((arr[0].compare("GET") == 0 || arr[0].compare("POST") == 0) && (arr[1].compare(0, 16, "/html/upload.php") == 0) && error != 413)
+	{
+		std::string recup = "." + arr[1];
+		recup = execFile(recup);
+		error = 53;
 	}
 	if (arr[0].compare("POST") == 0 && (arr[1].compare("/html/text.php") == 0
 				|| arr[1].compare("/html/galerie.php") == 0))
@@ -204,6 +213,11 @@ void	CreateFile(std::string filepath)
 int	ParseBufferupl(std::string buffer)
 {
 
+	if (lenall > 50000)
+	{
+		 error = 413;
+		 return (413);
+	}
 	splitRet(buffer, "\n");
 	std::string filename;
 	int i = 0;
@@ -513,6 +527,8 @@ std::string	checkRet(int ret)
 		return (fileToString("./html/405.html"));
 	if (ret == 404)
 		return (fileToString("./html/404.html"));
+	if (ret == 413)
+		return (fileToString("./html/413.html"));
 	else
 		return str;
 }
@@ -543,15 +559,16 @@ int	Server::recvConnection(int fd)
 		send(fd, header.c_str(), header.length(), 0);
 		nbfiles = 0;
 	}
-	len = recv(fd, buff, 50000, 0);
+	len = recv(fd, buff, 50001, 0);
 	if (len > 0)
 		printf("BUFF in recv:\n%s\n", buff);
 	int	ret = 0;
 	bufall = buff;
+	lenall = len;
 
-	//request = new Request;
-	//ret = request->parsRequest(buff, this->location, *this);
-	//delete request;
+	request = new Request;
+	ret = request->parsRequest(buff, this->location, *this);
+	delete request;
 //	this->newIndex = request->getPath();
 //	if (this->newIndex == "./")
 //		this->newIndex = "./html/home.html";
@@ -566,6 +583,8 @@ int	Server::recvConnection(int fd)
 //	}
 	//std::cerr << "111111111111111111111111111111: " << error << std::endl;
 	CheckRequest(buff, fd, ret);
+	if (!ret)
+		ret = error;
 	//std::cerr << "222222222222222222222222222222: " << error << std::endl;
 	// else if (request->getRetCode() == 404)
 	// {
@@ -576,6 +595,7 @@ int	Server::recvConnection(int fd)
 	//std::cerr << "RETTTTTT: " << ret << "\n";
 	if (this->newIndex.length() > 1 && ret && ret != 200)
 	{
+	std::cerr << " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE: " << ret << std::endl;
 		std::string header = recupHeader(ret, this->newIndex);
 		send(fd, header.c_str(), header.length(), 0);
 		//return 0;
@@ -693,6 +713,14 @@ int	Server::recvConnection(int fd)
 		{
 			str1 = fileToString("lucieCGI");
 			std::string skip = "Content-type: text/html; charset=UTF-8 ";
+			str1 = str1.substr(skip.length(), str1.length());
+			error = 0;
+		}
+		else if (error == 53)
+		{
+			str1 = fileToString("lucieCGI");
+			std::string skip = "Status: 500 Internal Server Error\n";
+			skip += "Content-type: text/html; charset=UTF-8 ";
 			str1 = str1.substr(skip.length(), str1.length());
 			error = 0;
 		}
