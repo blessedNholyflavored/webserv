@@ -79,7 +79,8 @@ int	Request::parsRequest(std::string str, std::vector<Location> &location, Serve
 	if (!flag && ((open(conca.c_str(), O_RDONLY) == -1 && open(_path.c_str(), O_RDONLY) == -1)
 		&& path.compare(0, 17, "/html/reponse.php") && path.compare(0, 21, "/html/upload_img.php")
 		&& path.compare(0, 12, "/reponse.php"))
-		&& path.compare(0, 16, "/html/py/post.py"))
+		&& path.compare(0, 16, "/html/py/post.py")
+		&& path.compare(0, 16, "/html/upload.php"))
 	{
 		this->_retCode = 404;
 		return 404;

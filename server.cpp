@@ -187,7 +187,6 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j, int max)
 	static int f;
 	if (!(res[j].find("location") != std::string::npos))
 	{
-		std::cerr << "ya pas de location dans ton fichier cousin" << std::endl;
 		if (j == max && !f)
 			return (1);
 	}

@@ -20,16 +20,16 @@ std::string	Server::execGET(void)
 {
 	int fd1;
 	this->vectorenv.push_back((char *)("REQUEST_METHOD=GET"));
-	this->vectorenv.push_back((char *)"PATH_INFO=./html/upload_img.php");
-	this->vectorenv.push_back((char *)"PATH_TRANSLATED=./html/upload_img.php");
-	this->vectorenv.push_back((char *)"PATH_NAME=./html/upload_img.php");
-	this->vectorenv.push_back((char *)"SCRIPT_NAME=./html/upload_img.php");
-	this->vectorenv.push_back((char *)"SCRIPT_FILENAME=./html/upload_img.php");
+	this->vectorenv.push_back((char *)"PATH_INFO=./html/upload.php");
+	this->vectorenv.push_back((char *)"PATH_TRANSLATED=./html/upload.php");
+	this->vectorenv.push_back((char *)"PATH_NAME=./html/upload.php");
+	this->vectorenv.push_back((char *)"SCRIPT_NAME=./html/upload.php");
+	this->vectorenv.push_back((char *)"SCRIPT_FILENAME=./html/upload.php");
 	char	**cmd = new char*[3];
 	cmd[0] = new char[16];
 	cmd[0] = (char *)"/usr/bin/php-cgi";
-	cmd[1] = new char[21];
-	cmd[1] = (char *)("./html/upload_img.php");
+	cmd[1] = new char[16];
+	cmd[1] = (char *)("./html/upload.php");
 	cmd[2] = new char[1];
 	cmd[2] = 0;
 	int i = 0 ;

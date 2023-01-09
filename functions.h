@@ -41,5 +41,7 @@ std::string     intToString(int i);
 char    *ft_strdup(char *s);
 void	freeTab(char **tab);
 void	freeTab2(char **tab);
+void	splitRet(std::string str, std::string deli);
+std::string	splitRetVal(std::string str, std::string deli);
 
 #endif

@@ -20,11 +20,12 @@
 
 static int error = 0;
 //static std::string  newIndex = "";
-static std::string	split[4096];
+static std::string	split[250000];
 static std::string	newfile[5];
 static	int	nbfiles = 0;
 static	int	statusfile = 0;
 static	int	ext = 0;
+static char *bufall;
 
 char	**Server::ft_regroup_envVector(std::vector<char *> vec)
 {
@@ -46,6 +47,7 @@ char	**Server::ft_regroup_envVector(std::vector<char *> vec)
 		i++;
 	}
 	res[i] = NULL;
+	// res est egal  a this->env[i]
 	return res;
 }
 
@@ -82,10 +84,12 @@ void	freeTab(char **tab)
 
 std::string	fileToString(std::string loc);
 std::string     intToString(int i);
+int	ParseBufferupl(std::string buffer);
 
-void	Server::splitString(const char *buf, std::string deli, int fd, int ret)
+void	Server::splitString(const char *buf, std::string deli, int fd, int ret, std::string buffer)
 {
 	(void)fd;
+	(void)buffer;
 	std::string str(buf);
 	int start = 0;
 	int end = str.find(deli);
@@ -101,8 +105,8 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret)
 	}
 	arr[i] = str.substr(start, end - start);
 	//std::cout << "SPLIT = " << arr[1] << std::endl;
-	if (arr[0].compare("POST") && arr[1].compare(0, 21, "/html/upload_img.php") == 0)
-		error = 996;
+	if (arr[0].compare(0, 24, "------WebKitFormBoundary") == 0)
+		ParseBufferupl(buffer);
 //	std::cout << "IN SPLIT: " << str.substr(start, end - start) << std::endl;
 	if (arr[1].compare("/") != 0 && arr[0].compare("GET") == 0 && arr[1].compare("/html/text.php")
 			&& arr[1].compare("/html/galerie.php"))
@@ -143,22 +147,15 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret)
 			error = 200;
 		}
 	}
-	else if ((arr[0].compare("POST") == 0 || arr[1].compare("/html/text.php") == 0 || arr[1].compare("/html/galerie.php") == 0)
-			&& arr[1].compare(0, 21, "/html/upload_img.php"))
+	else if (arr[0].compare("POST") == 0 || arr[1].compare("/html/text.php") == 0 || arr[1].compare("/html/galerie.php") == 0)
 	{
 		std::string recup = "." + arr[1];
+		std::cout << "OUIIIIII" << recup << std::endl;
 		recup = execFile(recup);
 		error = 54;
 	}
-	else if (arr[0].compare("POST") && arr[1].compare(0, 17, "/html/upload.php") == 0)
-		error = 996;
-	std::cerr << "NONNNNN" << arr[1] <<  std::endl;
-	std::cerr << "OUIIIIII" << arr[0] <<  std::endl;
 	if (arr[0].compare("GET") == 0 && arr[1].compare(0, 16, "/html/py/post.py") == 0)
 	{
-	std::cerr << "NODIWHDOIWHIODHOWIHDOIWHWODIH" << arr[1] <<  std::endl;
-		//std::string recuppy = "." + arr[1];
-		//recuppy = execFile_py(recuppy);
 		error = 63;
 	}
 	if (arr[0].compare("POST") == 0 && (arr[1].compare("/html/text.php") == 0
@@ -176,6 +173,69 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret)
 	//std::cerr << "kgdfvbdfvsdffvsfvrfrfdvrfvifffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff: " << error << "\n";
 }
 
+void	CreateFile(std::string filepath)
+{
+
+	//char *cpy = ft_strdup(bufall);
+
+
+	// std::ofstream file;
+	// file.open(conca.c_str());
+	// filepath = "uploads/" + filepath;
+	int i = 0;
+	int count = 0;
+	while (bufall[i])
+	{
+		if (bufall[i] == '\n')
+			count++;
+		if (count == 4)
+			break;
+		i++;
+	}
+	// std::ostringstream oss;
+	// oss << cpy + i;
+	// std::string data(oss.str());
+	// //file << data;
+	std::string conca = "uploads/" + filepath;
+	int o = open(conca.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	write(o, bufall + i + 1, 50000);
+}
+
+int	ParseBufferupl(std::string buffer)
+{
+
+	splitRet(buffer, "\n");
+	std::string filename;
+	int i = 0;
+	int	l = 0;
+	for (i = 0; i < 250000; i++)
+	{
+		if (split[i].length() > 0 && split[i].compare(0, 20, "Content-Disposition:") == 0)
+		{
+			filename = splitRetVal(split[i], " ");
+
+			for (int k = 0; k < (int)filename.length(); k++)
+			{     
+				if (filename[k] == '=' && filename[k + 1] == '"')
+				{
+					l = k + 2;
+					break ;
+				}
+			}
+		}
+	}
+	std::string recup = filename.substr(l, filename.length() - 2);
+	char *test = ft_strdup((char *)recup.c_str());
+	printf("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU = %s\n", test);
+	test[ft_strlen(test) - 2] = 0;
+	recup = test;
+	//free(test);
+	if (recup.length() > 0)
+	{
+		CreateFile(recup);
+	}
+	return 0;
+}
 
 void	Server::CheckRequest(char *buffer, int fd, int ret)
 {
@@ -194,15 +254,15 @@ void	Server::CheckRequest(char *buffer, int fd, int ret)
 			space++;
 		l++;
 	}
-	if (space != 2 && res.compare(6, 18, "WebKitFormBoundary"))
-	{	
-		int fd = open("tesssss", O_CREAT | O_WRONLY | O_WRONLY | O_TRUNC, 0644);
-		write(fd, buffer, strlen(buffer));
-		std::cout << "BUFFER:" << buffer << std::endl;
-	//	exit (0);
-	}
+	// if (space != 2 && res.compare(6, 18, "WebKitFormBoundary"))
+	// {	
+	// 	int fd = open("tesssss", O_CREAT | O_WRONLY | O_WRONLY | O_TRUNC, 0644);
+	// 	write(fd, buffer, strlen(buffer));
+	// 	std::cout << "BUFFER:" << buffer << std::endl;
+	// //	exit (0);
+	// }
 		//printf("BEFORESPLIT: %s\n", test.c_str());
-		splitString(test.c_str(), " ", fd, ret);
+		splitString(test.c_str(), " ", fd, ret, buffer);
 }
 
 std::string	intToString(int i)
@@ -327,11 +387,11 @@ void	CreateFile(void)
 	std::ofstream file(conca.c_str());
 	newfile[nbfiles] = "Uploads/" + newfile[nbfiles];
 	int i = 0;
-	for (i = 0; i < 4096; i++)
+	for (i = 0; i < 250000; i++)
 	{
 		if (split[i].compare(0, 13, "Content-Type:") == 0)
 		{
-			for(int h = i + 2; h < 4096; h++)
+			for(int h = i + 2; h < 250000; h++)
 			{
 				if (split[h + 1].compare(0, 24, "------WebKitFormBoundary") == 0)
 					break;
@@ -346,6 +406,7 @@ void	CreateFile(void)
 void	splitRet(std::string str, std::string deli)
 {
 	int start = 0;
+	std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>: " << str << std::endl;
         int end = str.find(deli);
         int     i = 0;
         while (end != -1)
@@ -355,45 +416,47 @@ void	splitRet(std::string str, std::string deli)
                 start = end + deli.size();
                 end = str.find(deli, start);
                 i++;
+		std::cerr << "LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA: " << split[i] << std::endl;
+
         }
         split[i] = str.substr(start, end - start);
 }
 
-void	ParseBuffer(std::string buffer)
-{
-	splitRet(buffer, "\n");
-	int i = 0;
-	int	l = 0;
-	for (i = 0; i < 4096; i++)
-	{
-		if (split[i].length() > 0 && split[i].compare(0, 20, "Content-Disposition:") == 0)
-		{
-			std::string filename = splitRetVal(split[i], " ");
-			for (size_t k = 0; k < filename.length(); k++)
-			{
-				if (filename[k] == '=' && filename[k + 1] == '"')
-				{
-					l = k + 2;
-					break ;
-				}
-			}
-			if (nbfiles < 5)
-			{
-				newfile[nbfiles] = filename.substr(l, filename.length() - 2);
-				newfile[nbfiles].erase(newfile[nbfiles].length() - 2, newfile[nbfiles].length());
-			}
-			//std::cout << "SIZE =" << newfile.length();
-			//std::cout << "SPLIT TEST:" << newfile << std::endl;
-		}
-	}
-	if (newfile[nbfiles].length() > 0 && nbfiles < 5)
-	{
-		std::cout << "NBFILES=" << newfile[nbfiles] << std::endl;
-		CreateFile();
-		nbfiles++;
-	}
-	return ;
-}
+// void	ParseBuffer(std::string buffer)
+// {
+// 	splitRet(buffer, "\n");
+// 	int i = 0;
+// 	int	l = 0;
+// 	for (i = 0; i < 250000; i++)
+// 	{
+// 		if (split[i].length() > 0 && split[i].compare(0, 20, "Content-Disposition:") == 0)
+// 		{
+// 			std::string filename = splitRetVal(split[i], " ");
+// 			for (size_t k = 0; k < filename.length(); k++)
+// 			{
+// 				if (filename[k] == '=' && filename[k + 1] == '"')
+// 				{
+// 					l = k + 2;
+// 					break ;
+// 				}
+// 			}
+// 			if (nbfiles < 5)
+// 			{
+// 				newfile[nbfiles] = filename.substr(l, filename.length() - 2);
+// 				newfile[nbfiles].erase(newfile[nbfiles].length() - 2, newfile[nbfiles].length());
+// 			}
+// 			//std::cout << "SIZE =" << newfile.length();
+// 			//std::cout << "SPLIT TEST:" << newfile << std::endl;
+// 		}
+// 	}
+// 	if (newfile[nbfiles].length() > 0 && nbfiles < 5)
+// 	{
+// 		std::cout << "NBFILES=" << newfile[nbfiles] << std::endl;
+// 		CreateFile();
+// 		nbfiles++;
+// 	}
+// 	return ;
+// }
 
 int	Server::init_serv(void)
 {
@@ -457,7 +520,7 @@ std::string	checkRet(int ret)
 int	Server::recvConnection(int fd)
 {
 	ssize_t	len;
-	char	buff[3000];
+	char	buff[50000];
 
 	if (nbfiles == 76)
 	{
@@ -480,13 +543,15 @@ int	Server::recvConnection(int fd)
 		send(fd, header.c_str(), header.length(), 0);
 		nbfiles = 0;
 	}
-	len = recv(fd, buff, 3000, 0);
+	len = recv(fd, buff, 50000, 0);
 	if (len > 0)
 		printf("BUFF in recv:\n%s\n", buff);
 	int	ret = 0;
-	request = new Request;
-	ret = request->parsRequest(buff, this->location, *this);
-	delete request;
+	bufall = buff;
+
+	//request = new Request;
+	//ret = request->parsRequest(buff, this->location, *this);
+	//delete request;
 //	this->newIndex = request->getPath();
 //	if (this->newIndex == "./")
 //		this->newIndex = "./html/home.html";
