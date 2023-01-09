@@ -40,5 +40,7 @@ char    **ft_regroup_envVector(std::vector<char *> vec);
 std::string     intToString(int i);
 char    *ft_strdup(char *s);
 void	freeTab(char **tab);
+void	splitRet(std::string str, std::string deli);
+std::string	splitRetVal(std::string str, std::string deli);
 
 #endif

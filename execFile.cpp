@@ -66,12 +66,6 @@ std::string	Server::execFile(std::string file)
 		this->env = NULL;
 	}
 	this->env = ft_regroup_envVector(this->vectorenv);
-	int i = 0;
-	while (this->env[i])
-	{
-		printf("ENVVVVV: %s\n", this->env[i]);
-		i++;
-	}
 	std::string index;
 	int frk = fork();
 	if (frk == 0)

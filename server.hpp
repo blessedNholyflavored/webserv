@@ -76,7 +76,7 @@ class Server
 	void transfer_location(Location location);
 	bool autoindexed() const;
 	void CheckRequest(char *buffer, int fd, int ret);
-	void splitString(const char *buf, std::string deli, int fd, int ret);
+	void splitString(const char *buf, std::string deli, int fd, int ret, std::string buffer);
 	std::string	execFile(std::string file);
 	std::string	execFile_py(std::string file);
 	std::string     execPOST(void);
