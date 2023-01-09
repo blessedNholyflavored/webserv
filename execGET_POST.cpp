@@ -79,11 +79,8 @@ std::string	Server::execPOST(void)
 	this->vectorenv.push_back((char *)"SCRIPT_NAME=./reponse.php");
 	this->vectorenv.push_back((char *)"SCRIPT_FILENAME=./reponse.php");
 	char	**cmd = new char*[3];
-	cmd[0] = new char[16];
-	cmd[0] = (char *)"/usr/bin/php-cgi";
-	cmd[1] = new char[13];
-	cmd[1] = (char *)("./reponse.php");
-	cmd[2] = new char[1];
+	cmd[0] = strdup("/usr/bin/php-cgi");
+	cmd[1] = strdup("./reponse.php");
 	cmd[2] = 0;
 	int i = 0 ;
 	char **recup = ft_split(this->newIndex.c_str(), '?');
@@ -115,9 +112,12 @@ std::string	Server::execPOST(void)
 	}
 	else
 		wait(NULL);
+	freeTab2(recup);
 	std::string str1 = fileToString("lucieCGI");
 	std::string skip = "Content-type: text/html; charset=UTF-8 ";
 	str1 = str1.substr(skip.length(), str1.length());
+	free(cmd[0]);
+	free(cmd[1]);
 	delete [] cmd;
 	return (str1);
 }

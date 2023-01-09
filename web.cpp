@@ -33,19 +33,34 @@ char	**Server::ft_regroup_envVector(std::vector<char *> vec)
 	
 	if (this->env)
 	{
-		freeTab(this->env);
-		this->env = NULL;
+		//freeTab(this->env);
+		//this->env = NULL;
 	}
 	res = (char **)malloc(sizeof(char*) * (vec.size() + 1));
 	std::vector<char *>::iterator it = vec.begin();
 	for (; it != vec.end(); it++)
 	{
-		res[i] = ft_strdup((char *)*it);
+		//res[i] = ft_strdup((char *)*it);
+		res[i] = (char *)*it;
 		//printf("REGROUP: %s\n", res[i]);
 		i++;
 	}
 	res[i] = NULL;
 	return res;
+}
+
+void	freeTab2(char **tab)
+{
+	int i = 0;
+	
+	while (tab[i])
+	{
+		if (tab[i])
+			free(tab[i]);
+		i++;
+	}
+	free(tab);
+	tab = NULL;
 }
 
 void	freeTab(char **tab)
@@ -57,7 +72,7 @@ void	freeTab(char **tab)
 		if (tab[i])
 		{
 			printf("TAB[i] = %s\n", tab[i]);
-			free(tab[i]);
+			//free(tab[i]);
 		}
 		i++;
 	}
@@ -531,11 +546,8 @@ int	Server::recvConnection(int fd)
 		this->vectorenv.push_back((char *)"SCRIPT_NAME=html/text.php");
 		this->vectorenv.push_back((char *)"SCRIPT_FILENAME=html/text.php");
 		char	**cmd = new char*[3];
-		cmd[0] = new char[16];
-		cmd[0] = (char *)"/usr/bin/php-cgi";
-		cmd[1] = new char[13];
-		cmd[1] = (char *)("html/text.php");
-		cmd[2] = new char[1];
+		cmd[0] = strdup("/usr/bin/php-cgi");
+		cmd[1] = strdup("html/text.php");
 		cmd[2] = 0;
 		int i = 0 ;
 		int agent = 0;
@@ -579,6 +591,10 @@ int	Server::recvConnection(int fd)
 		}
 		else
 			wait(NULL);
+		freeTab2(recup);
+		free(cmd[0]);
+		free(cmd[1]);
+		delete [] cmd;
 		std::string str1 = FirstPage("lucieCGI");
 		std::string skip = "Content-type: text/html; charset=UTF-8 ";
 		str1 = str1.substr(skip.length(), str1.length());

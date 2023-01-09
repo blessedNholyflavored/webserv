@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 11:03:05 by jtaravel          #+#    #+#             */
-/*   Updated: 2023/01/09 12:53:49 by jtaravel         ###   ########.fr       */
+/*   Updated: 2023/01/09 14:19:13 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,12 +66,6 @@ std::string	Server::execFile(std::string file)
 		this->env = NULL;
 	}
 	this->env = ft_regroup_envVector(this->vectorenv);
-	int i = 0;
-	while (this->env[i])
-	{
-		printf("ENVVVVV: %s\n", this->env[i]);
-		i++;
-	}
 	std::string index;
 	int frk = fork();
 	if (frk == 0)
@@ -86,9 +80,11 @@ std::string	Server::execFile(std::string file)
 		wait(NULL);
 	this->vectorenv.clear();
 	this->vectorenv = this->vectorenvcpy;
-	if (this->env)
+	if (this->env[0])
+	{
 		freeTab(this->env);
-	this->env = NULL;
+		this->env = NULL;
+	}
 	std::string str1 = fileToString("lucieCGI");
 	std::string skip = "Content-type: text/html; charset=UTF-8 ";
 	str1 = str1.substr(skip.length(), str1.length());
