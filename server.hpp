@@ -83,6 +83,7 @@ class Server
 	std::string     execGET(void);
 	std::string	recupHeader(int ret, std::string index);
 	std::string	execGETpy(void);
+	char    **ft_regroup_envVector(std::vector<char *> vec);
 
 
 	////test

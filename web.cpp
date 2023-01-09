@@ -26,16 +26,21 @@ static	int	nbfiles = 0;
 static	int	statusfile = 0;
 static	int	ext = 0;
 
-char	**ft_regroup_envVector(std::vector<char *> vec)
+char	**Server::ft_regroup_envVector(std::vector<char *> vec)
 {
 	char **res;
 	int i = 0;
 	
+	if (this->env)
+	{
+		freeTab(this->env);
+		this->env = NULL;
+	}
 	res = (char **)malloc(sizeof(char*) * (vec.size() + 1));
 	std::vector<char *>::iterator it = vec.begin();
 	for (; it != vec.end(); it++)
 	{
-		res[i] = (char *)*it;
+		res[i] = ft_strdup((char *)*it);
 		//printf("REGROUP: %s\n", res[i]);
 		i++;
 	}
@@ -50,10 +55,14 @@ void	freeTab(char **tab)
 	while (tab[i])
 	{
 		if (tab[i])
+		{
+			printf("TAB[i] = %s\n", tab[i]);
 			free(tab[i]);
+		}
 		i++;
 	}
 	free(tab);
+	tab = NULL;
 }
 
 std::string	fileToString(std::string loc);
@@ -807,15 +816,19 @@ void	StartServer(Server server)
 			}
 		}
 		array[i].parsLoc(i);
+		array[i].env = NULL;
 		i++;
 	}
 	while (1)
 	{
 		signal(SIGINT, handler);
-		if (ext == 1)
-			return ;
 		for (i = 0; i < len; i++)
 		{
+			if (ext == 1)
+			{
+				//freeTab(array[i].env);
+				return ;
+			}
 			event_count = epoll_wait(array[i].epoll_fd, events, 5, 1000);
 			if (event_count < 0)
 			{

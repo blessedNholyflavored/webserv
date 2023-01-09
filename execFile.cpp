@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 11:03:05 by jtaravel          #+#    #+#             */
-/*   Updated: 2023/01/06 18:30:34 by jtaravel         ###   ########.fr       */
+/*   Updated: 2023/01/09 12:53:49 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,29 +34,44 @@ std::string	Server::execFile(std::string file)
 	tmp = open(recup.c_str(), O_RDONLY, 0644);
 	int lucie = open("lucieCGI", O_CREAT | O_WRONLY | O_RDONLY | O_TRUNC, 0644);
 	char	**cmd = new char*[3];
-	cmd[0] = new char[16];
-	cmd[0] = (char *)"/usr/bin/php-cgi";
-	cmd[1] = new char[file.length()];
-	cmd[1] = (char *)file.c_str();
-	cmd[2] = new char[1];
+	cmd[0] = strdup("/usr/bin/php-cgi");
+	cmd[1] = strdup(file.c_str());
+	//cmd[0] = (char *)(malloc(sizeof(char) * 16));
+	//cmd[0] = (char *)"/usr/bin/php-cgi";
+	//cmd[1] = (char *)(malloc(sizeof(char) * (file.length() + 1)));
+	//cmd[1] = new char[file.length()];
+	//cmd[1] = (char *)file.c_str();
+	//cmd[2] = new char[1];
 	cmd[2] = 0;
 	this->vectorenv.push_back((char *)("REQUEST_METHOD=GET"));
 	this->vectorenv.push_back((char *)("REQUEST_METHOD=POST"));
 	std::string res = "PATH_INFO=" + file;
 	this->vectorenv.push_back((char *)(res.c_str()));
-	res.clear();
-	res = "PATH_TRANSLATED=" + file;
-	this->vectorenv.push_back((char *)(res.c_str()));
-	res.clear();
-	res = "PATH_NAME=" + file;
-	this->vectorenv.push_back((char *)(res.c_str()));
-	res.clear();
-	res = "SCRIPT_NAME=" + file;
-	this->vectorenv.push_back((char *)(res.c_str()));
-	res.clear();
-	res = "SCRIPT_FILENAME=" + file;
-	this->vectorenv.push_back((char *)(res.c_str()));
+//	res.clear();
+	std::string res1 = "PATH_TRANSLATED=" + file;
+	this->vectorenv.push_back((char *)(res1.c_str()));
+//	res.clear();
+	std::string res2 = "PATH_NAME=" + file;
+	this->vectorenv.push_back((char *)(res2.c_str()));
+//	res.clear();
+	std::string res3 = "SCRIPT_NAME=" + file;
+	this->vectorenv.push_back((char *)(res3.c_str()));
+//	res.clear();
+	std::string res4 = "SCRIPT_FILENAME=" + file;
+	this->vectorenv.push_back((char *)(res4.c_str()));
+	this->vectorenv.push_back((char *)(NULL));
+	if (this->env)
+	{
+		freeTab(this->env);
+		this->env = NULL;
+	}
 	this->env = ft_regroup_envVector(this->vectorenv);
+	int i = 0;
+	while (this->env[i])
+	{
+		printf("ENVVVVV: %s\n", this->env[i]);
+		i++;
+	}
 	std::string index;
 	int frk = fork();
 	if (frk == 0)
@@ -77,7 +92,10 @@ std::string	Server::execFile(std::string file)
 	std::string str1 = fileToString("lucieCGI");
 	std::string skip = "Content-type: text/html; charset=UTF-8 ";
 	str1 = str1.substr(skip.length(), str1.length());
+	free(cmd[0]);
+	free(cmd[1]);
 	delete [] cmd;
+	
 	return str1;
 }
 

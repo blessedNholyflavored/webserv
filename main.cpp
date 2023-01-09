@@ -77,6 +77,7 @@ std::vector<char *>	addCGI(Server server)
 	server.vectorenv.push_back((char *)("HTTP_ACCEPT=*/*"));
 	server.vectorenv.push_back((char *)("HTTP_ACCEPT_LANGUAGE=en-US,en"));
 	server.vectorenv.push_back((char *)("HTTP_REFERER="));
+//	server.vectorenv.push_back((char *)NULL);
 	return server.vectorenv;
 	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_NAME=localhost"));
 	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"GATEWAY_INTERFACE=CGI/1.1"));
@@ -102,6 +103,7 @@ std::vector<char *>	addCGIcpy(Server server)
 	server.vectorenvcpy.push_back((char *)("HTTP_ACCEPT=*/*"));
 	server.vectorenvcpy.push_back((char *)("HTTP_ACCEPT_LANGUAGE=en-US,en"));
 	server.vectorenvcpy.push_back((char *)("HTTP_REFERER="));
+//	server.vectorenvcpy.push_back((char *)NULL);
 	return (server.vectorenvcpy);
 }
 
