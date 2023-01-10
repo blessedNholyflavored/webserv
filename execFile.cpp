@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 11:03:05 by jtaravel          #+#    #+#             */
-/*   Updated: 2023/01/09 14:19:13 by jtaravel         ###   ########.fr       */
+/*   Updated: 2023/01/10 11:48:55 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,6 @@ std::string	Server::execFile(std::string file)
 	//cmd[1] = (char *)file.c_str();
 	//cmd[2] = new char[1];
 	cmd[2] = 0;
-	std::cout << "RENTRERRRRRRRRRRRRRRRRRRR" << file <<  std::endl;
 
 	this->vectorenv.push_back((char *)("REQUEST_METHOD=GET"));
 	this->vectorenv.push_back((char *)("REQUEST_METHOD=POST"));
@@ -62,11 +61,6 @@ std::string	Server::execFile(std::string file)
 	std::string res4 = "SCRIPT_FILENAME=" + file;
 	this->vectorenv.push_back((char *)(res4.c_str()));
 	this->vectorenv.push_back((char *)(NULL));
-	if (this->env)
-	{
-		freeTab(this->env);
-		this->env = NULL;
-	}
 	this->env = ft_regroup_envVector(this->vectorenv);
 	std::string index;
 	int frk = fork();
@@ -87,6 +81,8 @@ std::string	Server::execFile(std::string file)
 		freeTab(this->env);
 		this->env = NULL;
 	}
+	if (this->env)
+		freeTab(this->env);
 	std::string str1 = fileToString("lucieCGI");
 	std::string skip = "Content-type: text/html; charset=UTF-8 ";
 	str1 = str1.substr(skip.length(), str1.length());
@@ -98,8 +94,6 @@ std::string	Server::execFile(std::string file)
 
 std::string	Server::execFile_py(std::string file)
 {
-	std::cout << "RENTRERRRRR" << std::endl;
-	std::cerr << "FILEEEEEEEEEEEE" << file << std::endl; 
 	int tmp;
 	std::string recup = file;
 	tmp = open(recup.c_str(), O_RDONLY, 0644);

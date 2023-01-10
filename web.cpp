@@ -89,6 +89,25 @@ std::string	fileToString(std::string loc);
 std::string     intToString(int i);
 int	ParseBufferupl(std::string buffer);
 
+int	checkBuffBoundary(std::string buff)
+{
+	int i = 0;
+	char **recup = ft_split(buff.c_str(), '\r');
+
+	while (recup[i])
+	{
+		std::string cmp = recup[i] + 1;
+		if (cmp.compare(0, 24, "------WebKitFormBoundary") == 0)
+		{
+			freeTab2(recup);
+			return 0;
+		}
+		i++;
+	}
+	freeTab2(recup);
+	return (1);
+}
+
 void	Server::splitString(const char *buf, std::string deli, int fd, int ret, std::string buffer)
 {
 	(void)fd;
@@ -107,8 +126,7 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret, std
 		i++;
 	}
 	arr[i] = str.substr(start, end - start);
-	std::cout << "SPLIT = " << arr[1] << std::endl;
-	if (arr[0].compare(0, 24, "------WebKitFormBoundary") == 0)
+	if (arr[0].compare(0, 24, "------WebKitFormBoundary") == 0 || checkBuffBoundary(buffer) == 0)
 		if (ParseBufferupl(buffer) == 413)
 		{
 			return ;
@@ -207,9 +225,11 @@ void	CreateFile(std::string filepath)
 	// oss << cpy + i;
 	// std::string data(oss.str());
 	// //file << data;
-	std::string conca = "uploads/" + filepath;
+	char *wrt = bufall + i + 1;
+	wrt[ft_strlen(wrt)] = 0;
+	std::string conca = "images/" + filepath;
 	int o = open(conca.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	write(o, bufall + i + 1, 50000);
+	write(o, wrt, 50000);
 }
 
 int	ParseBufferupl(std::string buffer)
@@ -242,10 +262,9 @@ int	ParseBufferupl(std::string buffer)
 	}
 	std::string recup = filename.substr(l, filename.length() - 2);
 	char *test = ft_strdup((char *)recup.c_str());
-	printf("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU = %s\n", test);
 	test[ft_strlen(test) - 2] = 0;
 	recup = test;
-	//free(test);
+	free(test);
 	if (recup.length() > 0)
 	{
 		CreateFile(recup);
@@ -299,7 +318,6 @@ std::string Server::FirstPage(std::string filePath)
 	std::string		path;
 
 
-	std::cerr << "FILEPATHHHHHHHHHHHHHHH: " << filePath << std::endl;
 	if (filePath.find(".php") != std::string::npos)
 	{
 		index = execFile(filePath);
@@ -422,7 +440,6 @@ void	CreateFile(void)
 void	splitRet(std::string str, std::string deli)
 {
 	int start = 0;
-	std::cerr << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>: " << str << std::endl;
         int end = str.find(deli);
         int     i = 0;
         while (end != -1)
@@ -432,7 +449,6 @@ void	splitRet(std::string str, std::string deli)
                 start = end + deli.size();
                 end = str.find(deli, start);
                 i++;
-		std::cerr << "LAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA: " << split[i] << std::endl;
 
         }
         split[i] = str.substr(start, end - start);
@@ -538,7 +554,7 @@ std::string	checkRet(int ret)
 int	Server::recvConnection(int fd)
 {
 	ssize_t	len;
-	char	buff[50000];
+	char	buff[50001];
 
 	if (nbfiles == 76)
 	{
@@ -637,7 +653,10 @@ int	Server::recvConnection(int fd)
 		i = 0;
 		while (recup[i])
 		{
-			recup[i] = ft_strdup(recup[i] + 1);
+			char *str = ft_strdup(recup[i] + 1);
+			free(recup[i]);
+			recup[i] = ft_strdup(str);
+			free(str);
 			if (strncmp(recup[i], "User-Agent", 10) == 0)
 				agent = i;
 			if (strncmp(recup[i], "textToUpload", 12) == 0)
@@ -674,6 +693,8 @@ int	Server::recvConnection(int fd)
 		else
 			wait(NULL);
 		freeTab2(recup);
+		if (this->env)
+			freeTab(this->env);
 		free(cmd[0]);
 		free(cmd[1]);
 		delete [] cmd;

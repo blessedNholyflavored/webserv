@@ -1,6 +1,6 @@
 <!DOCTYPE html>
-<title >webserv's super html page</title>
-
+<head>
+</head>
 <style>
   body {
     min-height: 100vh;
@@ -125,16 +125,18 @@ text-align: center;" >
 
     $fileExtensionsAllowed = ['jpeg','jpg','png']; // These will be the only file extensions allowed 
 
-    $fileName = $_FILES['the_file']['name'];
-    $fileSize = $_FILES['the_file']['size'];
-    $fileTmpName  = $_FILES['the_file']['tmp_name'];
-    $fileType = $_FILES['the_file']['type'];
-    $fileExtension = strtolower(end(explode('.',$fileName)));
-    echo full_path($fileName);
-    echo $_FILES['the_file']['name'];
-    $uploadPath = $uploadDirectory . basename($fileName); 
-    $test = fopen(".test", "w+");
-    fwrite($test, $fileSize);
+    //if (isset($_FILES['the_file']))
+    //{
+   //$fileName = $_FILES['the_file']['name'];
+   // $fileSize = $_FILES['the_file']['size'];
+   //// $fileTmpName  = $_FILES['the_file']['tmp_name'];
+    //$fileType = $_FILES['the_file']['type'];}
+    //$fileExtension = strtolower(end(explode('.',$fileName)));
+    //echo full_path($fileName);
+    //echo $_FILES['the_file']['name'];
+   // $uploadPath = $uploadDirectory . basename($fileName); 
+    //$test = fopen(".test", "w+");
+    //fwrite($test, $fileSize);
    
 
     if (isset($_POST['submit'])) {

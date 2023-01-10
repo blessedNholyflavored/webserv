@@ -146,10 +146,11 @@ text-align: center;" >
 				$test = file_get_contents($tmp);
 				parse_str($test, $POST);
 				//$_POST['textToUpload'] = "lol";
+	if (isset($POST['textToUpload'])){
         $txt = htmlspecialchars($POST['textToUpload']);
         file_put_contents($file, $txt);
         $file = file_get_contents($file, true);
-        echo "<input id=\"read_box\"  type=\"text\" value=\"$file\" readonly>";
+        echo "<input id=\"read_box\"  type=\"text\" value=\"$file\" readonly>";}
         ?>
 		</div>
 	</div>	

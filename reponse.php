@@ -112,7 +112,15 @@ text-align: center;" >
 <p style="font-family: 'Courier New', Courier, monospace, serif; text-align: center; font-size: x-large; font-weight: bold;"> Page qui gere le DELETE mec</p>
 
 <hr>
-	
+    <?php
+                                $file = 'salut.txt';
+                                $tmp = '.tmp';
+                                $test = file_get_contents($tmp);
+                                parse_str($test, $_GET);
+        $txt = htmlspecialchars($_GET['fname']);
+        file_put_contents($file, $txt);
+        $file = file_get_contents($file, true);
+        ?>	
 Bonjour, <?php if (isset($_GET['fname'])){echo htmlspecialchars($_GET['fname']);} ?>.
 Tu as <?php if (isset($_GET['lname'])){echo $_GET['lname'];} ?> ans.
 

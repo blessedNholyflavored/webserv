@@ -62,6 +62,7 @@ std::string	Server::execGET(void)
 	}
 	else
 		wait(NULL);
+	freeTab2(recup);
 	std::string str1 = fileToString("lucieCGI");
 	//std::string skip = "Status: 500 Internal Server Error\n";
 	//skip += "Content-type: text/html; charset=UTF-8 ";
@@ -115,6 +116,8 @@ std::string	Server::execPOST(void)
 	else
 		wait(NULL);
 	freeTab2(recup);
+	if (this->env)
+		freeTab(this->env);
 	std::string str1 = fileToString("lucieCGI");
 	std::string skip = "Content-type: text/html; charset=UTF-8 ";
 	str1 = str1.substr(skip.length(), str1.length());
@@ -170,6 +173,7 @@ std::string	Server::execGETpy(void)
 	}
 	else
 		wait(NULL);
+	freeTab2(recup);
 	std::string str1 = fileToString("lucieCGI");
 	std::string skip = "Content-type:text/html";
 	str1 = str1.substr(skip.length(), str1.length());
