@@ -92,7 +92,7 @@ int	ParseBufferupl(std::string buffer);
 int	checkBuffBoundary2(char *buff)
 {
 	int i = 0;
-	char **recup = ft_split(buff, '\n');
+	char **recup = ft_split(buff, '\r');
 
 	while (recup[i])
 	{
@@ -240,6 +240,7 @@ void	CreateFile(std::string filepath)
 	{
 		if (bufall[i] == '\n')
 			count++;
+		std::cerr << "LLLLEEEFESFVSHDVFHSDBVHJFDB HVFB HVF: " << ft_strlen(bufall) << "\n";
 		if (count == 4)
 			break;
 		i++;
@@ -650,8 +651,8 @@ int	Server::recvConnection(int fd)
 //		char str3[] = "bad version http";
 //		write(fd, str3, ft_strlen(str3));
 //	}
-	if (lenall > 50000)
-		ret = 413;
+	//if (lenall > 50000)
+	//	ret = 413;
 	std::cerr << "111111111111111111111111111111: " << ret << std::endl;
 	std::cerr << "222222222222222222222222222222: " << lenall << std::endl;
 	if (!ret || ret == 200)
