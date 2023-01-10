@@ -14,6 +14,8 @@
 # include "functions.h"
 #include <sys/types.h>
 #include <sys/stat.h>
+#include <sys/socket.h>
+#include <netinet/in.h>
 # define WHITESPACES "; \t"
 
 
@@ -34,7 +36,8 @@ class Server
 	
 	std::string					name_server;
 	std::vector<std::string>	vectorname_server;
-	
+	struct sockaddr_in addrstruct;
+
 	std::string					root;
 	std::string					cwd;
 	std::vector<std::string>	vectorroot;

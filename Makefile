@@ -13,7 +13,7 @@ SRCS		=	main.cpp \
 
 OBJS		=	$(SRCS:.cpp=.o)
 CC			=	c++
-FLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98
+FLAGS		=	-Wall -Wextra -Werror -g3 -std=c++98 -fsanitize=address
 INC_PATH	=	-I./incs
 COMPILE		=	$(CC) $(FLAGS) $(INC_PATH)
 

@@ -64,6 +64,8 @@ std::string	Server::execGET(void)
 		wait(NULL);
 	freeTab2(recup);
 	std::string str1 = fileToString("lucieCGI");
+	close(tmp);
+	unlink(".tmp");
 	//std::string skip = "Status: 500 Internal Server Error\n";
 	//skip += "Content-type: text/html; charset=UTF-8 ";
 	//str1 = str1.substr(skip.length(), str1.length());

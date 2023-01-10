@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 11:03:05 by jtaravel          #+#    #+#             */
-/*   Updated: 2023/01/10 11:48:55 by jtaravel         ###   ########.fr       */
+/*   Updated: 2023/01/10 15:06:59 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -88,6 +88,8 @@ std::string	Server::execFile(std::string file)
 	str1 = str1.substr(skip.length(), str1.length());
 	free(cmd[0]);
 	free(cmd[1]);
+	close(tmp);
+	unlink(".tmp");
 	delete [] cmd;
 	return str1;
 }

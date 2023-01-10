@@ -16,7 +16,7 @@
 #include <cmath>
 
 
-#define MAX_EVENTS 5
+#define MAX_EVENTS 4096
 
 static int error = 0;
 //static std::string  newIndex = "";
@@ -230,6 +230,7 @@ void	CreateFile(std::string filepath)
 	std::string conca = "images/" + filepath;
 	int o = open(conca.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	write(o, wrt, 50000);
+	close(o);
 }
 
 int	ParseBufferupl(std::string buffer)
@@ -345,9 +346,7 @@ std::string Server::FirstPage(std::string filePath)
 		std::ostringstream oss;
 		oss << fin.rdbuf();
 		std::string data(oss.str());
-		int g = open("g.html", O_CREAT | O_WRONLY | O_TRUNC, 0644);
 		index += data;
-		write(g, index.c_str(), index.length());
 	}
 	else
 	{
@@ -393,6 +392,7 @@ std::string Server::FirstPage(std::string filePath)
 	//index += "<script src=\"upload.js\"></script>\n\n";
 	index += "</body>";
 	index += "</html>";
+	//findex.close();
 	return index;
 }
 
@@ -490,6 +490,8 @@ void	splitRet(std::string str, std::string deli)
 // 	return ;
 // }
 
+#include <arpa/inet.h>
+
 int	Server::init_serv(void)
 {
 	struct	sockaddr_in address;
@@ -503,10 +505,11 @@ int	Server::init_serv(void)
 	}
 	if (setsockopt(this->server_fd, SOL_SOCKET, SO_REUSEPORT, &on, sizeof(int)) == -1)
 		return (close(this->server_fd), perror("Setsockopt failed"), -1);
-	if (fcntl(server_fd, F_SETFL, O_NONBLOCK) == -1)
+	if (fcntl(this->server_fd, F_SETFL, O_NONBLOCK) == -1)
 		return (close(this->server_fd), perror("Fcntl failed"), -1);
 	address.sin_family= AF_INET;
-	address.sin_addr.s_addr = INADDR_ANY;
+	//address.sin_addr.s_addr = INADDR_ANY;
+	address.sin_addr.s_addr = inet_addr("127.0.0.1");
 	address.sin_port = htons(this->port);
 	memset(address.sin_zero, '\0', sizeof address.sin_zero);
 	if (bind(this->server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
@@ -520,16 +523,18 @@ int	Server::init_serv(void)
 		return (1);
 	}
 	event.events = EPOLLIN;
-	event.data.fd = this->server_fd;;
+	event.data.fd = this->server_fd;
+	std::cerr << "OOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOOO: " << event.data.fd << "\n";
+	this->addrstruct = address;
 	epoll_ctl(this->epoll_fd, EPOLL_CTL_ADD, this->server_fd, &event);
 	return (0);
 }
 
 int	Server::newConnection(struct epoll_event event, int fd)
 {
-	fd = accept(this->server_fd, NULL, NULL);
+	fd = accept(fd, NULL, NULL);
 	if (fd < 0)
-		std::cerr << "Error in accept new connec" << std::endl;
+		return (close(this->server_fd), perror("error in acept new connec"), -1);
 	if (fcntl(fd, F_SETFL, O_NONBLOCK) == -1)
 		return (close(fd), perror("Fcntl failed"), -1);
 	event.events = EPOLLIN;
@@ -550,6 +555,20 @@ std::string	checkRet(int ret)
 	else
 		return str;
 }
+
+int	checkConnection(char buff[50001])
+{
+	splitRet(buff, "\n");
+	int i = 0;
+	for (i = 0; i < 50001; i++)
+	{
+		if (split[i].length() > 0 && split[i].compare(0, 17, "Connection: close") == 0)
+			return (1);
+	}
+	return 0;
+}
+
+
 
 int	Server::recvConnection(int fd)
 {
@@ -706,8 +725,10 @@ int	Server::recvConnection(int fd)
 			error = 413;
 		}
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
-		//unlink("lucieCGI");
-		//unlink(".tmp");
+		//close(lucieCGI);
+		close(tmp);
+		unlink("lucieCGI");
+		unlink(".tmp");
 		this->vectorenv.clear();
 		this->vectorenv = this->vectorenvcpy;
 		send(fd, header.c_str(), header.length(), 0);
@@ -732,6 +753,8 @@ int	Server::recvConnection(int fd)
 			str1 = fileToString("lucieCGI");
 			std::string skip = "Content-type: text/html; charset=UTF-8 ";
 			str1 = str1.substr(skip.length(), str1.length());
+			//close(lucieCGI);
+			unlink("lucieCGI");
 			error = 0;
 		}
 		else if (error == 53)
@@ -740,6 +763,8 @@ int	Server::recvConnection(int fd)
 			std::string skip = "Status: 500 Internal Server Error\n";
 			skip += "Content-type: text/html; charset=UTF-8 ";
 			str1 = str1.substr(skip.length(), str1.length());
+			//close(lucieCGI);
+			unlink("lucieCGI");
 			error = 0;
 		}
 		else
@@ -751,6 +776,11 @@ int	Server::recvConnection(int fd)
 
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		send(fd, header.c_str(), header.length(), 0);
+	}
+	if (checkConnection(buff))
+	{
+		std::cerr << "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL\n";
+		//close(fd);
 	}
 	return (0);
 }
@@ -956,7 +986,7 @@ void	StartServer(Server server)
 				//freeTab(array[i].env);
 				return ;
 			}
-			event_count = epoll_wait(array[i].epoll_fd, events, 5, 1000);
+			event_count = epoll_wait(array[i].epoll_fd, events, MAX_EVENTS, 5000);
 			if (event_count < 0)
 			{
 				fprintf(stderr, "error in epoll_wait\n");
