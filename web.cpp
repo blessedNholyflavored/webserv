@@ -89,6 +89,26 @@ std::string	fileToString(std::string loc);
 std::string     intToString(int i);
 int	ParseBufferupl(std::string buffer);
 
+int	checkBuffBoundary2(char *buff)
+{
+	int i = 0;
+	char **recup = ft_split(buff, '\n');
+
+	while (recup[i])
+	{
+		std::string cmp = recup[i];
+		if (cmp.compare(0, 24, "------WebKitFormBoundary") == 0)
+		{
+			freeTab2(recup);
+			std::cerr << "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII: " << i << "\n";
+			return i + 3;
+		}
+		i++;
+	}
+	freeTab2(recup);
+	return (1);
+}
+
 int	checkBuffBoundary(std::string buff)
 {
 	int i = 0;
@@ -127,10 +147,13 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret, std
 	}
 	arr[i] = str.substr(start, end - start);
 	if (arr[0].compare(0, 24, "------WebKitFormBoundary") == 0 || checkBuffBoundary(buffer) == 0)
+	{
+	std::cerr << "??????????????????????????????????????????????????????\n";	
 		if (ParseBufferupl(buffer) == 413)
 		{
 			return ;
 		}
+	}
 //	std::cout << "IN SPLIT: " << str.substr(start, end - start) << std::endl;
 	if (arr[1].compare("/") != 0 && arr[0].compare("GET") == 0 && arr[1].compare("/html/text.php")
 			&& arr[1].compare("/html/galerie.php"))
@@ -198,8 +221,6 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret, std
 	 //if (this->newIndex == "./" || this->newIndex == "/" || this->newIndex == "/favicon.ico")
 	if (arr[1].length() <= 1 || this->newIndex == "/favicon.ico")
 			this->newIndex = "./html/home.html";
-	std::cerr << "kgdfvbdfvsdffvsfvrfrfdffffffffffffffffffffffffffffffffffffffffff: " << this->newIndex << "\n";
-	std::cerr << "dedededededededede: " << arr[1] << "\n";
 	//iciicicicicici
 	//std::cerr << "kgdfvbdfvsdffvsfvrfrfdvrfvifffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff: " << error << "\n";
 }
@@ -227,11 +248,12 @@ void	CreateFile(std::string filepath)
 	// oss << cpy + i;
 	// std::string data(oss.str());
 	// //file << data;
+	//int i = checkBuffBoundary(bufall);
 	char *wrt = bufall + i + 1;
 	wrt[ft_strlen(wrt)] = 0;
 	std::string conca = "images/" + filepath;
 	int o = open(conca.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	write(o, wrt, 50000);
+	write(o, wrt, lenall);
 	close(o);
 }
 
@@ -247,7 +269,7 @@ int	ParseBufferupl(std::string buffer)
 	std::string filename;
 	int i = 0;
 	int	l = 0;
-	for (i = 0; i < 250000; i++)
+	for (i = 0; i < 50000; i++)
 	{
 		if (split[i].length() > 0 && split[i].compare(0, 20, "Content-Disposition:") == 0)
 		{
@@ -423,7 +445,7 @@ void	CreateFile(void)
 	std::ofstream file(conca.c_str());
 	newfile[nbfiles] = "Uploads/" + newfile[nbfiles];
 	int i = 0;
-	for (i = 0; i < 250000; i++)
+	for (i = 0; i < 50000; i++)
 	{
 		if (split[i].compare(0, 13, "Content-Type:") == 0)
 		{
@@ -628,11 +650,14 @@ int	Server::recvConnection(int fd)
 //		char str3[] = "bad version http";
 //		write(fd, str3, ft_strlen(str3));
 //	}
-	//std::cerr << "111111111111111111111111111111: " << error << std::endl;
-	CheckRequest(buff, fd, ret);
+	if (lenall > 50000)
+		ret = 413;
+	std::cerr << "111111111111111111111111111111: " << ret << std::endl;
+	std::cerr << "222222222222222222222222222222: " << lenall << std::endl;
+	if (!ret || ret == 200)
+		CheckRequest(buff, fd, ret);
 	if (!ret)
 		ret = error;
-	//std::cerr << "222222222222222222222222222222: " << error << std::endl;
 	// else if (request->getRetCode() == 404)
 	// {
 	// 	printf("%d\n", error);
@@ -640,14 +665,17 @@ int	Server::recvConnection(int fd)
 	// 	write(fd, str3, strlen(str3));
 	// }
 	//std::cerr << "RETTTTTT: " << ret << "\n";
-	if (this->newIndex.length() > 1 && ret && ret != 200)
+	if (ret && ret != 200)
 	{
+		std::cerr << "LOLLLLLLL\n";
 		std::string header = recupHeader(ret, this->newIndex);
 		if(send(fd, header.c_str(), header.length(), 0) <= 0)
 		{
 			close(fd);
-			return (0);
+			//return (0);
 		}
+		error = 0;
+		ret = 0;
 	}
 	else if (error == 999)
 	{
@@ -791,6 +819,7 @@ int	Server::recvConnection(int fd)
 		}
 		else if (error == 53)
 		{
+			std::cerr << "PPPPPPPPPPPPPPPSDDDDDDDDDDDSDSDSDSDSDSDSDSDSDDS\n";
 			str1 = fileToString("lucieCGI");
 			std::string skip = "Status: 500 Internal Server Error\n";
 			skip += "Content-type: text/html; charset=UTF-8 ";
@@ -805,12 +834,11 @@ int	Server::recvConnection(int fd)
 		{
 			error = 413;
 		}
-
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
 		if(send(fd, header.c_str(), header.length(), 0) <= 0)
 		{
-			close(fd);
-			return (0);
+			//close(fd);
+	//		return (0);
 		}
 	}
 	if (checkConnection(buff))

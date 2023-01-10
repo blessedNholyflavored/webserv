@@ -20,14 +20,24 @@
 #include "functions.h"
 #include <cmath>
 
+int	alnum(std::string str)
+{
+	for (int i = 0; str[i]; i++)
+	{
+		if (!isascii(str[i]))
+			return (0);
+	}
+	return  (1);
+}
+
 int	Request::parsRequest(std::string str, std::vector<Location> &location, Server server)
 {
 	std::string method;
 
-	if (str.compare(0, 24, "------WebKitFormBoundary") == 0 || checkBuffBoundary(str) == 0 || !str[0])
+	if (str.compare(0, 24, "------WebKitFormBoundary") == 0 || checkBuffBoundary(str) == 0 || !alnum(str))
 	{
-			std::cerr << "LOL JULIEN T SUPPER FUN " << str << std::endl;
-		return (0);
+		std::cerr << "LOL JULIEN T SUPPER FUN " << str << std::endl;
+		return (200);
 	}
 	size_t i = 0;
 	for (; str[i] != ' '; i++){
