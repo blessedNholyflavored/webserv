@@ -392,7 +392,7 @@ std::string Server::FirstPage(std::string filePath)
 	//index += "<script src=\"upload.js\"></script>\n\n";
 	index += "</body>";
 	index += "</html>";
-	//findex.close();
+	findex.close();
 	return index;
 }
 
@@ -508,8 +508,8 @@ int	Server::init_serv(void)
 	if (fcntl(this->server_fd, F_SETFL, O_NONBLOCK) == -1)
 		return (close(this->server_fd), perror("Fcntl failed"), -1);
 	address.sin_family= AF_INET;
-	//address.sin_addr.s_addr = INADDR_ANY;
-	address.sin_addr.s_addr = inet_addr("127.0.0.1");
+	address.sin_addr.s_addr = INADDR_ANY;
+	//address.sin_addr.s_addr = inet_addr("127.0.0.1");
 	address.sin_port = htons(this->port);
 	memset(address.sin_zero, '\0', sizeof address.sin_zero);
 	if (bind(this->server_fd, (struct sockaddr *)&address, sizeof(address)) < 0)
@@ -778,10 +778,7 @@ int	Server::recvConnection(int fd)
 		send(fd, header.c_str(), header.length(), 0);
 	}
 	if (checkConnection(buff))
-	{
-		std::cerr << "LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLL\n";
-		//close(fd);
-	}
+		close(fd);
 	return (0);
 }
 
@@ -986,7 +983,7 @@ void	StartServer(Server server)
 				//freeTab(array[i].env);
 				return ;
 			}
-			event_count = epoll_wait(array[i].epoll_fd, events, MAX_EVENTS, 5000);
+			event_count = epoll_wait(array[i].epoll_fd, events, 5, 1000);
 			if (event_count < 0)
 			{
 				fprintf(stderr, "error in epoll_wait\n");

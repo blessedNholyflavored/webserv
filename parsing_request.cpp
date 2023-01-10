@@ -118,8 +118,8 @@ int	Request::parsRequest(std::string str, std::vector<Location> &location, Serve
 			return 405;
 		}
 	}
-	//close(fd1);
-	//close(fd2);
+	close(fd1);
+	close(fd2);
 	return (200);
 	
 	/*if (method == "GET"){
