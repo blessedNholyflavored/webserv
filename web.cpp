@@ -196,8 +196,10 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret, std
 	else if (arr[0].compare("DELETE") == 0 && ret != 405)
 		unlink(arr[1].c_str() + 1);
 	 //if (this->newIndex == "./" || this->newIndex == "/" || this->newIndex == "/favicon.ico")
-	if (this->newIndex.length() <= 1 || this->newIndex == "/favicon.ico")
+	if (arr[1].length() <= 1 || this->newIndex == "/favicon.ico")
 			this->newIndex = "./html/home.html";
+	std::cerr << "kgdfvbdfvsdffvsfvrfrfdffffffffffffffffffffffffffffffffffffffffff: " << this->newIndex << "\n";
+	std::cerr << "dedededededededede: " << arr[1] << "\n";
 	//iciicicicicici
 	//std::cerr << "kgdfvbdfvsdffvsfvrfrfdvrfvifffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff: " << error << "\n";
 }
@@ -235,7 +237,7 @@ void	CreateFile(std::string filepath)
 
 int	ParseBufferupl(std::string buffer)
 {
-
+	std::cerr << "LENALLLLLLLLLLLLLLLLL" << lenall << "\n";
 	if (lenall > 50000)
 	{
 		 error = 413;
@@ -329,7 +331,7 @@ std::string Server::FirstPage(std::string filePath)
 	else if (filePath.find(".py") != std::string::npos)
 	{
 		std::cerr <<" SJOJOIHODW"  << std::endl;
-		index = execFile_py(filePath);
+		index = execGETpy();
 		index += "</body>";
 		index += "</html>";
 		return index;
@@ -583,7 +585,11 @@ int	Server::recvConnection(int fd)
 			error = 413;
 		}
 		std::string header = "HTTP/1.1 404 NOT FOUND\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(this->newIndex.length()) + "\n\n" + this->newIndex + "\n";
-		send(fd, header.c_str(), header.length(), 0);
+		if(send(fd, header.c_str(), header.length(), 0) <= 0)
+		{
+			close(fd);
+			return (0);
+		}
 		nbfiles = 0;
 	}
 	if (nbfiles == 666)
@@ -593,7 +599,11 @@ int	Server::recvConnection(int fd)
 			error = 413;
 		}
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(this->newIndex.length()) + "\n\n" + this->newIndex + "\n";
-		send(fd, header.c_str(), header.length(), 0);
+		if(send(fd, header.c_str(), header.length(), 0) <= 0)
+		{
+			close(fd);
+			return (0);
+		}
 		nbfiles = 0;
 	}
 	len = recv(fd, buff, 50001, 0);
@@ -632,10 +642,12 @@ int	Server::recvConnection(int fd)
 	//std::cerr << "RETTTTTT: " << ret << "\n";
 	if (this->newIndex.length() > 1 && ret && ret != 200)
 	{
-	std::cerr << " EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE: " << ret << std::endl;
 		std::string header = recupHeader(ret, this->newIndex);
-		send(fd, header.c_str(), header.length(), 0);
-		//return 0;
+		if(send(fd, header.c_str(), header.length(), 0) <= 0)
+		{
+			close(fd);
+			return (0);
+		}
 	}
 	else if (error == 999)
 	{
@@ -643,14 +655,22 @@ int	Server::recvConnection(int fd)
 		std::string str1 = execPOST();
 		std::string header;
 		header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
-		send(fd, header.c_str(), header.length(), 0);
+		if(send(fd, header.c_str(), header.length(), 0) <= 0)
+		{
+			close(fd);
+			return (0);
+		}	
 	}
 	else if (error == 63)
 	{
 		std::string str1 = execGETpy();
 		std::string header;
 		header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
-		send(fd, header.c_str(), header.length(), 0);
+		if(send(fd, header.c_str(), header.length(), 0) <= 0)
+		{
+			close(fd);
+			return (0);
+		}
 	}
 	else if (error == 998)
 	{
@@ -731,19 +751,31 @@ int	Server::recvConnection(int fd)
 		unlink(".tmp");
 		this->vectorenv.clear();
 		this->vectorenv = this->vectorenvcpy;
-		send(fd, header.c_str(), header.length(), 0);
+		if(send(fd, header.c_str(), header.length(), 0) <= 0)
+		{
+			close(fd);
+			return (0);
+		}
 	}
 	else if (error == -99)
 	{
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(this->newIndex.length()) + "\n\n" + this->newIndex + "\n";
-		send(fd, header.c_str(), header.length(), 0);
+		if(send(fd, header.c_str(), header.length(), 0) <= 0)
+		{
+			close(fd);
+			return (0);
+		}
 		error = 0;
 	}
 	else if (error == -7)
 	{
 		std::string str1 = basicsummary(this->cwd);
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
-		send(fd, header.c_str(), header.length(), 0);
+		if(send(fd, header.c_str(), header.length(), 0) <= 0)
+		{
+			close(fd);
+			return (0);
+		}
 	}
 	else
 	{
@@ -775,7 +807,11 @@ int	Server::recvConnection(int fd)
 		}
 
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
-		send(fd, header.c_str(), header.length(), 0);
+		if(send(fd, header.c_str(), header.length(), 0) <= 0)
+		{
+			close(fd);
+			return (0);
+		}
 	}
 	if (checkConnection(buff))
 		close(fd);
@@ -793,7 +829,11 @@ int	Server::sendConnection(int fd)
 			error = 413;
 		}
 		std::string header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
-		send(fd, header.c_str(), header.length(), 0);
+		if(send(fd, header.c_str(), header.length(), 0) <= 0)
+		{
+			close(fd);
+			return (0);
+		}
 	}
 	a = 1;
 	return (0);

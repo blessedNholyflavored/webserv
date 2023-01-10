@@ -7,9 +7,6 @@
     background: #eceffd;
 }
 
-
-
-
 .menu1 a:hover{
     background-color:#C8FFD4;
 }
@@ -102,9 +99,9 @@ text-align: center;" >
         <li style="display: inline; list-style: none;"><a href="/html/text.php" style=" display:inline-block; margin: 0 30px; color: #B1AFFF; font-weight: 800; text-align: center; padding: 14px 16px; text-decoration: none;">text</a></li>
         <li style="display: inline; list-style: none;"><a href="/html/cookies.html" style=" display:inline-block; margin: 0 30px; color: #B1AFFF; font-weight: 800; text-align: center; padding: 14px 16px; text-decoration: none;">Cookies</a></li>
         <li style="display: inline; list-style: none;"><a href="/html/upload.php" style=" display:inline-block; margin: 0 30px; color: #B1AFFF; font-weight: 800; text-align: center; padding: 14px 16px; text-decoration: none;">upload img</a></li>
+        <li style="display: inline; list-style: none;"><a href="/html/py/post_py.html" style=" display:inline-block; margin: 0 30px; color: #B1AFFF; font-weight: 800; text-align: center; padding: 14px 16px; text-decoration: none;">bonus cgi</a></li>
     </ul>
-    </div>
-
+  </div>
 <hr>
 
 

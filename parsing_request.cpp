@@ -20,11 +20,15 @@
 #include "functions.h"
 #include <cmath>
 
-int	Request::parsRequest(std::string str, std::vector<Location> &location, Server server){
+int	Request::parsRequest(std::string str, std::vector<Location> &location, Server server)
+{
 	std::string method;
 
-	if (str.compare(0, 24, "------WebKitFormBoundary") == 0)
+	if (str.compare(0, 24, "------WebKitFormBoundary") == 0 || checkBuffBoundary(str) == 0 || !str[0])
+	{
+			std::cerr << "LOL JULIEN T SUPPER FUN " << str << std::endl;
 		return (0);
+	}
 	size_t i = 0;
 	for (; str[i] != ' '; i++){
 		method.push_back(str[i]);

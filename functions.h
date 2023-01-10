@@ -43,5 +43,6 @@ void	freeTab(char **tab);
 void	freeTab2(char **tab);
 void	splitRet(std::string str, std::string deli);
 std::string	splitRetVal(std::string str, std::string deli);
+int	checkBuffBoundary(std::string buff);
 
 #endif
