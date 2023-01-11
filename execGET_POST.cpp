@@ -139,11 +139,8 @@ std::string	Server::execGETpy(void)
 	this->vectorenv.push_back((char *)"SCRIPT_NAME=./html/py/post.py");
 	this->vectorenv.push_back((char *)"SCRIPT_FILENAME=./html/py/post.py");
 	char	**cmd = new char*[3];
-	cmd[0] = new char[16];
-	cmd[0] = (char *)"/usr/bin/python";
-	cmd[1] = new char[13];
-	cmd[1] = (char *)("./html/py/post.py");
-	cmd[2] = new char[1];
+	cmd[0] = strdup("/usr/bin/python");
+	cmd[1] = strdup("./html/py/post.py");
 	cmd[2] = 0;
 	int i = 0 ;
 	char **recup = ft_split(this->newIndex.c_str(), '?');
@@ -176,8 +173,14 @@ std::string	Server::execGETpy(void)
 	else
 		wait(NULL);
 	freeTab2(recup);
+	if (this->env)
+		freeTab(this->env);
 	std::string str1 = fileToString("lucieCGI");
 	std::string skip = "Content-type:text/html";
+	free(cmd[0]);
+	free(cmd[1]);
+	close(tmp);
+	unlink(".tmp");
 	str1 = str1.substr(skip.length(), str1.length());
 	delete [] cmd;
 	return (str1);

@@ -35,10 +35,7 @@ int	Request::parsRequest(std::string str, std::vector<Location> &location, Serve
 	std::string method;
 
 	if (str.compare(0, 24, "------WebKitFormBoundary") == 0 || checkBuffBoundary(str) == 0 || !alnum(str))
-	{
-		std::cerr << "LOL JULIEN T SUPPER FUN " << str << std::endl;
 		return (200);
-	}
 	size_t i = 0;
 	for (; str[i] != ' '; i++){
 		method.push_back(str[i]);

@@ -6,7 +6,7 @@
 /*   By: jtaravel <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/01/04 11:03:05 by jtaravel          #+#    #+#             */
-/*   Updated: 2023/01/10 15:06:59 by jtaravel         ###   ########.fr       */
+/*   Updated: 2023/01/11 11:36:22 by jtaravel         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,28 +36,18 @@ std::string	Server::execFile(std::string file)
 	char	**cmd = new char*[3];
 	cmd[0] = strdup("/usr/bin/php-cgi");
 	cmd[1] = strdup(file.c_str());
-	//cmd[0] = (char *)(malloc(sizeof(char) * 16));
-	//cmd[0] = (char *)"/usr/bin/php-cgi";
-	//cmd[1] = (char *)(malloc(sizeof(char) * (file.length() + 1)));
-	//cmd[1] = new char[file.length()];
-	//cmd[1] = (char *)file.c_str();
-	//cmd[2] = new char[1];
 	cmd[2] = 0;
 
 	this->vectorenv.push_back((char *)("REQUEST_METHOD=GET"));
 	this->vectorenv.push_back((char *)("REQUEST_METHOD=POST"));
 	std::string res = "PATH_INFO=" + file;
 	this->vectorenv.push_back((char *)(res.c_str()));
-//	res.clear();
 	std::string res1 = "PATH_TRANSLATED=" + file;
 	this->vectorenv.push_back((char *)(res1.c_str()));
-//	res.clear();
 	std::string res2 = "PATH_NAME=" + file;
 	this->vectorenv.push_back((char *)(res2.c_str()));
-//	res.clear();
 	std::string res3 = "SCRIPT_NAME=" + file;
 	this->vectorenv.push_back((char *)(res3.c_str()));
-//	res.clear();
 	std::string res4 = "SCRIPT_FILENAME=" + file;
 	this->vectorenv.push_back((char *)(res4.c_str()));
 	this->vectorenv.push_back((char *)(NULL));
@@ -144,7 +134,6 @@ std::string	Server::execFile_py(std::string file)
 	std::string str1 = fileToString("lucieCGI");
 	std::string skip = "Content-type: text/html; charset=UTF-8 ";
 	str1 = str1.substr(skip.length(), str1.length());
-	std::cerr <<" SJOJOIHODW" << str1 << std::endl;
 	delete [] cmd;
 	return str1;
 }

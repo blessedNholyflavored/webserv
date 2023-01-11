@@ -91,22 +91,29 @@ int	ParseBufferupl(std::string buffer);
 
 int	checkBuffBoundary2(char *buff)
 {
-	int i = 0;
+	std::string all = buff;
+
+	std::size_t found = all.find("------WebKitFormBoundary");
+	if (found != std::string::npos)
+		return (found);
+	
+	/*int i = 0;
 	char **recup = ft_split(buff, '\r');
 
 	while (recup[i])
 	{
-		std::string cmp = recup[i];
+		std::string cmp = recup[i] + 1;
 		if (cmp.compare(0, 24, "------WebKitFormBoundary") == 0)
 		{
+			std::cerr << "CCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCCC: " << cmp << "\n";
+			std::cerr << "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII: " << i << "\n";
 			freeTab2(recup);
-			std::cerr << "IIIIIIIIIIIIIIIIIIIIIIIIIIIIIIIII: " << i << "\n";
-			return i + 3;
+			return i;
 		}
 		i++;
-	}
-	freeTab2(recup);
-	return (1);
+	}*/
+	//freeTab2(recup);
+	return (0);
 }
 
 int	checkBuffBoundary(std::string buff)
@@ -146,7 +153,7 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret, std
 		i++;
 	}
 	arr[i] = str.substr(start, end - start);
-	if (arr[0].compare(0, 24, "------WebKitFormBoundary") == 0 || checkBuffBoundary(buffer) == 0)
+	if ((arr[0].compare(0, 24, "------WebKitFormBoundary") == 0 || checkBuffBoundary(buffer) == 0) && error != 888 && lenall)
 	{
 	std::cerr << "??????????????????????????????????????????????????????\n";	
 		if (ParseBufferupl(buffer) == 413)
@@ -176,9 +183,9 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret, std
 			if (arr[1].compare(0, 12, "/reponse.php") == 0
 			|| arr[1].compare(0, 17, "/html/reponse.php") == 0)
 				error = 999;
-			if (arr[0].compare("POST") && arr[1].compare(0, 21, "/html/upload_img.php") == 0)
+			else if (arr[0].compare("POST") && arr[1].compare(0, 21, "/html/upload_img.php") == 0)
 				error = 996;
-			if (this->loc.getIndex().length() == 0 && this->loc.getAuto() == 1)
+			else if (this->loc.getIndex().length() == 0 && this->loc.getAuto() == 1)
 				error = -7;
 
 			//error = 404;
@@ -217,12 +224,16 @@ void	Server::splitString(const char *buf, std::string deli, int fd, int ret, std
 	}
 
 	else if (arr[0].compare("DELETE") == 0 && ret != 405)
+	{
 		unlink(arr[1].c_str() + 1);
+		//this->newIndex = arr[1].c_str() + 1;
+		error = 888;
+	}
 	 //if (this->newIndex == "./" || this->newIndex == "/" || this->newIndex == "/favicon.ico")
 	if (arr[1].length() <= 1 || this->newIndex == "/favicon.ico")
 			this->newIndex = "./html/home.html";
 	//iciicicicicici
-	//std::cerr << "kgdfvbdfvsdffvsfvrfrfdvrfvifffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff: " << error << "\n";
+	std::cerr << "kgdfvbdfvsdffvsfvrfrfdvrfvifffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff: " << error << "\n";
 }
 
 void	CreateFile(std::string filepath)
@@ -234,13 +245,12 @@ void	CreateFile(std::string filepath)
 	// std::ofstream file;
 	// file.open(conca.c_str());
 	// filepath = "uploads/" + filepath;
-	int i = 0;
+	int i = checkBuffBoundary2(bufall);
 	int count = 0;
 	while (bufall[i])
 	{
 		if (bufall[i] == '\n')
 			count++;
-		std::cerr << "LLLLEEEFESFVSHDVFHSDBVHJFDB HVFB HVF: " << ft_strlen(bufall) << "\n";
 		if (count == 4)
 			break;
 		i++;
@@ -253,7 +263,13 @@ void	CreateFile(std::string filepath)
 	char *wrt = bufall + i + 1;
 	wrt[ft_strlen(wrt)] = 0;
 	std::string conca = "images/" + filepath;
-	int o = open(conca.c_str(), O_CREAT | O_WRONLY | O_TRUNC, 0644);
+	int check = open(conca.c_str(), O_RDONLY, 0644);
+	if (check >= 0)
+	{
+		close(check);
+		return;
+	}
+	int o = open(conca.c_str(), O_CREAT | O_WRONLY, 0644);
 	write(o, wrt, lenall);
 	close(o);
 }
@@ -261,7 +277,7 @@ void	CreateFile(std::string filepath)
 int	ParseBufferupl(std::string buffer)
 {
 	std::cerr << "LENALLLLLLLLLLLLLLLLL" << lenall << "\n";
-	if (lenall > 50000)
+	if (lenall > 50000 || error == 888)
 	{
 		 error = 413;
 		 return (413);
@@ -680,7 +696,7 @@ int	Server::recvConnection(int fd)
 	}
 	else if (error == 999)
 	{
-			
+		std::cerr << "HERRRRRE\n";	
 		std::string str1 = execPOST();
 		std::string header;
 		header = "HTTP/1.1 200 OK\nContent-type: text/html; charset=UTF-8\nContent-Length: " + intToString(str1.length()) + "\n\n" + str1 + "\n";
@@ -806,6 +822,11 @@ int	Server::recvConnection(int fd)
 			return (0);
 		}
 	}
+	/*else if (error == 888)
+	{
+		std::cerr << "JKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK\n";
+		unlink(this->newIndex.c_str());
+	}*/
 	else
 	{
 		std::string str1;
