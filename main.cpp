@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.cpp                                           :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lkhamlac <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/01/11 15:33:16 by lkhamlac          #+#    #+#             */
+/*   Updated: 2023/01/11 15:33:17 by lkhamlac         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 # include <iostream>
 # include <fstream>
 # include <sstream>
@@ -6,11 +18,9 @@
 # include <unistd.h>
 #include <vector>
 # define WHITESPACES "; \t"
-#include "server.hpp"
-#include "inc.hpp"
-#include "functions.h"
-
-
+#include "includes/server.hpp"
+#include "includes/inc.hpp"
+#include "includes/functions.h"
 
 std::string res[4096];
 
@@ -55,7 +65,6 @@ std::string get_file( std::string file)
 	return contenu;
 }
 
-
 int    parsExt(char *str)
 {
     std::string cpy(str);
@@ -77,18 +86,7 @@ std::vector<char *>	addCGI(Server server)
 	server.vectorenv.push_back((char *)("HTTP_ACCEPT=*/*"));
 	server.vectorenv.push_back((char *)("HTTP_ACCEPT_LANGUAGE=en-US,en"));
 	server.vectorenv.push_back((char *)("HTTP_REFERER="));
-//	server.vectorenv.push_back((char *)NULL);
 	return server.vectorenv;
-	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_NAME=localhost"));
-	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"GATEWAY_INTERFACE=CGI/1.1"));
-	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_PROTOCOL=HTPP/1.1"));
-	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"SERVER_PORT=9000"));
-	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"REQUEST_METHOD=POST"));
-	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"CONTENT_TYPE=application/x-www-form-urlencoded;charset=utf-8"));
-	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"REDIRECT_STATUS=200"));
-	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"HTTP_ACCEPT=*/*"));
-	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"HTTP_ACCEPT_LANGUAGE=en-US,en"));
-	//ft_lstadd_back(&server.lst, ft_lstnew(NULL, NULL, (char *)"HTTP_REFERER="));
 }
 
 std::vector<char *>	addCGIcpy(Server server)
@@ -103,7 +101,6 @@ std::vector<char *>	addCGIcpy(Server server)
 	server.vectorenvcpy.push_back((char *)("HTTP_ACCEPT=*/*"));
 	server.vectorenvcpy.push_back((char *)("HTTP_ACCEPT_LANGUAGE=en-US,en"));
 	server.vectorenvcpy.push_back((char *)("HTTP_REFERER="));
-//	server.vectorenvcpy.push_back((char *)NULL);
 	return (server.vectorenvcpy);
 }
 
@@ -153,17 +150,12 @@ int    main(int ac, char **av, char **env)
 		std::cerr << "Parsing error in cong file" << std::endl;
         return (0);
 	}
-    	//std::vector<char *> tmp;
     	server.cwd = recupCWD(env, server.cwd);
     	server.vectorenv = init_vectorenv(env, server.vectorenv);
     	server.vectorenvcpy = init_vectorenv(env, server.vectorenvcpy);
-	//server.lst = init_lst(env, server.lst);
-	server.vectorenv = addCGI(server);
-	server.vectorenvcpy = addCGIcpy(server);
-	/*std::vector<char *>::iterator it = server.vectorenv.begin();
-	for (; it != server.vectorenv.end(); it++)
-		std::cerr << "vec: " << *it << std::endl;*/
-	StartServer(server);
+		server.vectorenv = addCGI(server);
+		server.vectorenvcpy = addCGIcpy(server);
+		StartServer(server);
 	
     return (0);
 }

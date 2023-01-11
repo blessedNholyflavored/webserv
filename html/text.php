@@ -142,7 +142,7 @@ text-align: center;" >
 <h2 style="text-align: center;">Verifies que tu l'as bien recu :)</h2>
 <div style="text-align:center">
     <?php
-				$file = 'salut.txt';
+				$file = 'reponse.txt';
 				$tmp = '../.tmp';
 				$test = file_get_contents($tmp);
 				parse_str($test, $POST);

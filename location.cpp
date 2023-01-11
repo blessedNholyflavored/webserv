@@ -1,5 +1,17 @@
-#include "location.hpp"
-#include "inc.hpp"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   location.cpp                                       :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lkhamlac <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/01/11 14:07:18 by lkhamlac          #+#    #+#             */
+/*   Updated: 2023/01/11 14:07:25 by lkhamlac         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "includes/location.hpp"
+#include "includes/inc.hpp"
 
 Location::Location() 
 {
@@ -78,12 +90,8 @@ void Location::parseMethod(std::string str){
 		if (!str[i])
 			break ;
 	}
-	//
-	// SI TARRIVE A CREER UN VECTOR DE 3 STRING DANS TON HPP CA VA FONCTIONNER 
-	// JUSTE CPLUSPLUS.COM NE FONCTIONNE PAS LA MAIS SINON TON LOCATION DEVRAIT ETRE BON
-	//
-
 }
+
 void Location::parseRoot(std::string str){
 	int i = 0;
 	while ( str[i] == ' ' || str[i] == '\t')
@@ -197,15 +205,6 @@ int Location::parser_la_location(int j)
 		this->_defaut = true;
 	}
 	return j;
-	// std::cout << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" << std::endl;
-	// std::cout << "location : " << _location << std::endl; 
-	// std::cout << "root : " << this->_root << std::endl; 
-	// std::cout << "index : " << _index << std::endl; 
-	// for (std::vector<std::string>::iterator it = _methods.begin(); it != _methods.end(); it++){
-	// 	std::cout << *it << std::endl;
-	// } 
-	// std::cout << "\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\\" << std::endl;
-
 }
 
 std::string Location::getLocation() { return (this->_location); }
@@ -221,4 +220,5 @@ bool		Location::getGet() { return (this->_GET); }
 bool		Location::getDel() { return (this->_DELETE); }
 
 bool		Location::getPost() { return (this->_POST); }
+
 bool		Location::getAuto() { return (this->_autoindex); }

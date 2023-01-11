@@ -10,6 +10,8 @@ SRCS		=	main.cpp \
 				ft_split.cpp \
 				execFile.cpp \
 				execGET_POST.cpp \
+				page_handling.cpp \
+				page_utils.cpp 
 
 OBJS		=	$(SRCS:.cpp=.o)
 CC			=	c++

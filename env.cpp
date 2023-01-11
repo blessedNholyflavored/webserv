@@ -12,7 +12,7 @@
 
 #include <iostream>
 #include <cstdlib>
-#include "functions.h"
+#include "includes/functions.h"
 
 
 typedef struct s_cgi
@@ -24,8 +24,6 @@ typedef struct s_cgi
 t_list    *init_lst(char **env, t_list *list);
 void	ft_lstadd_back(t_list **alst, t_list *newm);
 t_list	*ft_lstnew(char	*name, char *content, char *line);
-
-//////////////////////////////////////////////
 
 
 void	del(void *data)

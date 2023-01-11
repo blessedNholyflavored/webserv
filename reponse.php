@@ -7,13 +7,9 @@
     background: #eceffd;
 }
 
-
-
-
 .menu1 a:hover{
     background-color:#C8FFD4;
 }
-
 
 .container { 
     position: relative;
@@ -27,7 +23,6 @@
     -ms-transform: translate(-50%, -50%);
     transform: translate(-50%, -50%);
   }
-/* hightligh */
 
 .container {
     line-height: 1;
@@ -71,18 +66,14 @@
     padding: 10px 3px 3px 10px;
   }
 
-
-
  .container { 
   height: 100px;
   position: relative;
 }
 
-
 </style>
 
 <body id =\"all\" style="font-family: 'Courier New', Courier, monospace, serif;margin: 0em; padding: 0em; ">
-
 <div class="header" style="display:block; background-color: #B1AFFF; text-align: center; padding: 15px; "><h1 style="
   font-weight: bold;
   font-size: 30px;
@@ -107,23 +98,20 @@ text-align: center;" >
 
 <hr>
 
-
-
 <p style="font-family: 'Courier New', Courier, monospace, serif; text-align: center; font-size: x-large; font-weight: bold;"> Page qui gere le DELETE mec</p>
 
 <hr>
     <?php
-                                $file = 'salut.txt';
-                                $tmp = '.tmp';
-                                $test = file_get_contents($tmp);
-                                parse_str($test, $_GET);
-        $txt = htmlspecialchars($_GET['fname']);
-        file_put_contents($file, $txt);
-        $file = file_get_contents($file, true);
-        ?>	
+      $file = 'reponse.txt';
+      $tmp = '.tmp';
+      $test = file_get_contents($tmp);
+      parse_str($test, $_GET);
+      $txt = htmlspecialchars($_GET['fname']);
+      file_put_contents($file, $txt);
+      $file = file_get_contents($file, true);
+    ?>	
 Bonjour, <?php if (isset($_GET['fname'])){echo htmlspecialchars($_GET['fname']);} ?>.
 Tu as <?php if (isset($_GET['lname'])){echo $_GET['lname'];} ?> ans.
-
 
 <hr>
 <footer style="  

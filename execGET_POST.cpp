@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   execGET_POST.cpp                                   :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lkhamlac <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/01/11 15:32:44 by lkhamlac          #+#    #+#             */
+/*   Updated: 2023/01/11 15:32:48 by lkhamlac         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <iostream>
 #include <unistd.h>
 #include <string.h>
@@ -11,8 +23,8 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <vector>
-#include "server.hpp"
-#include "functions.h"
+#include "includes/server.hpp"
+#include "includes/functions.h"
 #include <cmath>
 
 
@@ -66,11 +78,7 @@ std::string	Server::execGET(void)
 	std::string str1 = fileToString("lucieCGI");
 	close(tmp);
 	unlink(".tmp");
-	//std::string skip = "Status: 500 Internal Server Error\n";
-	//skip += "Content-type: text/html; charset=UTF-8 ";
-	//str1 = str1.substr(skip.length(), str1.length());
 	delete [] cmd;
-	//std::cerr << "STR11111111111111 ---> " << str1 << std::endl;
 	return (str1);
 }
 
@@ -185,3 +193,4 @@ std::string	Server::execGETpy(void)
 	delete [] cmd;
 	return (str1);
 }
+

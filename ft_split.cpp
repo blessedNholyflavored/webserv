@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.cpp                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lguillau <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: lkhamlac <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/03/15 15:28:35 by lguillau          #+#    #+#             */
-/*   Updated: 2022/12/26 18:12:21 by jtaravel         ###   ########.fr       */
+/*   Created: 2023/01/11 14:10:42 by lkhamlac          #+#    #+#             */
+/*   Updated: 2023/01/11 14:10:44 by lkhamlac         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "functions.h"
+#include "includes/functions.h"
 
 static int	check_charset(char c, char current)
 {

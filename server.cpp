@@ -1,6 +1,18 @@
-#include "server.hpp"
-#include "inc.hpp"
-#include "location.hpp"
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   server.cpp                                         :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lkhamlac <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/01/11 14:00:47 by lkhamlac          #+#    #+#             */
+/*   Updated: 2023/01/11 14:01:00 by lkhamlac         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#include "includes/server.hpp"
+#include "includes/inc.hpp"
+#include "includes/location.hpp"
 
 Server::Server()
 {
@@ -10,7 +22,7 @@ Server::Server()
 
 Server::~Server()
 {
-	
+
 }
 
 void	Server::parsLoc(int i){
@@ -31,34 +43,6 @@ void	Server::parsLoc(int i){
 		}
 		indexline++;
 	}
-}
-
-size_t countEndl(std::string content){
-	int nbEndl = 0;
-	for (int i = 0; content[i]; i++)
-	{
-		if (content[i] == '\n')
-			nbEndl++;
-	}
-	return nbEndl;
-}
-std::string remove_charset(std::string res)
-{
-		int i = 0;
-		while(res[i])
-		{
-			if (res[i] == ';')
-			{
-				((res.erase(i, 1)));
-			}
-			i++;
-		}
-	return res;
-}
-
-bool Server::autoindexed() const
-{
-	return this->autoindex;
 }
 
 int Server::parser(std::string str)
@@ -105,8 +89,8 @@ int Server::parser(std::string str)
 		{
 			y++;
 		}
-	j++;
-	nbline++;
+		j++;
+		nbline++;
 	}
 	if (z != y)
 	{
@@ -121,49 +105,24 @@ int Server::parser(std::string str)
 	return 1;
 }
 
-int	ft_in_charset1(char const c, const std::string &charset)
-{
-	int	i_charset;
 
-	i_charset = 0;
-	while (charset[i_charset])
-	{
-		if (c == charset[i_charset++])
-			return 0;
-	}
-	return 1;
-}
 
 std::vector<std::string> ft_split(std::string str, std::string deli)
 {
 	std::vector<std::string> res;
 
-		int start = 0;
-        int end = str.find(deli);
-        int     i = 0;
-        while (end != -1)
-        {
-                res.push_back(str.substr(start, end - start));
-                start = end + deli.size();
-                end = str.find(deli, start);
-                i++;
-        }
-        res.push_back(str.substr(start, end - start));
-		return (res);
-}
-
-int check_int1(std::string str)
-{
-	if (str.empty() || ((!isdigit(str[0])) || str[0] == '-' || str[0] == '+'))
-			return 1;
-	return 0;
-}                                                           
-
-
-std::string ltrim(std::string &s)
-{
-    size_t start = s.find_first_not_of(" ");
-    return (start == std::string::npos) ? "" : s.substr(start);
+	int start = 0;
+	int end = str.find(deli);
+	int     i = 0;
+	while (end != -1)
+	{
+		res.push_back(str.substr(start, end - start));
+		start = end + deli.size();
+		end = str.find(deli, start);
+		i++;
+	}
+	res.push_back(str.substr(start, end - start));
+	return (res);
 }
 
 

@@ -1,8 +1,19 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   parsing_request.cpp                                :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: lkhamlac <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2023/01/11 15:33:23 by lkhamlac          #+#    #+#             */
+/*   Updated: 2023/01/11 15:33:24 by lkhamlac         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include <iostream>
 #include <string>
 #include <fstream>
 #include <vector>
-#include "server.hpp"
 #include <iostream>
 #include <unistd.h>
 #include <string.h>
@@ -16,9 +27,9 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <vector>
-#include "server.hpp"
-#include "functions.h"
 #include <cmath>
+#include "includes/server.hpp"
+#include "includes/functions.h"
 
 int	alnum(std::string str)
 {
@@ -55,18 +66,7 @@ int	Request::parsRequest(std::string str, std::vector<Location> &location, Serve
 	for (; str[i] != '\r'; i++){
 		version.push_back(str[i]);
 	}
-	// if (version != "HTTP/1.1"){
-	// 	std::cerr << "bad version" << std::endl;
-	// 	_retCode = 400;
-	// 	return 400;
-	// }
-	// if (method != "GET" && method != "POST" && method != "DELETE")
-	// {
-	// 	std::cerr << "method didnt exist" << std::endl;
-	// 	_retCode = 401;
-	// 	return 401;
-	// }
-	
+
 	int	flag = 0;
 	int c = 0;
 	int p = 0;
@@ -132,44 +132,6 @@ int	Request::parsRequest(std::string str, std::vector<Location> &location, Serve
 	close(fd1);
 	close(fd2);
 	return (200);
-	
-	/*if (method == "GET"){
-		std::ifstream file;
-		if (!checkLocation(path, 1, location)){
-			_retCode = 775;
-			std::cout << "pas les droits" << std::endl;
-			return 775;
-		}
-		file.open(_path.c_str(), std::ifstream::in);
-		if (!file.is_open() || _path == loc.getLocation()){
-			_retCode = 404;
-			return 404;
-		}
-		file.close();
-	}
-	else if(method == "DELETE"){
-		std::ifstream file;
-		file.open(path.c_str(), std::ifstream::in);
-		if (!checkLocation(path, 2, location)){
-			_retCode = 776;
-			std::cout << "pas les droits" << std::endl;
-			return 776;
-		}
-		if (!file.is_open()){
-			std::cerr << "cannot delete cause file not existing" << std::endl;
-			_retCode = 404;
-			return 404;
-		}
-		file.close();
-	}
-	else {
-		if (!checkLocation(path, 3, location)){
-			_retCode = 404;
-			return 404;
-		}
-	}
-	_retCode = 200;
-	return 200;*/
 }
 
 std::string getLastSlash(std::string str){

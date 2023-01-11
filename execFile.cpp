@@ -23,8 +23,8 @@
 #include <fcntl.h>
 #include <dirent.h>
 #include <vector>
-#include "server.hpp"
-#include "functions.h"
+#include "includes/server.hpp"
+#include "includes/functions.h"
 #include <cmath>
 
 std::string	Server::execFile(std::string file)
@@ -137,7 +137,6 @@ std::string	Server::execFile_py(std::string file)
 	delete [] cmd;
 	return str1;
 }
-
 
 std::string	Server::recupHeader(int ret, std::string index)
 {
