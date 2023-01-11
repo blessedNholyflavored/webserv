@@ -2,7 +2,7 @@
 #include "inc.hpp"
 #include "location.hpp"
 
-Server::Server() //: max_client_body_size(4096), listen_fd(0)
+Server::Server()
 {
 	port = 0;
 	autoindex = false;
@@ -12,11 +12,6 @@ Server::~Server()
 {
 	
 }
-
-// void	Server::transfer_location(Location location)
-// {
-// 	this->location.push_back(location);
-// }
 
 void	Server::parsLoc(int i){
 	int indexline = 0;
@@ -30,7 +25,6 @@ void	Server::parsLoc(int i){
 		if (res[indexline].find("location") != std::string::npos)
 		{
 			Location tmp;
-			//tmp = Location;
 			indexline = tmp.parser_la_location(indexline);
 			this->loc = tmp;
 			location.push_back(tmp);
@@ -61,20 +55,6 @@ std::string remove_charset(std::string res)
 		}
 	return res;
 }
-
-// int	checkEndofserver(std::string str)
-// {
-// 	int j = 0;
-// 	for (int i = 0; str[i]; i++)
-// 	{
-// 		if (str[i] == '}')
-// 		{
-// 			j++;
-// 			return 0;
-// 		}
-// 	}
-// 	return (1);
-// }
 
 bool Server::autoindexed() const
 {
@@ -132,6 +112,11 @@ int Server::parser(std::string str)
 	{
 		std::cerr << "check tes }}}}} cest le bordel" << std::endl;
 		exit(1);
+	}
+	if (this->root.empty())
+	{	
+		std::cerr << "there should be a root" << std::endl;
+		exit (1);
 	}
 	return 1;
 }
@@ -208,18 +193,20 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j, int max)
 	if (res[j].find("server_name") != std::string::npos)
 	{
 		if (static_cast<std::string>(&res[j][13]).size() < 2)
-			{
-				std::cerr << "expecting at least 1 argument after 'server_name' "<< std::endl;
-			}
+		{
+			std::cerr << "expecting at least 1 argument after 'server_name' "<< std::endl;
+			return (1);
+		}
 		this->name_server = (res[j].c_str() + 13);
 		this->vectorname_server.push_back(this->name_server);
 	}
 	else if (res[j].find("autoindex") != std::string::npos)
 	{
 		if (static_cast<std::string>(&res[j][10]).size() < 2)
-			{
-				std::cerr << "expecting at least 1 argument after 'autoindex' "<< std::endl;
-			}
+		{
+			std::cerr << "expecting at least 1 argument after 'autoindex' "<< std::endl;
+			return (1);
+		}
 		if (res[j].find("on") != std::string::npos && res[j].find("off") == std::string::npos) 
 		{
 			this->autoindex = 1;
@@ -234,11 +221,17 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j, int max)
 	else if (res[j].find("listen") != std::string::npos)
 	{
 		if (static_cast<std::string>(&res[j][7]).size() == 1) 
+		{
 			std::cerr << "expecting one argument after listen"<< std::endl;
+			return (1);
+		}
 		std::string tmp(&res[j][7]);
 		std::vector<std::string> listen = ft_split(tmp, ":");
 		if (listen.size() != 1 && listen.size() != 2)
-			std::cerr << "il faut port ou adress:port apres le listen" << std::endl;
+		{
+			std::cerr << "need port or address after listen" << std::endl;
+			return (1);
+		}
 		std::string address;
 		std::string port;
 		address = tmp;
@@ -254,7 +247,15 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j, int max)
 		this->ip = listen[0]; 
 		std::string test = ltrim(port);
 		if (check_int1(test))
+		{
 			std::cerr << "port should be an int" << std::endl;
+			return (1);
+		}
+		if(test.length() != 4)
+		{
+			std::cerr << "port should be 4 digits only" << std::endl;
+			return (1);
+		}
 		this->port = ft_atoi(port.c_str());
 		this->nbport.push_back(this->port);
 	}
@@ -263,7 +264,10 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j, int max)
 		std::string tmp(&res[j][11]);
 		std::vector<std::string> error_page_tmp = ft_split(tmp, " ");
 		if (error_page_tmp.size() != 3)
+		{
 			std::cerr << "expecting two arguments after error_page"<< std::endl;
+			return (1);
+		}
 		else
 		{
 			this->error_name.push_back(error_page_tmp[1]);
@@ -275,7 +279,10 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j, int max)
 		std::string tmp(&res[j][4]);
 		std::vector<std::string> cgi = ft_split(tmp, " ");
 		if (cgi.size() != 3)
+		{
 			std::cerr << "expecting two arguments after cgi"<< std::endl;
+			return (1);
+		}
 		else 
 		{
 			this->cgi_exec.push_back(cgi[1]);
@@ -287,6 +294,7 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j, int max)
 		if (static_cast<std::string>(&res[j][6]).size() < 3)
 		{
 			std::cerr << "expecting one argument after index"<< std::endl;
+			return (1);
 		}
 		this->nom_index = res[j].c_str() + 6;
 		this->index.push_back(nom_index);
@@ -294,18 +302,13 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j, int max)
 	else if (res[j].find("root") != std::string::npos && !floc)
 	{
 		if (static_cast<std::string>(&res[j][6]).size() <= 0)
-			{
-				std::cerr << "expecting one argument after root"<< std::endl;
-				return (1);
-			}
+		{
+			std::cerr << "expecting one argument after root"<< std::endl;
+			return (1);
+		}
 		std::string tmp(&res[j][6]);
-		// if (tmp.size() > 0 && tmp[0] == '/')
-		// 	tmp = tmp.substr(1);
-		// if (tmp.size() > 1 && tmp[tmp.size() - 1] == '/')
-		// 	tmp.resize(tmp.size() - 1);
 		this->root = (tmp.c_str());
-		this->vectorroot.push_back(this->root);
-		
+		this->vectorroot.push_back(this->root);		
 	}
 	else if (!(res[j].find("root")))
 	{
@@ -317,9 +320,12 @@ int Server::parser_le_server(std::string res[], size_t nbligne, int j, int max)
 		std::string tmp(&res[j][22]);
 		std::vector<std::string> max_body_size = ft_split(tmp, " ");
 		if(max_body_size.size() != 1)
+		{
 			std::cerr << "expecting one argument after max_client_body_size" << std::endl;
+			return (1);
+		}
 		else if (check_int1(max_body_size[0]))
-			std::cerr << "mauvais int de taille " << std::endl;
+			std::cerr << "Bad size it seems" << std::endl;
 		this->max_client_body_size = tmp;
 	}
 	(void)nbligne;
